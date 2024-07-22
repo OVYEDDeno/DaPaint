@@ -52,8 +52,6 @@ class DaPaint(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     hostFoeId = db.Column (db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # hostFoeId = db.relationship ("User", back_populates="dapaint")
-    # foeId = db.relationship ("User", back_populates="dapaint")
     foeId = db.Column (db.Integer, db.ForeignKey('user.id'), nullable=True)
     location = db.Column(db.String(100), nullable=False)
     date = db.Column(db.String(20), nullable=False)

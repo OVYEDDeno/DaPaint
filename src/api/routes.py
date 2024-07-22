@@ -12,7 +12,6 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-
 @api.route('/user/login', methods=['POST'])
 def handle_user_login():
     email = request.json.get("email", None)
@@ -105,3 +104,27 @@ def get_current_user():
 def get_all_users():
     users = User.query.all()
     return jsonify([user.serialize() for user in users]), 200
+
+@api.route('/dapaint', methods=['POST'])
+def dapaint_create():
+    hostFoeId = request.json.get("hostFoeId", None)
+    foeId = request.json.get("foeId", None)
+    location = request.json.get("location", None)
+    date = request.json.get("date", None)
+    time = request.json.get("time", None)
+    price = request.json.get("price", None)   
+    winnerId = request.json.get("winnerId", None)
+    loserId = request.json.get("loserId", None)
+    host_user = request.json.get("host_user", None)
+    foe_user = request.json.get("foe_user", None)
+    winner_user = request.json.get("winner_user", None)
+    loser_user = request.json.get("loser_user", None)
+    if hostFoeId is None or location is None or date is None or time is None or price is None or host_user is None:
+        return jsonify({"msg": "Some fields are missing in your request"}), 400
+    dapaint = DaPaint(hostFoeId = hostFoeId,foeId = foeId,location = location,
+    date = date,time = time,price = price,winnerId = winnerId,loserId = loserId,host_user = host_user,foe_user = foe_user,winner_user = winner_user,loser_user = loser_user)
+    db.session.add(dapaint)
+    db.session.commit()
+    db.session.refresh(dapaint)
+    response_body = {"msg": "DaPaint succesfully created!", "dapaint":dapaint.serialize()}
+    return jsonify(response_body), 201
