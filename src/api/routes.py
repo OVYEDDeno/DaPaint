@@ -121,10 +121,54 @@ def dapaint_create():
     loser_user = request.json.get("loser_user", None)
     if hostFoeId is None or location is None or date is None or time is None or price is None or host_user is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
-    dapaint = DaPaint(hostFoeId = hostFoeId,foeId = foeId,location = location,
-    date = date,time = time,price = price,winnerId = winnerId,loserId = loserId,host_user = host_user,foe_user = foe_user,winner_user = winner_user,loser_user = loser_user)
+    dapaint = DaPaint(hostFoeId = hostFoeId, location = location, date = date, time = time, price = price)
     db.session.add(dapaint)
     db.session.commit()
     db.session.refresh(dapaint)
     response_body = {"msg": "DaPaint succesfully created!", "dapaint":dapaint.serialize()}
+    return jsonify(response_body), 201
+
+@api.route('/lineup', methods=['GET'])
+# @jwt_required()
+def get_all_dapaint():
+    dapaint = DaPaint.query.all()
+    return jsonify([dapaint.serialize() for dapaint in dapaint]), 200
+
+@api.route('/dapaint/edit/<int:dapaint_id>', methods=['PUT'])
+@jwt_required()
+def dapaint_edit(dapaint_id):
+    hostFoeId = request.json.get("hostFoeId")
+    foeId = request.json.get("foeId")
+    location = request.json.get("location")
+    date = request.json.get("date")
+    time = request.json.get("time")
+    price = request.json.get("price")   
+    winnerId = request.json.get("winnerId")
+    loserId = request.json.get("loserId")
+    host_user = request.json.get("host_user")
+    foe_user = request.json.get("foe_user")
+    winner_user = request.json.get("winner_user")
+    loser_user = request.json.get("loser_user")
+    if hostFoeId is None  or location is None or date is None or time is None or price is None or host_user is None:
+        return jsonify({"msg": "Some fields are missing in your request"}), 400
+    dapaint = DaPaint.query.filter_by(id=dapaint_id).one_or_none()
+    if dapaint is None:
+        return jsonify({"msg": "No dapaint found"}), 404
+    
+    dapaint.hostFoeId=hostFoeId
+    dapaint.location=location
+    dapaint.date=date 
+    dapaint.time=time 
+    dapaint.price=price
+    dapaint.host_user=host_user
+    dapaint.foeId = foeId
+    dapaint.winnerId=winnerId
+    dapaint.loserId=loserId
+    dapaint.foe_user=foe_user
+    dapaint.winner_user=winner_user
+    dapaint.loser_user=loser_user
+
+    db.session.commit()
+    db.session.refresh(dapaint)
+    response_body = {"msg": "Account succesfully edited!", "dapaint":dapaint.serialize()}
     return jsonify(response_body), 201
