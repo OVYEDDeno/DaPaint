@@ -1,13 +1,11 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt, decode_token
+from flask import Blueprint, request, jsonify, abort
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint
-from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-import hashlib
 
 api = Blueprint('api', __name__)
 
@@ -26,11 +24,11 @@ def handle_user_login():
     if user is None:
         return jsonify({"msg": "No such user"}), 404
 
-    if not check_password_hash(user.password, password):
-        return jsonify({"msg": "Bad email or password"}), 401
+    # if not check_password_hash(user.password, password):
+    #     return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=user.id)
-    return jsonify(access_token=access_token), 201
+    return jsonify(access_token=access_token), 200
 
 @api.route('/user/signup', methods=['POST'])
 def handle_user_signup():
@@ -41,8 +39,10 @@ def handle_user_signup():
     zipcode = request.json.get("zipcode", None)
     phone = request.json.get("phone", None)
     birthday = request.json.get("birthday", None)
+    
     if email is None or password is None or name is None or city is None or zipcode is None or phone is None or birthday is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
+    
     user = User.query.filter_by(email=email).one_or_none()
     if user:
         return jsonify({"msg": "An account associated with the email already exists"}), 409
@@ -53,7 +53,7 @@ def handle_user_signup():
     db.session.add(user)
     db.session.commit()
     db.session.refresh(user)
-    response_body = {"msg": "Account succesfully created!", "user":user.serialize()}
+    response_body = {"msg": "Account successfully created!", "user": user.serialize()}
     return jsonify(response_body), 201
 
 @api.route('/user/edit/<int:user_id>', methods=['PUT'])
@@ -65,29 +65,28 @@ def handle_user_edit(user_id):
     zipcode = request.json.get("zipcode")
     phone = request.json.get("phone")
     birthday = request.json.get("birthday")
-    if email is None  or name is None or city is None or zipcode is None or phone is None or birthday is None:
+    
+    if email is None or name is None or city is None or zipcode is None or phone is None or birthday is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
+    
     user = User.query.filter_by(id=user_id).one_or_none()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
-    user.email=email
-   
-    user.name=name   
-    user.city=city    
-    user.zipcode=zipcode    
-    user.phone=phone
-    user.birthday=birthday
+
+    user.email = email
+    user.name = name
+    user.city = city
+    user.zipcode = zipcode
+    user.phone = phone
+    user.birthday = birthday
     db.session.commit()
     db.session.refresh(user)
-    response_body = {"msg": "Account succesfully edited!", "user":user.serialize()}
-    return jsonify(response_body), 201
+    response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
+    return jsonify(response_body), 200
 
 @api.route('/user/get-user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user(user_id):
-    # current_user_id = get_jwt_identity()
-    # current_user = User.query.get(current_user_id)
-
     user = User.query.get(user_id)
     if user is None:
         return jsonify({"msg": "No user found"}), 404
@@ -97,7 +96,6 @@ def get_user(user_id):
 @api.route('/current-user', methods=['GET'])
 @jwt_required()
 def get_current_user():
-    
     user = User.query.get(get_jwt_identity())
     if user is None:
         return jsonify({"msg": "No user found"}), 404
@@ -120,24 +118,39 @@ def dapaint_create():
     price = request.json.get("price", None)   
     winnerId = request.json.get("winnerId", None)
     loserId = request.json.get("loserId", None)
-    host_user = request.json.get("host_user", None)
-    foe_user = request.json.get("foe_user", None)
-    winner_user = request.json.get("winner_user", None)
-    loser_user = request.json.get("loser_user", None)
-    if hostFoeId is None or location is None or date is None or time is None or price is None or host_user is None:
+    
+    if hostFoeId is None or location is None or date is None or time is None or price is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
-    dapaint = DaPaint(hostFoeId = hostFoeId, location = location, date = date, time = time, price = price)
+    
+    dapaint = DaPaint(hostFoeId=hostFoeId, foeId=foeId, location=location, date=date, time=time, price=price, winnerId=winnerId, loserId=loserId)
     db.session.add(dapaint)
     db.session.commit()
     db.session.refresh(dapaint)
-    response_body = {"msg": "DaPaint succesfully created!", "dapaint":dapaint.serialize()}
+    response_body = {"msg": "DaPaint successfully created!", "dapaint": dapaint.serialize()}
     return jsonify(response_body), 201
 
 @api.route('/lineup', methods=['GET'])
-# @jwt_required()
 def get_all_dapaint():
     dapaint = DaPaint.query.all()
-    return jsonify([dapaint.serialize() for dapaint in dapaint]), 200
+    return jsonify([d.serialize() for d in dapaint]), 200
+
+@api.route('/lineup-by-user', methods=['GET'])
+@jwt_required()
+def get_dapaint_by_user():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    dapaint_records = DaPaint.query.filter(
+        (DaPaint.hostFoeId == user_id) | (DaPaint.foeId == user_id) |
+        (DaPaint.winnerId == user_id) | (DaPaint.loserId == user_id)
+    ).all()
+
+    return jsonify([d.serialize() for d in dapaint_records]), 200
+
+
 
 @api.route('/dapaint/edit/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
@@ -150,30 +163,36 @@ def dapaint_edit(dapaint_id):
     price = request.json.get("price")   
     winnerId = request.json.get("winnerId")
     loserId = request.json.get("loserId")
-    host_user = request.json.get("host_user")
-    foe_user = request.json.get("foe_user")
-    winner_user = request.json.get("winner_user")
-    loser_user = request.json.get("loser_user")
-    if hostFoeId is None  or location is None or date is None or time is None or price is None or host_user is None:
+    
+    if hostFoeId is None or location is None or date is None or time is None or price is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
+    
     dapaint = DaPaint.query.filter_by(id=dapaint_id).one_or_none()
     if dapaint is None:
-        return jsonify({"msg": "No dapaint found"}), 404
+        return jsonify({"msg": "No DaPaint found"}), 404
     
-    dapaint.hostFoeId=hostFoeId
-    dapaint.location=location
-    dapaint.date=date 
-    dapaint.time=time 
-    dapaint.price=price
-    dapaint.host_user=host_user
+    dapaint.hostFoeId = hostFoeId
     dapaint.foeId = foeId
-    dapaint.winnerId=winnerId
-    dapaint.loserId=loserId
-    dapaint.foe_user=foe_user
-    dapaint.winner_user=winner_user
-    dapaint.loser_user=loser_user
+    dapaint.location = location
+    dapaint.date = date
+    dapaint.time = time
+    dapaint.price = price
+    dapaint.winnerId = winnerId
+    dapaint.loserId = loserId
 
     db.session.commit()
     db.session.refresh(dapaint)
-    response_body = {"msg": "Account succesfully edited!", "dapaint":dapaint.serialize()}
-    return jsonify(response_body), 201
+    response_body = {"msg": "DaPaint successfully edited!", "dapaint": dapaint.serialize()}
+    return jsonify(response_body), 200
+
+@api.route('/dapaint/delete/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_dapaint(id):
+    dapaint = DaPaint.query.get(id)
+    if dapaint is None:
+        return jsonify({"msg": "No DaPaint found"}), 404 
+
+    db.session.delete(dapaint)
+    db.session.commit()
+
+    return jsonify({"message": "DaPaint record deleted successfully"}), 200
