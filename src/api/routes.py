@@ -3,9 +3,11 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt, decode_token
+from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+import hashlib
 
 api = Blueprint('api', __name__)
 
@@ -16,18 +18,18 @@ CORS(api)
 def handle_user_login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
+
     if email is None or password is None:
         return jsonify({"msg": "No email or password"}), 400
+
     user = User.query.filter_by(email=email).one_or_none()
     if user is None:
-        return jsonify({"msg": "no such user"}), 404
-    if user.password != password:
+        return jsonify({"msg": "No such user"}), 404
+
+    if not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad email or password"}), 401
 
-    access_token = create_access_token(
-        identity=user.id,
-        # additional_claims = {"role": "owner"} 
-        )
+    access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 201
 
 @api.route('/user/signup', methods=['POST'])
@@ -44,7 +46,10 @@ def handle_user_signup():
     user = User.query.filter_by(email=email).one_or_none()
     if user:
         return jsonify({"msg": "An account associated with the email already exists"}), 409
-    user = User(email=email, password=password, name=name, city=city, zipcode=zipcode, phone=phone, birthday=birthday, is_active=True)
+    
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+    user = User(email=email, password=hashed_password, name=name, city=city, zipcode=zipcode, phone=phone, birthday=birthday, is_active=True)
     db.session.add(user)
     db.session.commit()
     db.session.refresh(user)

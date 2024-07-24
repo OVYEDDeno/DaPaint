@@ -46,7 +46,7 @@ class User(db.Model):
             "lossesByKO": self.lossesByKO,
             "lossesBySub": self.lossesBySub,
             "disqualifications": self.disqualifications
-            # do not serialize the password, its a security breach
+            
         }
 class DaPaint(db.Model):
 
