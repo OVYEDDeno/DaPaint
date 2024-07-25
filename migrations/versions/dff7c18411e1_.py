@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0b98cd3387dd
+Revision ID: dff7c18411e1
 Revises: 
-Create Date: 2024-07-25 16:47:28.257559
+Create Date: 2024-07-25 19:37:17.926319
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0b98cd3387dd'
+revision = 'dff7c18411e1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('city', sa.String(length=80), nullable=False),
     sa.Column('zipcode', sa.Integer(), nullable=False),
     sa.Column('phone', sa.String(length=20), nullable=False),
-    sa.Column('birthday', sa.String(length=20), nullable=False),
+    sa.Column('birthday', sa.Date(), nullable=False),
     sa.Column('winstreak', sa.Integer(), nullable=True),
     sa.Column('wins', sa.Integer(), nullable=True),
     sa.Column('winsByKO', sa.Integer(), nullable=True),
@@ -45,7 +45,7 @@ def upgrade():
     sa.Column('hostFoeId', sa.Integer(), nullable=False),
     sa.Column('foeId', sa.Integer(), nullable=True),
     sa.Column('location', sa.String(length=100), nullable=False),
-    sa.Column('date', sa.Time(), nullable=False),
+    sa.Column('date_time', sa.DateTime(), nullable=False),
     sa.Column('price', sa.Integer(), nullable=False),
     sa.Column('winnerId', sa.Integer(), nullable=True),
     sa.Column('loserId', sa.Integer(), nullable=True),
@@ -53,7 +53,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['hostFoeId'], ['user.id'], ),
     sa.ForeignKeyConstraint(['loserId'], ['user.id'], ),
     sa.ForeignKeyConstraint(['winnerId'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('foeId')
     )
     # ### end Alembic commands ###
 
