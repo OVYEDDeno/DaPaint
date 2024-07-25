@@ -9,7 +9,7 @@ export const Home = () => {
     <div className="home-container">
       <header className="top-header">
         <img
-          src="https://static-assets.clubhouseapi.com/static/img/img_hand_wave.3454a59f2b06.svg"
+          src="👊🏿"
           alt="Logo"
           className="logo"
         />
