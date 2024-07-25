@@ -24,8 +24,8 @@ def handle_user_login():
     if user is None:
         return jsonify({"msg": "No such user"}), 404
 
-    # if not check_password_hash(user.password, password):
-    #     return jsonify({"msg": "Bad email or password"}), 401
+    if not check_password_hash(user.password, password):
+        return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 200
@@ -47,7 +47,7 @@ def handle_user_signup():
     if user:
         return jsonify({"msg": "An account associated with the email already exists"}), 409
     
-    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+    hashed_password = generate_password_hash(password)
 
     user = User(email=email, password=hashed_password, name=name, city=city, zipcode=zipcode, phone=phone, birthday=birthday, is_active=True)
     db.session.add(user)
