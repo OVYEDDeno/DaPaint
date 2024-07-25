@@ -2,9 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			users:[],
-			dapaints:[],
 			userId: undefined,
-			dapaintId: undefined,
 		    token: undefined,
 
 		},

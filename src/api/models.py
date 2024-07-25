@@ -21,7 +21,6 @@ class User(db.Model):
     lossesBySub = db.Column(db.Integer)
     disqualifications = db.Column(db.Integer)
     
-
     dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates= 'host_user')
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId',back_populates= 'foe_user' )
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId',back_populates= 'winner_user' )
