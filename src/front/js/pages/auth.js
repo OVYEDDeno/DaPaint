@@ -63,12 +63,25 @@ const AuthPage = () => {
                     navigate("/login")
                 }
             } else {
-                // setError(result.msg || "An error occurred. Please try again.");
-                setError((prevError) => ({
-                    ...prevError,
-                    ...result.error, // Merge the backend error with current error
+                // Clear previous errors
+                setError({
+                    name: '',
+                    email: '',
+                    password: '',
+                    city: '',
+                    zipcode: '',
+                    phone: '',
+                    birthday: '',
                     general: result.msg || "An error occurred. Please try again."
-                }));
+                });
+
+                // Update specific field errors if provided
+                if (result.errors) {
+                    setError(prevError => ({
+                        ...prevError,
+                        ...result.errors
+                    }));
+                }
             }
         } catch (error) {
             console.error('Error:', error);
