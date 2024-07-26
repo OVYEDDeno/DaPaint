@@ -3,48 +3,49 @@ import { Context } from "../store/appContext";
 import "../../styles/home.css";
 
 export const Home = () => {
-  const { store, actions } = useContext(Context);
-
   return (
     <div className="home-container">
       <header className="top-header">
         <img
-          src="👊🏿"
+          src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
           alt="Logo"
           className="logo"
         />
         <nav className="nav-links">
           <ul>
-            <li>
-              <a href="#">Blog</a>
-            </li>
-            <li>
-              <a href="#">Jobs</a>
-            </li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
         <button className="cta-button">Clock In</button>
       </header>
 
       <main className="main-body">
-        <h1 className="tagline">Welcome to OVYED Labs</h1>
+        <h1 className="tagline">Defy Your Limits</h1>
         <button className="cta-button">Clock In</button>
       </main>
 
       <footer className="footer">
-        <div className="footer-links">
+        <div className="footer-column">
           <ul>
             <li><a href="#">Privacy</a></li>
             <li><a href="#">Terms</a></li>
             <li><a href="#">FAQs</a></li>
           </ul>
         </div>
-        <div className="social-media-logos">
-          <img src="path/to/tiktok-logo.png" alt="TikTok" />
-          <img src="path/to/instagram-logo.png" alt="Instagram" />
-          <img src="path/to/twitter-logo.png" alt="Twitter" />
-        </div>
-        <div className="footer-bottom">
+        <div className="footer-column social-media-logos">
+    <a href="https://tiktok.com">
+        <img src="https://static-00.iconduck.com/assets.00/tiktok-icon-445x512-xaxcw9b8.png" alt="TikTok" />
+    </a>
+    <a href="https://twitter.com">
+        <img src="https://static-00.iconduck.com/assets.00/twitter-icon-512x417-ypy0580u.png" alt="Twitter" />
+    </a>
+    <a href="https://instagram.com">
+        <img src="https://static-00.iconduck.com/assets.00/instagram-icon-512x512-ek33t112.png" alt="Instagram" />
+    </a>
+</div>
+
+        <div className="footer-column">
           <p>&copy; 2024 OVYED Labs</p>
         </div>
       </footer>
