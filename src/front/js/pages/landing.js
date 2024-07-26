@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import { Link } from "react-router-dom";
 
 export const Home = () => {
   return (
@@ -21,10 +20,9 @@ export const Home = () => {
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
-        
-        <Link to="/auth">
+        <a href="../pages/auth.js">
     <button className="cta-button">Clock In</button>
-</Link>
+</a>
       </header>
 
       <main className="main-body">

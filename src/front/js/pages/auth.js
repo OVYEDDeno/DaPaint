@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/auth.css";
-import React, { useState } from 'react';
+
 // export const login_signup = () => {
 //   return (
 
