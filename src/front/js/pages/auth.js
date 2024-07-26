@@ -15,6 +15,17 @@ const AuthPage = () => {
         phone: '',
         birthday: '',
     });
+    const [error, setError] = useState({
+        name: '',
+        email: '',
+        password: '',
+        city: '',
+        zipcode: '',
+        phone: '',
+        birthday: '',
+        general: ''
+    });
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,11 +33,19 @@ const AuthPage = () => {
             ...prevData,
             [name]: value,
         }));
+        // Clear error for the specific field
+        // seterror((preverror) => ({
+        //     ...preverror,
+        //     [name]: ''
+        // }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = isLogin ? 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/login' : 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/signup';
+        const url = isLogin
+            ? 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/login'
+            : 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/signup';
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -34,6 +53,7 @@ const AuthPage = () => {
                 body: JSON.stringify(formData),
             });
             const result = await response.json();
+
             if (response.ok) {
                 alert(isLogin ? 'Login successful' : 'Sign up successful');
                 if (isLogin) {
@@ -43,21 +63,41 @@ const AuthPage = () => {
                     navigate("/login")
                 }
             } else {
-                alert(result.msg);
+                // setError(result.msg || "An error occurred. Please try again.");
+                setError((prevError) => ({
+                    ...prevError,
+                    ...result.error, // Merge the backend error with current error
+                    general: result.msg || "An error occurred. Please try again."
+                }));
             }
         } catch (error) {
             console.error('Error:', error);
+            // setError("login/signup unsuccessful");
+            setError((prevError) => ({
+                ...prevError,
+                general: "System Overload. Please try again another time."
+            }));
         }
     };
 
     return (
         <div className="container mt-5">
             <h2 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h2>
+            {/* {error && (
+                <div class="alert alert-danger" role="alert">
+                    {error}
+                </div>
+            )} */}
+            {error.general && (
+                <div className="alert alert-danger" role="alert">
+                    {error.general}
+                </div>
+            )}
             <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-3 w-50">
                 {!isLogin && (
                     <>
                         <div className="mb-3">
-                            <label className="form-label">Name</label>
+                            <label className="form-label">Username</label>
                             <input
                                 type="text"
                                 name="name"
@@ -66,6 +106,7 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
+                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
                         </div>
                         <div className="mb-3">
                             <label className="form-label">City</label>
@@ -77,6 +118,8 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
+                            {error.city && <div className="alert alert-danger" role="alert">{error.city}</div>}
+
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Zipcode</label>
@@ -88,17 +131,19 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
+                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Phone</label>
                             <input
-                                type="text"
+                                type="number"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
                                 className="form-control"
                                 required
                             />
+                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Birthday</label>
@@ -110,6 +155,7 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
+                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
                         </div>
                     </>
                 )}
@@ -123,6 +169,7 @@ const AuthPage = () => {
                         className="form-control"
                         required
                     />
+                    {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Password</label>
@@ -134,6 +181,7 @@ const AuthPage = () => {
                         className="form-control"
                         required
                     />
+                    {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
                 </div>
                 <button type="submit" className="btn btn-primary w-100">{isLogin ? 'Login' : 'Sign Up'}</button>
             </form>

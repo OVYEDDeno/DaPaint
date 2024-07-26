@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint
 from flask_cors import CORS
 from datetime import datetime, date
+import re
 
 api = Blueprint('api', __name__)
 
@@ -42,18 +43,35 @@ def handle_user_signup():
 
     # Validate that all required fields are present
     if not all([email, password, name, city, zipcode, phone, birthday]):
-        return jsonify({"msg": "Some fields are missing in your request"}), 400
+        return jsonify({"msg": "Please fill out all fields."}), 400
 
     # Validate age restriction (e.g., user must be at least 18 years old)
     if birthday:
         age = (date.today() - birthday).days // 365
         if age < 18:
-            return jsonify({'error': 'User must be at least 18 years old'}), 400
+            return jsonify({'msg': 'User must be at least 18 years old'}), 400
 
     # Check if the email already exists
     user = User.query.filter_by(email=email).one_or_none()
     if user:
         return jsonify({"msg": "An account associated with the email already exists"}), 409
+    
+    # Check if the username already exists
+    username_check = User.query.filter_by(name=name).one_or_none()
+    if user:
+        return jsonify({"msg": "An account associated with the username already exists"}), 409
+    
+    # Validate username contains only letters and numbers
+    if not re.match("^[a-zA-Z0-9]+$", name):
+        return jsonify({"msg": "Username can only contain letters and numbers"}), 400
+
+    # Validate zip code contains exactly 5 digits
+    if not re.match("^\d{5}$", zipcode):
+        return jsonify({"msg": "ZipCode must contain exactly 5 digits"}), 400
+
+    # Validate phone number contains exactly 10 digits
+    if not re.match("^\d{10}$", phone):
+        return jsonify({"msg": "Phone number must contain exactly 10 digits"}), 400
 
     # Create new user
     new_user = User(
@@ -69,7 +87,7 @@ def handle_user_signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'User created successfully'}), 201
+    return jsonify({'msg': 'User created successfully'}), 201
 
 @api.route('/user/edit/<int:user_id>', methods=['PUT'])
 @jwt_required()
