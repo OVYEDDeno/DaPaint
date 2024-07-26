@@ -6,23 +6,30 @@ export const Home = () => {
   return (
     <div className="home-container">
       <header className="top-header">
-        <img
-          src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
-          alt="Logo"
-          className="logo"
-        />
+      <a href="https://example.com">
+    <img
+        src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
+        alt="Logo"
+        className="logo"
+    />
+</a>
+
         <nav className="nav-links">
           <ul>
             <li><a href="#">Blog</a></li>
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
-        <button className="cta-button">Clock In</button>
+        <a href="../pages/auth.js">
+    <button className="cta-button">Clock In</button>
+</a>
       </header>
 
       <main className="main-body">
         <h1 className="tagline">Defy Your Limits</h1>
-        <button className="cta-button">Clock In</button>
+        <a href="https://example.com">
+    <button className="cta-button">Clock In</button>
+</a>
       </main>
 
       <footer className="footer">
