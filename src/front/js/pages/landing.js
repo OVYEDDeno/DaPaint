@@ -1,61 +1,43 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/home.css";
+import "../../styles/landing.css";
 
-export const Home = () => {
+export const Landing = () => {
   return (
     <div className="home-container">
       <header className="top-header">
-      <a href="https://example.com">
-    <img
-        src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
-        alt="Logo"
-        className="logo"
-    />
-</a>
-
-        <nav className="nav-links">
-          <ul>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Jobs</a></li>
-          </ul>
-        </nav>
-        <a href="../pages/auth.js">
-    <button className="cta-button">Clock In</button>
-</a>
+        <div className="profile-section">
+          <img
+            src="https://example.com/path-to-profile-picture"
+            alt="Profile"
+            className="profile-picture"
+          />
+          <div className="profile-info">
+            <span className="profile-name">OVYEDDeno</span>
+            <span className="profile-coins">💰1000</span>
+          </div>
+        </div>
+        <div className="streak-section">
+          <span className="streak-count">10</span>
+          <span className="streak-label">WIN STREAK</span>
+          <span className="target-streak">WIN $1M at 30</span>
+        </div>
+        <div className="actions-section">
+          <button className="invite-friends-button">INVITE FRIENDS</button>
+          <button className="settings-button">⚙️</button>
+        </div>
       </header>
 
       <main className="main-body">
-        <h1 className="tagline">Defy Your Limits</h1>
-        <a href="https://example.com">
-    <button className="cta-button">Clock In</button>
-</a>
+        <h2 className="streak-announcement">WHO WILL ACHIEVE 11 WIN STREAK?</h2>
+        <p className="current-streak">OVYEDDeno HAS ACHIEVED 10 WIN STREAK</p>
+        <button className="line-up-button">LINE UP</button>
+        <div className="find-foe-section">
+          <button className="find-foe-button">FIND FOE 💰0.01</button>
+          <p className="tap-button-text">TAP THE BUTTON</p>
+        </div>
       </main>
-
-      <footer className="footer">
-        <div className="footer-column">
-          <ul>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Terms</a></li>
-            <li><a href="#">FAQs</a></li>
-          </ul>
-        </div>
-        <div className="footer-column social-media-logos">
-    <a href="https://tiktok.com">
-        <img src="https://static-00.iconduck.com/assets.00/tiktok-icon-445x512-xaxcw9b8.png" alt="TikTok" />
-    </a>
-    <a href="https://twitter.com">
-        <img src="https://static-00.iconduck.com/assets.00/twitter-icon-512x417-ypy0580u.png" alt="Twitter" />
-    </a>
-    <a href="https://instagram.com">
-        <img src="https://static-00.iconduck.com/assets.00/instagram-icon-512x512-ek33t112.png" alt="Instagram" />
-    </a>
-</div>
-
-        <div className="footer-column">
-          <p>&copy; 2024 OVYED Labs</p>
-        </div>
-      </footer>
     </div>
   );
 };
+

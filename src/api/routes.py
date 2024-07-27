@@ -41,37 +41,39 @@ def handle_user_signup():
     birthday_str = data.get('birthday')  # Expecting format YYYY-MM-DD
     birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
 
-    # Validate that all required fields are present
-    if not all([email, password, name, city, zipcode, phone, birthday]):
-        return jsonify({"msg": "Please fill out all fields."}), 400
+    errors = {}
+
+
+    if errors:
+        return jsonify({"errors": errors}), 400
 
     # Validate age restriction (e.g., user must be at least 18 years old)
     if birthday:
         age = (date.today() - birthday).days // 365
         if age < 18:
-            return jsonify({'msg': 'User must be at least 18 years old'}), 400
+            return jsonify({"errors": {'birthday': 'User must be at least 18 years old'}}), 409
 
     # Check if the email already exists
     user = User.query.filter_by(email=email).one_or_none()
     if user:
-        return jsonify({"msg": "An account associated with the email already exists"}), 409
+        return jsonify({"errors": {'email': 'An account associated with the email already exists'}}), 409
     
     # Check if the username already exists
     username_check = User.query.filter_by(name=name).one_or_none()
-    if user:
-        return jsonify({"msg": "An account associated with the username already exists"}), 409
+    if username_check:
+        return jsonify({"errors": {'name': 'An account associated with the username already exists'}}), 409
     
     # Validate username contains only letters and numbers
     if not re.match("^[a-zA-Z0-9]+$", name):
-        return jsonify({"msg": "Username can only contain letters and numbers"}), 400
+        return jsonify({"errors": {'name': 'Username can only contain letters and numbers'}}), 400
 
     # Validate zip code contains exactly 5 digits
     if not re.match("^\d{5}$", zipcode):
-        return jsonify({"msg": "ZipCode must contain exactly 5 digits"}), 400
+        return jsonify({"errors": {'zipcode': 'ZipCode must contain exactly 5 digits'}}), 409
 
     # Validate phone number contains exactly 10 digits
     if not re.match("^\d{10}$", phone):
-        return jsonify({"msg": "Phone number must contain exactly 10 digits"}), 400
+        return jsonify({"errors": {'phone': 'Phone number must contain exactly 10 digits'}}), 409
 
     # Create new user
     new_user = User(

@@ -34,10 +34,10 @@ const AuthPage = () => {
             [name]: value,
         }));
         // Clear error for the specific field
-        // seterror((preverror) => ({
-        //     ...preverror,
-        //     [name]: ''
-        // }));
+        setError((prevError) => ({
+            ...prevError,
+            [name]: ''
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -60,7 +60,7 @@ const AuthPage = () => {
                     console.log('Token:', result.access_token);
                 }
                 else {
-                    navigate("/login")
+                    navigate("/auth")
                 }
             } else {
                 // Clear previous errors
@@ -101,11 +101,6 @@ const AuthPage = () => {
                     {error}
                 </div>
             )} */}
-            {error.general && (
-                <div className="alert alert-danger" role="alert">
-                    {error.general}
-                </div>
-            )}
             <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-3 w-50">
                 {!isLogin && (
                     <>
@@ -144,7 +139,7 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
-                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
+                            {error.zipcode && <div className="alert alert-danger" role="alert">{error.zipcode}</div>}
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Phone</label>
@@ -156,7 +151,7 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
-                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
+                            {error.phone && <div className="alert alert-danger" role="alert">{error.phone}</div>}
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Birthday</label>
@@ -168,7 +163,7 @@ const AuthPage = () => {
                                 className="form-control"
                                 required
                             />
-                            {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
+                            {error.birthday && <div className="alert alert-danger" role="alert">{error.birthday}</div>}
                         </div>
                     </>
                 )}
@@ -182,7 +177,7 @@ const AuthPage = () => {
                         className="form-control"
                         required
                     />
-                    {error.name && <div className="alert alert-danger" role="alert">{error.name}</div>}
+                    {error.email && <div className="alert alert-danger" role="alert">{error.email}</div>}
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Password</label>
