@@ -11,6 +11,18 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+# @api.route('/logout', methods=['POST'])
+# @jwt_required()
+# def handle_user_logout():
+#     user_id = get_jwt_identity()
+
+#     try:
+#         jti = get_jwt()['jti']
+#         jwt_blacklist.add(jti)
+#         return jsonify({"msg": "Logout successful"}), 200
+#     except Exception as e:
+#         return jsonify({"msg": "Failed to logout", "error": str(e)}), 500
+
 @api.route('/login', methods=['POST'])
 def handle_user_login():
     email = request.json.get("email", None)
@@ -206,3 +218,9 @@ def delete_dapaint(id):
     db.session.commit()
 
     return jsonify({"message": "DaPaint record deleted successfully"}), 200
+
+
+@api.route('/max-win-streak', methods=['GET'])
+def get_max_win_streak():
+    max_win_streak = db.session.query(db.func.max(User.winstreak)).scalar() or 0
+    return jsonify({"maxWinStreak": max_win_streak})

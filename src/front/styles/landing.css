@@ -1,206 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-.home-container {
+
+.landing-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #000000;
   color: #000000;
-}
-
-.top-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.profile-section {
-  display: flex;
+  text-align: center;
   align-items: center;
 }
 
-.profile-picture {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.profile-info {
+.header {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 20px;
 }
 
-.profile-name {
-  font-weight: bold;
-  font-size: 1.2em;
-}
-
-.profile-coins {
-  font-size: 1em;
-  color: gold;
-}
-
-.streak-section {
+.header-icons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  gap: 20px;
 }
 
-.streak-count {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #000000;
+.icon {
+  width: 40px;
+  height: 40px;
 }
 
-.streak-label {
-  font-size: 0.9em;
-}
-
-.target-streak {
-  font-size: 0.8em;
-  color: green;
-  margin-top: 5px;
-}
-
-.actions-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.invite-friends-button,
-.settings-button {
-  margin-bottom: 5px;
-  padding: 5px 10px;
-  font-size: 1em;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-.main-body {
-  flex: 1;
+.main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 20px;
+  flex: 1;
 }
 
-.streak-announcement {
+
+.cta-button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tap-info {
+  margin-top: 20px;
   font-size: 1.2em;
   font-weight: bold;
 }
 
-.current-streak {
-  font-size: 1em;
-  margin-bottom: 20px;
-}
-
-.line-up-button {
-  font-size: 1.5em;
-  padding: 10px 20px;
-  margin-bottom: 20px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-}
-
-.find-foe-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.find-foe-button {
-  font-size: 1.5em;
-  padding: 10px 20px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-.tap-button-text {
-  font-size: 1em;
-  margin-top: 10px;
-}
-
-.footer {
-  background-color: #ffffff;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #e0e0e0;
-}
-
-.footer-column {
-  flex: 1;
-}
-
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-column ul li {
-  margin: 10px 0;
-}
-
-.footer-column ul li a {
-  text-decoration: none;
-  color: #000000;
-}
-
-.social-media-logos img {
-  height: 20px;
-  margin: 0 10px;
-}
-
-.footer-column p {
-  margin: 0;
-}
-
 @media (max-width: 768px) {
-  .top-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .progress-bar {
+    width: 80%;
   }
 
-  .profile-section,
-  .streak-section,
-  .actions-section {
-    margin-bottom: 10px;
+  .cta-button {
+    width: 80%;
   }
+}
+.custom-win-streak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
 
-  .profile-info {
-    align-items: center;
-  }
+.custom-progress-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 60%;
+}
 
-  .streak-count {
-    font-size: 1.5em;
-  }
+.custom-progress-bar {
+  background-color: rgb(0, 0, 0);
+  border-radius: 5px;
+  height: 30px;
+  flex: 1;
+  position: relative;
+  margin: 0 20px;
+}
 
-  .line-up-button,
-  .find-foe-button {
-    width: 100%;
-  }
+.bg-yellow {
+  background-color: #f5c116 !important;
+}
+.custom-progress {
+  background-color: #f5c116;
+  height: 100%;
+  border-radius: 5px;
+  position: relative;
+  transition: width 0.3s;
+}
 
-  .footer {
-    flex-direction: column;
-    align-items: center;
-  }
+.custom-circle {
+  width: 30px;
+  height: 30px;
+  background-color: #f5c116;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+
+.custom-circle.custom-start {
+  left: 10px;
+  z-index: 999;
+  color: rgb(255, 255, 255);
+}
+
+.custom-circle.custom-end {
+  right: -15px;
+  top: 0;
+  color: rgb(255, 255, 255);
+  background-color: #000000;
+}
+
+.custom-progress-text {
+  position: absolute;
+  z-index: 999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(255, 255, 255);
 }
