@@ -56,9 +56,10 @@ const AuthPage = () => {
                 if (isLogin) {
                     localStorage.setItem("token", result.access_token);
                     navigate("/landing");
+                    console.log("Log in successful!");
                     console.log('Token:', result.access_token);
                 } else {
-                    navigate("/auth");
+                    window.location.reload();
                 }
             } else {
                 setError({

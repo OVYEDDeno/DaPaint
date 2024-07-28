@@ -1,29 +1,35 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			users:[],
-			dapaints:[],
+			users: [],
+			dapaints: [],
 			userId: undefined,
 			dapaintId: undefined,
-		    token: undefined,
+			token: localStorage.getItem('token')
 
 		},
 
 		actions: {
 			// Use getActions to call a function within a fuction
+			logout: () => {
+				localStorage.removeItem("token");
+				setStore({
+					token: undefined
+				})
+			},
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
 
 			getMessage: async () => {
-				try{
+				try {
 					// fetching data from the backend
 					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				}catch(error){
+				} catch (error) {
 					console.log("Error loading message from backend", error)
 				}
 			},

@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import "../../styles/landing.css";
 
+
 export const Landing = () => {
-  const { store } = useContext(Context);
-  const [currentWinStreak, setCurrentWinStreak] = useState(0);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [currentWinStreak, setCurrentWinStreak] = useState(0); // Example value
   const maxWinStreak = 30;
   const nextWinStreak = currentWinStreak + 1;
-  const username = "OVYEDDeno";
-  const navigate = useNavigate();
+  const username = "OVYEDDeno"; // Example username
 
   useEffect(() => {
     const fetchMaxWinStreak = async () => {
@@ -28,11 +24,6 @@ export const Landing = () => {
     fetchMaxWinStreak();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    console.log("Log out successful");
-    navigate("/auth");
-  };
 
   return (
     <div className="home-container">
@@ -49,15 +40,7 @@ export const Landing = () => {
         </div>
         <div className="actions-section">
           <button className="invite-friends-button">INVITE FRIENDS</button>
-          <div className="settings-container">
-            <button
-              className="settings-button"
-              onClick={() => setDropdownVisible(!dropdownVisible)}
-            >⚙️</button>
-            {dropdownVisible && (
-              <button className=" dropdown-menu logout-button" onClick={handleLogout}>Logout</button>
-            )}
-          </div>
+          <button className="settings-button">⚙️</button>
         </div>
       </header>
       <div className="custom-win-streak">
@@ -68,8 +51,10 @@ export const Landing = () => {
             <div className="custom-progress" style={{ width: `${(currentWinStreak / maxWinStreak) * 100}%` }}>
             </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak == 30 ? "bg-yellow" : ""}`}>30</div>
           </div>
+
         </div>
       </div>
+
 
       <main className="main-body">
         <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
