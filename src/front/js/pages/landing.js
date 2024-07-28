@@ -14,6 +14,7 @@ export const Landing = () => {
         const response = await fetch('/max-win-streak');
         const data = await response.json();
         console.log(data.maxWinStreak);
+        console.log("trying to fetch Win Streak, ")
         setCurrentWinStreak(data.maxWinStreak);
       } catch (error) {
         console.error("Error fetching max win streak:", error);

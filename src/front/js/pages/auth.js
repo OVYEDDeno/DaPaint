@@ -4,7 +4,7 @@ import "../../styles/auth.css";
 import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
@@ -26,14 +26,12 @@ const AuthPage = () => {
         general: ''
     });
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
-        // Clear error for the specific field
         setError((prevError) => ({
             ...prevError,
             [name]: ''
@@ -55,15 +53,14 @@ const AuthPage = () => {
             const result = await response.json();
 
             if (response.ok) {
-                alert(isLogin ? 'Login successful' : 'Sign up successful');
                 if (isLogin) {
+                    localStorage.setItem("token", result.access_token);
+                    navigate("/landing");
                     console.log('Token:', result.access_token);
-                }
-                else {
-                    navigate("/auth")
+                } else {
+                    navigate("/auth");
                 }
             } else {
-                // Clear previous errors
                 setError({
                     name: '',
                     email: '',
@@ -75,7 +72,6 @@ const AuthPage = () => {
                     general: result.msg || "An error occurred. Please try again."
                 });
 
-                // Update specific field errors if provided
                 if (result.errors) {
                     setError(prevError => ({
                         ...prevError,
@@ -85,7 +81,6 @@ const AuthPage = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // setError("login/signup unsuccessful");
             setError((prevError) => ({
                 ...prevError,
                 general: "System Overload. Please try again another time."
@@ -96,11 +91,6 @@ const AuthPage = () => {
     return (
         <div className="container mt-5">
             <h2 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h2>
-            {/* {error && (
-                <div class="alert alert-danger" role="alert">
-                    {error}
-                </div>
-            )} */}
             <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-3 w-50">
                 {!isLogin && (
                     <>
@@ -127,7 +117,6 @@ const AuthPage = () => {
                                 required
                             />
                             {error.city && <div className="alert alert-danger" role="alert">{error.city}</div>}
-
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Zipcode</label>
@@ -168,9 +157,9 @@ const AuthPage = () => {
                     </>
                 )}
                 <div className="mb-3">
-                    <label className="form-label">Email</label>
+                    <label className="form-label">Email/Username</label>
                     <input
-                        type="email"
+                        type="text"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -196,6 +185,11 @@ const AuthPage = () => {
             <button onClick={() => setIsLogin(!isLogin)} className="btn btn-secondary w-50 mx-auto mt-3 d-block">
                 Switch to {isLogin ? 'Sign Up' : 'Login'}
             </button>
+            {isLogin && (
+                <div className="text-center mt-3">
+                    <a href="#" onClick={() => alert("Forgot Username/Password clicked!")}>Forgot Username/Password?</a>
+                </div>
+            )}
         </div>
     );
 };

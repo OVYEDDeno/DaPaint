@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint
 from flask_cors import CORS
 from datetime import datetime, date
+from sqlalchemy import or_
 import re
 
 api = Blueprint('api', __name__)
@@ -26,17 +27,18 @@ CORS(api)
 @api.route('/login', methods=['POST'])
 def handle_user_login():
     email = request.json.get("email", None)
+    name = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    if email is None or password is None:
-        return jsonify({"msg": "No email or password"}), 400
-
-    user = User.query.filter_by(email=email).one_or_none()
+    if email is None and name is None or password is None:
+        return jsonify({"msg": "No username/email or password"}), 400
+    
+    user = User.query.filter(or_(User.email==email, User.name==name)).one_or_none()
     if user is None:
         return jsonify({"msg": "No such user"}), 404
 
     if not check_password_hash(user.password, password):
-        return jsonify({"msg": "Bad email or password"}), 401
+        return jsonify({"msg": "Bad password"}), 401
 
     access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 200
@@ -90,7 +92,7 @@ def handle_user_signup():
     # Create new user
     new_user = User(
         email=email,
-        password=password,
+        password=generate_password_hash(password),
         name=name,
         city=city,
         zipcode=zipcode,
