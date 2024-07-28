@@ -155,32 +155,60 @@ const AuthPage = () => {
                             />
                             {error.birthday && <div className="alert alert-danger" role="alert">{error.birthday}</div>}
                         </div>
+                        <div className="mb-3">
+                            <label className="form-label">Email</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            />
+                            {error.email && <div className="alert alert-danger" role="alert">{error.email}</div>}
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            />
+                            {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
+                        </div>
                     </>
                 )}
-                <div className="mb-3">
-                    <label className="form-label">Email/Username</label>
-                    <input
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="form-control"
-                        required
-                    />
-                    {error.email && <div className="alert alert-danger" role="alert">{error.email}</div>}
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="form-control"
-                        required
-                    />
-                    {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
-                </div>
+                {isLogin && (
+                    <>
+                        <div className="mb-3">
+                            <label className="form-label">Email/Username</label>
+                            <input
+                                type="text"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            />
+                            {error.email && <div className="alert alert-danger" role="alert">{error.email}</div>}
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            />
+                            {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
+                        </div>
+                    </>
+                )}
                 <button type="submit" className="btn btn-primary w-100">{isLogin ? 'Login' : 'Sign Up'}</button>
             </form>
             <button onClick={() => setIsLogin(!isLogin)} className="btn btn-secondary w-50 mx-auto mt-3 d-block">
