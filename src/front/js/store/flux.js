@@ -17,36 +17,52 @@ const getState = ({ getStore, getActions, setStore }) => {
 					token: undefined
 				})
 			},
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
-				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
+			editUser: async (
+				email,
+				name,
+				city,
+				zipcode,
+				phone,
+				birthday,
+				img
+			  ) => {
+				let data = JSON.stringify({
+					email: email,
+					name : name,
+					city: city,
+					zipcode: zipcode,
+					phone: phone,
+					birthday: birthday
 				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}
+		
+				const formData = new FormData();
+		
+				formData.append("data", data);
+		
+				formData.append("file", img);
+		
+				const opts = {
+				  method: "PUT",
+		
+				  headers: {
+					Authorization: "Bearer " + sessionStorage.getItem("token"),
+				  },
+				  body: formData,
+				};
+				  const resp = await fetch(
+					process.env.BACKEND_URL + "/api/user/edit",
+					opts
+				  );
+				  if (resp.status != 200) {
+					let errorMsg = await resp.json();
+					alert("An error occured while submitted the new member: "+errorMsg.msg)
+					return false;
+				  }
+				  const respBody= await resp.json();
+				  console.log("This comes from backend", respBody);
+				  return true;
+				
+			  },   
 		}
 	};
 };

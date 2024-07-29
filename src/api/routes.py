@@ -1,14 +1,21 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint
+from api.models import db, User, DaPaint, UserImg
 from flask_cors import CORS
 from datetime import datetime, date
 from sqlalchemy import or_
-import re
+import re, json, os
+import cloudinary
+import cloudinary.uploader
 
 api = Blueprint('api', __name__)
 
+cloudinary.config( 
+  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME") ,
+  api_key = os.getenv("CLOUDINARY_API_KEY"), 
+  api_secret = os.getenv("CLOUDINARY_SECRET_KEY"), 
+)  
 # Allow CORS requests to this API
 CORS(api)
 
@@ -105,23 +112,19 @@ def handle_user_signup():
 
     return jsonify({'msg': 'User created successfully'}), 201
 
-@api.route('/user/edit/<int:user_id>', methods=['PUT'])
+@api.route('/user/edit', methods=['PUT'])
 @jwt_required()
-def handle_user_edit(user_id):
-    email = request.json.get("email")  
-    name = request.json.get("name")
-    city = request.json.get("city")
-    zipcode = request.json.get("zipcode")
-    phone = request.json.get("phone")
-    birthday = request.json.get("birthday")
-    winstreak = request.json.get("winstreak")
-    wins = request.json.get("wins")
-    winsByKO = request.json.get("winsByKO")
-    winsBySub = request.json.get("winsBySub")
-    losses = request.json.get("losses")
-    lossesByKO = request.json.get("lossesByKO")
-    lossesBySub = request.json.get("lossesBySub")
-    disqualifications = request.json.get("disqualifications")
+def handle_user_edit():
+    user_id=get_jwt_identity()
+    raw_data = request.form.get("data")
+    picture = request.files.get("file")
+    body = json.loads(raw_data)
+    email = body.get("email")  
+    name = body.get("name")
+    city = body.get("city")
+    zipcode = body.get("zipcode")
+    phone = body.get("phone")
+    birthday = body.get("birthday")
     
     if email is None or name is None or city is None or zipcode is None or phone is None or birthday is None:
         return jsonify({"msg": "Some fields are missing in your request"}), 400
@@ -130,20 +133,20 @@ def handle_user_edit(user_id):
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
+    response = cloudinary.uploader.upload(picture)
+    if response['secure_url']:
+        img = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
+        db.session.add(img)
+        db.session.commit()
+        db.session.refresh(user)    
+    else:
+        print("user img was not successful") 
     user.email = email
     user.name = name
     user.city = city
     user.zipcode = zipcode
     user.phone = phone
     user.birthday = birthday
-    user.winstreak = winstreak
-    user.wins = wins
-    user.winsByKO = winsByKO
-    user.winsBySub = winsBySub
-    user.losses = losses
-    user.lossesByKO = lossesByKO
-    user.lossesBySub = lossesBySub
-    user.disqualifications = disqualifications
     db.session.commit()
     db.session.refresh(user)
     response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
