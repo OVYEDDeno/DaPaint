@@ -13,6 +13,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import Auth from "./pages/auth";
 import { Landing } from "./pages/landing";
+import {Profile} from "./component/profile";
 
 //create your first component
 const Layout = () => {
@@ -33,6 +34,7 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<Auth />} path="/auth" />
+                        <Route element={<Profile />} path="/profile" />
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />

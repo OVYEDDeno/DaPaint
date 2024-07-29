@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
+import { Profile } from "../component/profile";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -37,16 +38,7 @@ export const Landing = () => {
   return (
     <div className="home-container">
       <header className="top-header">
-        <div className="profile-section">
-          <img
-            src="https://example.com/path-to-profile-picture"
-            alt="Profile"
-            className="profile-picture"
-          />
-          <div className="profile-info">
-            <span className="profile-name">{username}</span>
-          </div>
-        </div>
+        <Profile />
         <div className="actions-section">
           <button className="invite-friends-button">INVITE FRIENDS</button>
           <div className="settings-container">

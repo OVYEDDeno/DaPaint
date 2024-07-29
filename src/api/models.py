@@ -22,6 +22,8 @@ class User(db.Model):
     lossesBySub = db.Column(db.Integer, default=0)
     disqualifications = db.Column(db.Integer, default=0)
 
+    profile_pic = db.relationship("UserImg",back_populates="user",uselist=False)
+
     dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user')
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
@@ -46,7 +48,8 @@ class User(db.Model):
             "losses": self.losses,
             "lossesByKO": self.lossesByKO,
             "lossesBySub": self.lossesBySub,
-            "disqualifications": self.disqualifications
+            "disqualifications": self.disqualifications,
+            "profile_pic": self.profile_pic.serialize()if self.profile_pic else None
         }
 
 class DaPaint(db.Model):
@@ -74,4 +77,20 @@ class DaPaint(db.Model):
             "price": self.price,
             "winnerId": self.winnerId,
             "loserId": self.loserId
+        }
+    
+class UserImg(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(db.String(500), nullable=False, unique=True)
+    image_url = db.Column(db.String(500), nullable=False, unique=True)
+    user_id= db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
+    user= db.relationship("User", back_populates="profile_pic", uselist=False)
+    def __init__(self, public_id, image_url, user_id):
+        self.public_id = public_id
+        self.image_url = image_url.strip()
+        self.user_id = user_id
+    def serialize(self):
+        return {
+            "id": self.id,
+            "image_url": self.image_url
         }

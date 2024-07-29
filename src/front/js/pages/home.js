@@ -29,7 +29,7 @@ export const Home = () => {
 
       <main className="main-body">
         <h1 className="tagline">Defy Your Limits</h1>
-        <Link to="/landing">
+        <Link to="/profile">
           <button className="cta-button">Clock In</button>
         </Link>
       </main>

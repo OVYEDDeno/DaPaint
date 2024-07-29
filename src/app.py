@@ -21,6 +21,25 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+
+app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER')
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+app.config.from_mapping(
+    CLOUDINARY_URL=os.environ.get("CLOUDINARY_URL")
+)
+
+# Configuration       
+# cloudinary.config( 
+#     cloud_name = "dj2umay9c", 
+#     api_key = "794253111972477", 
+#     api_secret = "<your_api_secret>", # Click 'View Credentials' below to copy your API secret
+#     secure=True
+# )
+UPLOAD_FOLDER=os.environ.get('UPLOAD_FOLDER')
+
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
@@ -28,6 +47,8 @@ if db_url is not None:
         "postgres://", "postgresql://")
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+
+
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("FLASK_APP_KEY")
 app.config["JWT_ALGORITHM"] = "HS256"
