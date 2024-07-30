@@ -41,8 +41,8 @@ const AuthPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = isLogin
-            ? 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/login'
-            : 'https://effective-space-robot-xjgx65xw5wf67wx-3001.app.github.dev/api/signup';
+            ? process.env.BACKEND_URL+'/api/login'
+            : process.env.BACKEND_URL+'/api/signup';
 
         try {
             const response = await fetch(url, {

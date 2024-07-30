@@ -3,12 +3,13 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
-import DaPaintList from './DaPaintList';
-import DaPaint from './DaPaint';
+import DaPaintList from '../component/dapaintlist.js';
+import dapaintcreate from '../component/dapaintcreate.js';
 
 export const Landing = () => {
   const { store } = useContext(Context);
   const [currentWinStreak, setCurrentWinStreak] = useState(0);
+  const [GoalWinStreak, setGoalWinStreak] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const maxWinStreak = 30;
   const nextWinStreak = currentWinStreak + 1;
@@ -18,11 +19,12 @@ export const Landing = () => {
   useEffect(() => {
     const fetchMaxWinStreak = async () => {
       try {
-        const response = await fetch('/max-win-streak');
+        const response = await fetch(process.env.BACKEND_URL+'/api/max-win-streak');
         const data = await response.json();
         console.log(data.maxWinStreak);
         console.log("trying to fetch Win Streak, ")
         setCurrentWinStreak(data.maxWinStreak);
+        setGoalWinStreak(data.WinStreakGoal);
       } catch (error) {
         console.error("Error fetching max win streak:", error);
       }
@@ -60,7 +62,7 @@ export const Landing = () => {
           <div className="custom-progress-bar">
             <span className="custom-progress-text">WIN STREAK</span>
             <div className="custom-progress" style={{ width: `${(currentWinStreak / maxWinStreak) * 100}%` }}>
-            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak == 30 ? "bg-yellow" : ""}`}>30</div>
+            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak == 30 ? "bg-yellow" : ""}`}>{GoalWinStreak}</div>
           </div>
         </div>
       </div>

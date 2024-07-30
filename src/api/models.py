@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timezone
 
 db = SQLAlchemy()
 
@@ -94,3 +94,9 @@ class UserImg(db.Model):
             "id": self.id,
             "image_url": self.image_url
         }
+
+class WSH(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id= db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
+    wins = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))

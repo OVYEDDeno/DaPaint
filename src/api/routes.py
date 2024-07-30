@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg
+from api.models import db, User, DaPaint, UserImg, WSH
 from flask_cors import CORS
 from datetime import datetime, date
 from sqlalchemy import or_
@@ -10,6 +10,8 @@ import cloudinary
 import cloudinary.uploader
 
 api = Blueprint('api', __name__)
+
+WINSTREAK_GOAL=os.getenv("WINSTREAK_GOAL")or 30
 
 cloudinary.config( 
   cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME") ,
@@ -228,4 +230,4 @@ def delete_dapaint(id):
 @api.route('/max-win-streak', methods=['GET'])
 def get_max_win_streak():
     max_win_streak = db.session.query(db.func.max(User.winstreak)).scalar() or 0
-    return jsonify({"maxWinStreak": max_win_streak})
+    return jsonify({"maxWinStreak": max_win_streak, "WinStreakGoal": WINSTREAK_GOAL})
