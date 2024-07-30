@@ -1,70 +1,34 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/landing.css";
+import { X } from 'lucide-react';
 
-
-export const Landing = () => {
-  const [currentWinStreak, setCurrentWinStreak] = useState(0); // Example value
-  const maxWinStreak = 30;
-  const nextWinStreak = currentWinStreak + 1;
-  const username = "OVYEDDeno"; // Example username
-
-  useEffect(() => {
-    const fetchMaxWinStreak = async () => {
-      try {
-        const response = await fetch('/max-win-streak');
-        const data = await response.json();
-        console.log(data.maxWinStreak);
-        console.log("trying to fetch Win Streak, ")
-        setCurrentWinStreak(data.maxWinStreak);
-      } catch (error) {
-        console.error("Error fetching max win streak:", error);
-      }
-    };
-
-    fetchMaxWinStreak();
-  }, []);
-
+export const Invite = ({ onClose }) => {
+  const [invites, setInvites] = useState(3);
 
   return (
-    <div className="home-container">
-      <header className="top-header">
-        <div className="profile-section">
-          <img
-            src="https://example.com/path-to-profile-picture"
-            alt="Profile"
-            className="profile-picture"
-          />
-          <div className="profile-info">
-            <span className="profile-name">{username}</span>
-          </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg p-6 w-80">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">INVITE</h2>
+          <button onClick={onClose} className="text-red-500">
+            <X size={24} />
+          </button>
         </div>
-        <div className="actions-section">
-          <button className="invite-friends-button">INVITE FRIENDS</button>
-          <button className="settings-button">⚙️</button>
+        <p className="text-center mb-4">WHO'S A GREAT POTENTIAL ADDITION TO DIDDY?</p>
+        <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
+          <span>You have {invites} invites</span>
+          <span>▼</span>
         </div>
-      </header>
-      <div className="custom-win-streak">
-        <div className="custom-progress-container">
-          <div className="custom-circle custom-start">{currentWinStreak}</div>
-          <div className="custom-progress-bar">
-            <span className="custom-progress-text">WIN STREAK</span>
-            <div className="custom-progress" style={{ width: `${(currentWinStreak / maxWinStreak) * 100}%` }}>
-            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak == 30 ? "bg-yellow" : ""}`}>30</div>
-          </div>
-
+        <button className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4">
+          <span className="mr-2">+</span>
+          <span>0.01</span>
+        </button>
+        <div>
+          <h3 className="font-bold mb-2">NOTIFICATIONS</h3>
+          <p>OVYEDDENO CLOCK YOUR MATCH</p>
+          <p>OVYEDDENO ACCEPTED YOUR MATCH</p>
         </div>
       </div>
-
-
-      <main className="main-body">
-        <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
-        <p className="current-streak">OVYEDDeno HAS ACHIEVED {currentWinStreak} WIN STREAK</p>
-        <button className="line-up-button">LINE UP</button>
-        <div className="find-foe-section">
-          <button className="find-foe-button">FIND FOE 💰0.01</button>
-          <p className="tap-button-text">TAP THE BUTTON</p>
-        </div>
-      </main>
     </div>
   );
 };

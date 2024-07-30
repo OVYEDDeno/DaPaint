@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/landing.css";
 import { X, ChevronLeft } from 'lucide-react';
 
-export const DaPaintcreate = ({ onClose, username, profilePicture }) => {
+export const DaPaintCreate = ({ onClose, username, profilePicture }) => {
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
