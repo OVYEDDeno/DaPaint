@@ -11,8 +11,7 @@ export const Profile = () => {
     losses: 2,
     lossesByKnockout: 2,
     lossesBySubmission: 0,
-    disqualifications: 0,
-    coins: 1000
+    disqualifications: 0
   });
 
   const username = "OVYEDDeno"; // Example username
