@@ -3,6 +3,9 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
+import Invite from '../component/Invite';  // Adjust the path as necessary
+import DaPaint from '../component/DaPaint';  // Adjust the path as necessary
+
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -40,7 +43,7 @@ export const Landing = () => {
       <header className="top-header">
         <Profile />
         <div className="actions-section">
-          <button className="invite-friends-button">INVITE FRIENDS</button>
+          <button className="invite-friends-button" onClick={() => setShowInvite(true)}>INVITE FRIENDS</button>
           <div className="settings-container">
             <button
               className="settings-button"
