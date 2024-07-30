@@ -3,6 +3,8 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
+import DaPaintList from './DaPaintList';
+import DaPaint from './DaPaint';
 
 export const Landing = () => {
   const { store } = useContext(Context);
