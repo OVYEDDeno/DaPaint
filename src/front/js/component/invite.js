@@ -6,6 +6,7 @@ export const Invite = ({ onClose }) => {
   const [invites, setInvites] = useState(3);
 
   return (
+    <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 w-80">
         <div className="flex justify-between items-center mb-4">
@@ -29,6 +30,6 @@ export const Invite = ({ onClose }) => {
           <p>OVYEDDENO ACCEPTED YOUR MATCH</p>
         </div>
       </div>
-    </div>
+    </div></>
   );
 };

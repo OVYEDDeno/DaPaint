@@ -6,6 +6,9 @@ import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
 import dapaintcreate from '../component/dapaintcreate.js';
 import { Link } from "react-router-dom";
+import { Lineup } from "../component/lineup.js";
+import { Settings } from "lucide-react";
+import { Invite } from "../component/invite.js";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -45,12 +48,9 @@ export const Landing = () => {
       <header className="top-header">
         <Profile />
         <div className="actions-section">
-          <button className="invite-friends-button">INVITE FRIENDS</button>
+        <Invite />
           <div className="settings-container">
-            <button
-              className="settings-button"
-              onClick={() => setDropdownVisible(!dropdownVisible)}
-            >⚙️</button>
+          <Settings />
             {dropdownVisible && (
               <button className=" dropdown-menu logout-button" onClick={handleLogout}>Logout</button>
             )}
@@ -71,9 +71,10 @@ export const Landing = () => {
       <main className="main-body">
         <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
         <p className="current-streak">OVYEDDeno HAS ACHIEVED {currentWinStreak} WIN STREAK</p>
-        <button className="line-up-button">LINE UP</button>
+        <Lineup />
         <div className="find-foe-section">
-          <button className="find-foe-button">FIND FOE 💰0.01</button>
+        <DaPaintList />
+          {/* <button className="find-foe-button">FIND FOE 💰0.01</button> */}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

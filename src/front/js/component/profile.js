@@ -17,8 +17,6 @@ export const Profile = () => {
   const username = "OVYEDDeno"; // Example username
 
   return (
-
-
     <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <div className="profile-container">
         <div className="profile-header">
