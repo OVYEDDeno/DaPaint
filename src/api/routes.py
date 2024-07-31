@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint, UserImg, WSH
 from flask_cors import CORS
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from sqlalchemy import or_
 import re, json, os
 import cloudinary
@@ -21,18 +21,6 @@ cloudinary.config(
 # Allow CORS requests to this API
 CORS(api)
 
-# @api.route('/logout', methods=['POST'])
-# @jwt_required()
-# def handle_user_logout():
-#     user_id = get_jwt_identity()
-
-#     try:
-#         jti = get_jwt()['jti']
-#         jwt_blacklist.add(jti)
-#         return jsonify({"msg": "Logout successful"}), 200
-#     except Exception as e:
-#         return jsonify({"msg": "Failed to logout", "error": str(e)}), 500
-
 @api.route('/login', methods=['POST'])
 def handle_user_login():
     email = request.json.get("email", None)
@@ -49,7 +37,8 @@ def handle_user_login():
     if not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad password"}), 401
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+
     return jsonify(access_token=access_token), 200
 
 @api.route('/signup', methods=['POST'])

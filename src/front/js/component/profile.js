@@ -3,6 +3,7 @@ import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
 
 export const Profile = () => {
+  const [user, setUser] = useState();
   const [profileData, setProfileData] = useState({
     total: 20,
     wins: 15,
@@ -15,6 +16,30 @@ export const Profile = () => {
   });
 
   const username = "OVYEDDeno"; // Example username
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(process.env.BACKEND_URL+'/api/current-user',{
+        headers:{
+          "Authorization":`Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      const data = await response.json();
+      setUser(data);
+      setProfileData({total: data.wins+data.losses+data.disqualifications,
+        wins: data.winsByKO+data.winsBySub,
+        winsByKnockout: 2,
+        winsBySubmission: 11,
+        losses: data.lossesByKO+data.lossesBySub,
+        lossesByKnockout: 2,
+        lossesBySubmission: 0,
+        disqualifications: 0})
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    }
+  };
+  fetchCurrentUser();
+  });
 
   return (
     <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -25,7 +50,7 @@ export const Profile = () => {
               src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
               alt="Profile"
               className="profile-picture" />
-            <div className="profile-name">{username}</div>
+            <div className="profile-name">{user&&user.name}</div>
           </div>
         </div>
       </div>

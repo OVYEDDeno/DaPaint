@@ -5,7 +5,6 @@ import "../../styles/landing.css";
 import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
 import dapaintcreate from '../component/dapaintcreate.js';
-import { Link } from "react-router-dom";
 import { Lineup } from "../component/lineup.js";
 import { Settings } from "lucide-react";
 import { Invite } from "../component/invite.js";
@@ -17,7 +16,7 @@ export const Landing = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const maxWinStreak = 30;
   const nextWinStreak = currentWinStreak + 1;
-  const username = "OVYEDDeno";
+  const [user, setUser] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,15 +32,23 @@ export const Landing = () => {
         console.error("Error fetching max win streak:", error);
       }
     };
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch(process.env.BACKEND_URL+'/api/current-user',{
+          headers:{
+            "Authorization":`Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
 
     fetchMaxWinStreak();
+    fetchCurrentUser();
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    console.log("Log out successful");
-    navigate("/auth");
-  };
 
   return (
     <div className="home-container">
@@ -49,11 +56,9 @@ export const Landing = () => {
         <Profile />
         <div className="actions-section">
         <Invite />
+        <Settings />
           <div className="settings-container">
-          <Settings />
-            {dropdownVisible && (
-              <button className=" dropdown-menu logout-button" onClick={handleLogout}>Logout</button>
-            )}
+          
           </div>
         </div>
       </header>
@@ -70,7 +75,7 @@ export const Landing = () => {
 
       <main className="main-body">
         <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
-        <p className="current-streak">OVYEDDeno HAS ACHIEVED {currentWinStreak} WIN STREAK</p>
+        <p className="current-streak">{user&&user.name} HAS ACHIEVED {currentWinStreak} WIN STREAK</p>
         <Lineup />
         <div className="find-foe-section">
         <DaPaintList />

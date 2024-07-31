@@ -3,6 +3,11 @@ import "../../styles/settings.css";
 import { X } from 'lucide-react';
 
 export const Settings = ({ onClose }) => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    console.log("Log out successful");
+    navigate("/auth");
+  };
   return (
     <div className="bg-white rounded-lg w-80 p-4 shadow-lg">
       <div className="flex justify-between items-center mb-4">
@@ -18,9 +23,7 @@ export const Settings = ({ onClose }) => {
         <button className="w-full py-2 bg-black text-white rounded-full font-bold hover:bg-gray-800">
           SUGGESTIONS
         </button>
-        <button className="w-full py-2 bg-black text-white rounded-full font-bold hover:bg-gray-800">
-          LOGOUT
-        </button>
+        <button className=" dropdown-menu logout-button" onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );
