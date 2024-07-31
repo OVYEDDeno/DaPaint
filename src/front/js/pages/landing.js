@@ -5,6 +5,7 @@ import "../../styles/landing.css";
 import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
 import dapaintcreate from '../component/dapaintcreate.js';
+import { Link } from "react-router-dom";
 
 export const Landing = () => {
   const { store } = useContext(Context);

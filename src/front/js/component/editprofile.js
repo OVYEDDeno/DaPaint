@@ -54,7 +54,7 @@ const handleSubmit = async () => {
         console.log("There was an error attempting to create the member!");
       }
     }
-  };
+
 
   return (
     <div className="fixed inset-0 bg-black text-white flex flex-col">
