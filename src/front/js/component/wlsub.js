@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/wlsub.css';
+import "../../styles/wlsub.css";
 
 export const Wlsub = () => {
   const [hostUser, setHostUser] = useState(null);

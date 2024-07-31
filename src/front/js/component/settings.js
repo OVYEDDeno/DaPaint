@@ -1,70 +1,27 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/landing.css";
+import "../../styles/settings.css";
+import { X } from 'lucide-react';
 
-
-export const Landing = () => {
-  const [currentWinStreak, setCurrentWinStreak] = useState(0); // Example value
-  const maxWinStreak = 30;
-  const nextWinStreak = currentWinStreak + 1;
-  const username = "OVYEDDeno"; // Example username
-
-  useEffect(() => {
-    const fetchMaxWinStreak = async () => {
-      try {
-        const response = await fetch('/max-win-streak');
-        const data = await response.json();
-        console.log(data.maxWinStreak);
-        console.log("trying to fetch Win Streak, ")
-        setCurrentWinStreak(data.maxWinStreak);
-      } catch (error) {
-        console.error("Error fetching max win streak:", error);
-      }
-    };
-
-    fetchMaxWinStreak();
-  }, []);
-
-
+export const Settings = ({ onClose }) => {
   return (
-    <div className="home-container">
-      <header className="top-header">
-        <div className="profile-section">
-          <img
-            src="https://example.com/path-to-profile-picture"
-            alt="Profile"
-            className="profile-picture"
-          />
-          <div className="profile-info">
-            <span className="profile-name">{username}</span>
-          </div>
-        </div>
-        <div className="actions-section">
-          <button className="invite-friends-button">INVITE FRIENDS</button>
-          <button className="settings-button">⚙️</button>
-        </div>
-      </header>
-      <div className="custom-win-streak">
-        <div className="custom-progress-container">
-          <div className="custom-circle custom-start">{currentWinStreak}</div>
-          <div className="custom-progress-bar">
-            <span className="custom-progress-text">WIN STREAK</span>
-            <div className="custom-progress" style={{ width: `${(currentWinStreak / maxWinStreak) * 100}%` }}>
-            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak == 30 ? "bg-yellow" : ""}`}>30</div>
-          </div>
-
-        </div>
+    <div className="bg-white rounded-lg w-80 p-4 shadow-lg">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-2xl font-bold text-black">SETTINGS</h3>
+        <button onClick={onClose} className="text-red-500 hover:text-red-700">
+          <X size={24} />
+        </button>
       </div>
-
-
-      <main className="main-body">
-        <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
-        <p className="current-streak">OVYEDDeno HAS ACHIEVED {currentWinStreak} WIN STREAK</p>
-        <button className="line-up-button">LINE UP</button>
-        <div className="find-foe-section">
-          <button className="find-foe-button">FIND FOE 💰0.01</button>
-          <p className="tap-button-text">TAP THE BUTTON</p>
-        </div>
-      </main>
+      <div className="space-y-4">
+        <button className="w-full py-2 bg-black text-white rounded-full font-bold hover:bg-gray-800">
+          FEEDBACK
+        </button>
+        <button className="w-full py-2 bg-black text-white rounded-full font-bold hover:bg-gray-800">
+          SUGGESTIONS
+        </button>
+        <button className="w-full py-2 bg-black text-white rounded-full font-bold hover:bg-gray-800">
+          LOGOUT
+        </button>
+      </div>
     </div>
   );
 };
