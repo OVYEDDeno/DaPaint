@@ -14,6 +14,15 @@ import { Footer } from "./component/footer";
 import Auth from "./pages/auth";
 import { Landing } from "./pages/landing";
 import {Profile} from "./component/profile";
+import {wlsub} from "./component/wlsub";
+import {wallet} from "./component/wallet";
+import {settings} from "./component/settings";
+import {lineup} from "./component/lineup";
+import {invite} from "./component/invite";
+import {editprofile} from "./component/editprofile";
+import {dapaintlist} from "./component/dapaintlist";
+import {dapaintcreate} from "./component/dapaintcreate";
+// import {wlsub} from "./component/wlsub";
 
 //create your first component
 const Layout = () => {
@@ -30,14 +39,19 @@ const Layout = () => {
                     {/* <Navbar /> */}
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<h1>Not found!</h1>} />
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Profile />} path="/profile" />
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />
+                        <Route element={<dapaintcreate />} path="/dapaintcreate" />
+                        <Route element={<dapaintlist />} path="/dapaintlist" />
+                        <Route element={<editprofile />} path="/editprofile" />
+                        <Route element={<invite />} path="/invite" />
+                        <Route element={<lineup />} path="/lineup" />
+                        <Route element={<settings />} path="/settings" />
+                        <Route element={<wallet />} path="/wallet" />
+                        <Route element={<wlsub />} path="/wlsub" />
                     </Routes>
                     {/* <Footer /> */}
                 </ScrollToTop>
