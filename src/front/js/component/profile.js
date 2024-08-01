@@ -18,28 +18,30 @@ export const Profile = () => {
   const username = "OVYEDDeno"; // Example username
   useEffect(() => {
     const fetchCurrentUser = async () => {
-    try {
-      const response = await fetch(process.env.BACKEND_URL+'/api/current-user',{
-        headers:{
-          "Authorization":`Bearer ${localStorage.getItem("token")}`
-        }
-      });
-      const data = await response.json();
-      setUser(data);
-      setProfileData({total: data.wins+data.losses+data.disqualifications,
-        wins: data.winsByKO+data.winsBySub,
-        winsByKnockout: 2,
-        winsBySubmission: 11,
-        losses: data.lossesByKO+data.lossesBySub,
-        lossesByKnockout: 2,
-        lossesBySubmission: 0,
-        disqualifications: 0})
-    } catch (error) {
-      console.error("Error fetching current user:", error);
-    }
-  };
-  fetchCurrentUser();
-  });
+      try {
+        const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        const data = await response.json();
+        setUser(data);
+        setProfileData({
+          total: data.wins + data.losses + data.disqualifications,
+          wins: data.winsByKO + data.winsBySub,
+          winsByKnockout: 2,
+          winsBySubmission: 11,
+          losses: data.lossesByKO + data.lossesBySub,
+          lossesByKnockout: 2,
+          lossesBySubmission: 0,
+          disqualifications: 0
+        })
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
 
   return (
     <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -50,7 +52,7 @@ export const Profile = () => {
               src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
               alt="Profile"
               className="profile-picture" />
-            <div className="profile-name">{user&&user.name}</div>
+            <div className="profile-name">{user && user.name}</div>
           </div>
         </div>
       </div>
@@ -63,42 +65,42 @@ export const Profile = () => {
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <table className="stats-table">
-            <tbody>
-              <tr>
-                <td>Total</td>
-                <td>{profileData.total}</td>
-              </tr>
-              <tr>
-                <td>Wins</td>
-                <td className="wins">{profileData.wins}</td>
-              </tr>
-              <tr>
-                <td>By knockout</td>
-                <td>{profileData.winsByKnockout}</td>
-              </tr>
-              <tr>
-                <td>By submission</td>
-                <td>{profileData.winsBySubmission}</td>
-              </tr>
-              <tr>
-                <td>Losses</td>
-                <td className="losses">{profileData.losses}</td>
-              </tr>
-              <tr>
-                <td>By knockout</td>
-                <td>{profileData.lossesByKnockout}</td>
-              </tr>
-              <tr>
-                <td>By submission</td>
-                <td>{profileData.lossesBySubmission}</td>
-              </tr>
-              <tr>
-                <td>Disqualifications</td>
-                <td>{profileData.disqualifications}</td>
-              </tr>
-            </tbody>
-          </table>
+              <table className="stats-table">
+                <tbody>
+                  <tr>
+                    <td>Total</td>
+                    <td>{profileData.total}</td>
+                  </tr>
+                  <tr>
+                    <td>Wins</td>
+                    <td className="wins">{profileData.wins}</td>
+                  </tr>
+                  <tr>
+                    <td>By knockout</td>
+                    <td>{profileData.winsByKnockout}</td>
+                  </tr>
+                  <tr>
+                    <td>By submission</td>
+                    <td>{profileData.winsBySubmission}</td>
+                  </tr>
+                  <tr>
+                    <td>Losses</td>
+                    <td className="losses">{profileData.losses}</td>
+                  </tr>
+                  <tr>
+                    <td>By knockout</td>
+                    <td>{profileData.lossesByKnockout}</td>
+                  </tr>
+                  <tr>
+                    <td>By submission</td>
+                    <td>{profileData.lossesBySubmission}</td>
+                  </tr>
+                  <tr>
+                    <td>Disqualifications</td>
+                    <td>{profileData.disqualifications}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -107,6 +109,6 @@ export const Profile = () => {
           </div>
         </div>
       </div>
-      </>
+    </>
   );
 };

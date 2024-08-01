@@ -167,25 +167,52 @@ def get_all_users():
     users = User.query.all()
     return jsonify([user.serialize() for user in users]), 200
 
+# @api.route('/dapaint', methods=['POST'])
+# def dapaint_create():
+#     hostFoeId = request.json.get("hostFoeId", None)
+#     foeId = request.json.get("foeId", None)
+#     location = request.json.get("location", None)
+#     date_time = request.json.get("dateTime", None)
+#     price = request.json.get("price", None)   
+#     winnerId = request.json.get("winnerId", None)
+#     loserId = request.json.get("loserId", None)
+    
+#     if hostFoeId is None or location is None or date_time is None or price is None:
+#         return jsonify({"msg": "Some fields are missing in your request"}), 400
+    
+#     dapaint = DaPaint(hostFoeId=hostFoeId, foeId=foeId, location=location, date_time=date_time, price=price, winnerId=winnerId, loserId=loserId)
+#     db.session.add(dapaint)
+#     db.session.commit()
+#     db.session.refresh(dapaint)
+#     response_body = {"msg": "DaPaint successfully created!", "dapaint": dapaint.serialize()}
+#     return jsonify(response_body), 201
+
 @api.route('/dapaint', methods=['POST'])
-def dapaint_create():
-    hostFoeId = request.json.get("hostFoeId", None)
-    foeId = request.json.get("foeId", None)
-    location = request.json.get("location", None)
-    date_time = request.json.get("dateTime", None)
-    price = request.json.get("price", None)   
-    winnerId = request.json.get("winnerId", None)
-    loserId = request.json.get("loserId", None)
-    
-    if hostFoeId is None or location is None or date_time is None or price is None:
-        return jsonify({"msg": "Some fields are missing in your request"}), 400
-    
-    dapaint = DaPaint(hostFoeId=hostFoeId, foeId=foeId, location=location, date_time=date_time, price=price, winnerId=winnerId, loserId=loserId)
-    db.session.add(dapaint)
+@jwt_required()
+def create_dapaint():
+    user_id = get_jwt_identity()  # Assuming the user is authenticated
+    data = request.get_json()
+
+    location = data.get('location')
+    date_time_str = data.get('date_time')
+    price = data.get('price')
+
+    try:
+        date_time = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return jsonify({"msg": "Invalid date format"}), 400
+
+    new_dapaint = DaPaint(
+        hostFoeId=user_id,
+        location=location,
+        date_time=date_time,
+        price=price
+    )
+
+    db.session.add(new_dapaint)
     db.session.commit()
-    db.session.refresh(dapaint)
-    response_body = {"msg": "DaPaint successfully created!", "dapaint": dapaint.serialize()}
-    return jsonify(response_body), 201
+
+    return jsonify(new_dapaint.serialize()), 201
 
 @api.route('/lineup', methods=['GET'])
 def get_all_dapaint():

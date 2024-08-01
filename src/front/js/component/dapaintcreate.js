@@ -1,39 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import "../../styles/landing.css";
 import { X, ChevronLeft } from 'lucide-react';
 
-export const DaPaintCreate = ({ onClose, username, profilePicture }) => {
+export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [amount, setAmount] = useState('0');
+  const [isOpen, setIsOpen] = useState(false); // State to control modal visibility
 
-  const handleCreate = () => {
-    console.log('Creating with:', { location, date, time, amount });
-    // Add your creation logic here
+  const handleCreate = async () => {
+    const dateTime = `${date} ${time}:00`; // Format: YYYY-MM-DD HH:MM:SS
+    const token = localStorage.getItem('token'); // Assuming the token is stored here
+
+    const newEvent = {
+      location,
+      date_time: dateTime,
+      price: parseFloat(amount)
+    };
+
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newEvent)
+      });
+
+      if (response.ok) {
+        const createdEvent = await response.json();
+        console.log('Created event:', createdEvent);
+        onAdd(createdEvent); // Update the event list in DaPaintList
+        handleClose(); // Close the modal
+      } else {
+        const error = await response.json();
+        console.error('Failed to create event:', error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose();
   };
 
   return (
-    <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
-      + ADD
-    </button>
+    <>
+      <button type="button" className="btn" onClick={handleOpen}>
+        + ADD
+      </button>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div className="fixed inset-0 bg-black text-white flex flex-col">
-                <div className="flex justify-between items-center p-4">
-                  <ChevronLeft size={24} />
-                  <h1 className="text-2xl font-bold">DA PAINT</h1>
-                  <X size={24} onClick={onClose} className="text-red-500" />
-                </div>
-
-                <div className="flex-1 p-4 bg-white text-black rounded-t-3xl mt-4">
+      {isOpen && (
+        <div className="modal fade show d-block" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <ChevronLeft size={24} />
+                <h5 className="modal-title" id="exampleModalLabel">DA PAINT</h5>
+                <X size={24} onClick={handleClose} className="btn-close" />
+              </div>
+              <div className="modal-body">
+                <div className="user-profile">
                   <div className="bg-black text-white rounded-full p-2 flex items-center mb-6">
                     <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" />
                     <span>{username}</span>
@@ -80,10 +113,14 @@ export const DaPaintCreate = ({ onClose, username, profilePicture }) => {
             </div>
           </div>
         </div>
-      </div>
-
-
-
+      )}
     </>
   );
+};
+
+DaPaintCreate.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  profilePicture: PropTypes.string.isRequired,
+  onAdd: PropTypes.func.isRequired
 };

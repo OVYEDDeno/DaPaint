@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
-import dapaintcreate from '../component/dapaintcreate.js';
+import dapaintcreate, { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
@@ -77,6 +77,7 @@ export const Landing = () => {
         <div className="find-foe-section">
         <DaPaintList />
           <p className="tap-button-text">TAP THE BUTTON</p>
+          <DaPaintCreate />
         </div>
       </main>
     </div>
