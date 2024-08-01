@@ -76,7 +76,6 @@ export const Landing = () => {
         <Lineup />
         <div className="find-foe-section">
         <DaPaintList />
-          {/* <button className="find-foe-button">FIND FOE 💰0.01</button> */}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

@@ -75,6 +75,9 @@ body {
   justify-content: center;
   width: 100%;
 }
+.find-foe-section {
+  margin: 10px;
+}
 
 .custom-progress-container {
   position: relative;
