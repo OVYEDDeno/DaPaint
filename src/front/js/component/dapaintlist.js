@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/landing.css";
 // import { X } from 'lucide-react';
+import DaPaintCreate from './dapaintcreate.js';
 
 const DaPaintList = ({ onClose, onAdd }) => {
   const [events, setEvents] = useState([
@@ -17,20 +18,19 @@ const DaPaintList = ({ onClose, onAdd }) => {
   };
 
   return (
-    <><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#DaPaint">
+    <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
       FIND FOE 💰0.01
     </button>
-
       <div class="modal fade" id="DaPaint" tabindex="-1" aria-labelledby="DaPaint" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">            
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div className="fixed inset-0 bg-black text-white flex flex-col">
+              <div className="flex justify-between items-center p-4">
+                <h1 className="text-2xl font-bold">DA PAINT</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div></div>
             <div class="modal-body">
               <div className="fixed inset-0 bg-black text-white flex flex-col">
-                <div className="flex justify-between items-center p-4">
-                  <h1 className="text-2xl font-bold">DA PAINT</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
                 <div className="flex-1 p-4 bg-white text-black rounded-t-3xl mt-4 overflow-y-auto">
                   {events.map((event) => (
                     <div key={event.id} className="flex justify-between items-center mb-4">
@@ -51,17 +51,18 @@ const DaPaintList = ({ onClose, onAdd }) => {
                     </div>
                   ))}
                 </div>
-
-                <div className="p-4">
-                  <button
-                    onClick={onAdd}
-                    className="w-full bg-white text-black p-3 rounded-full flex items-center justify-center"
-                  >
-                    <span className="text-2xl mr-2">+</span> ADD
-                  </button>
-                </div>
               </div>
-            </div>            
+            </div>
+            <div className="fixed inset-0 bg-black text-white flex flex-col">
+              <div className="p-4">
+                <button
+                  onClick={<DaPaintCreate />}
+                  className="w-full bg-white text-black p-3 rounded-full flex items-center justify-center"
+                >
+                  <span className="text-2xl mr-2">+</span> ADD
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

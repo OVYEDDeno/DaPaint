@@ -11,15 +11,15 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import Auth from "./pages/auth";
 import { Landing } from "./pages/landing";
-import {Profile} from "./component/profile";
-import {wlsub} from "./component/wlsub";
-import {wallet} from "./component/wallet";
-import {setting} from "./component/setting";
-import {lineup} from "./component/lineup";
-import {invite} from "./component/invite";
-import {editprofile} from "./component/editprofile";
-import {dapaintlist} from "./component/dapaintlist";
-import {dapaintcreate} from "./component/dapaintcreate";
+import { Profile } from "./component/profile";
+import { wlsub } from "./component/wlsub";
+import { wallet } from "./component/wallet";
+import { setting } from "./component/setting";
+import { lineup } from "./component/lineup";
+import { invite } from "./component/invite";
+import { editprofile } from "./component/editprofile";
+import { dapaintlist } from "./component/dapaintlist";
+import { DaPaintCreate } from "./component/dapaintcreate";
 // import {wlsub} from "./component/wlsub";
 
 //create your first component
@@ -42,7 +42,7 @@ const Layout = () => {
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />
-                        <Route element={<dapaintcreate />} path="/dapaintcreate" />
+                        <Route element={<DaPaintCreate />} path="/dapaintcreate" />
                         <Route element={<dapaintlist />} path="/dapaintlist" />
                         <Route element={<editprofile />} path="/editprofile" />
                         <Route element={<invite />} path="/invite" />
