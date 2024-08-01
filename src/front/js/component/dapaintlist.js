@@ -18,7 +18,7 @@ const DaPaintList = ({ onClose, onAdd }) => {
 
   return (
     <><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#DaPaint">
-      DaPaint
+      FIND FOE 💰0.01
     </button>
 
       <div class="modal fade" id="DaPaint" tabindex="-1" aria-labelledby="DaPaint" aria-hidden="true">

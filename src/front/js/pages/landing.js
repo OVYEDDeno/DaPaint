@@ -57,9 +57,6 @@ export const Landing = () => {
         <div className="actions-section">
         <Invite />
         <Setting />
-          <div className="setting-container">
-          
-          </div>
         </div>
       </header>
       <div className="custom-win-streak">
