@@ -6,7 +6,7 @@ import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
 import dapaintcreate from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
-import { Settings } from "lucide-react";
+import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
 
 export const Landing = () => {
@@ -56,8 +56,8 @@ export const Landing = () => {
         <Profile />
         <div className="actions-section">
         <Invite />
-        <Settings />
-          <div className="settings-container">
+        <Setting />
+          <div className="setting-container">
           
           </div>
         </div>

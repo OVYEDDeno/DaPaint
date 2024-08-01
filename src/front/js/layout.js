@@ -14,7 +14,7 @@ import { Landing } from "./pages/landing";
 import {Profile} from "./component/profile";
 import {wlsub} from "./component/wlsub";
 import {wallet} from "./component/wallet";
-import {settings} from "./component/settings";
+import {setting} from "./component/setting";
 import {lineup} from "./component/lineup";
 import {invite} from "./component/invite";
 import {editprofile} from "./component/editprofile";
@@ -47,7 +47,7 @@ const Layout = () => {
                         <Route element={<editprofile />} path="/editprofile" />
                         <Route element={<invite />} path="/invite" />
                         <Route element={<lineup />} path="/lineup" />
-                        <Route element={<settings />} path="/settings" />
+                        <Route element={<setting />} path="/setting" />
                         <Route element={<wallet />} path="/wallet" />
                         <Route element={<wlsub />} path="/wlsub" />
                     </Routes>

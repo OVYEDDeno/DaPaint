@@ -9,30 +9,41 @@ export const Lineup = () => {
   ];
 
   return (
-    <div className="lineup">
-      <div className="lineup-header">
-        <h2>LINE UP</h2>
-        <button className="close-button">X</button>
+    <><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lineUp">
+      LINE UP
+    </button>
+    <div class="modal fade" id="lineUp" tabindex="-1" aria-labelledby="lineUp" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="lineUp">LINE UP</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      {matchups.map(matchup => (
-        <div className="matchup" key={matchup.id}>
-          <div className="user">
-            <img src="path/to/ovye.png" alt="OVYEDDenO" />
-            <span>{matchup.user1}</span>
+      <div class="modal-body">
+      <div className="lineup">
+                {matchups.map(matchup => (
+          <div className="matchup" key={matchup.id}>
+            <div className="user">
+              <img src="path/to/ovye.png" alt="OVYEDDenO" />
+              <span>{matchup.user1}</span>
+            </div>
+            <div className="vs">VS</div>
+            <div className="user">
+              <img src="path/to/jbeat.png" alt="JBEAT" />
+              <span>{matchup.user2}</span>
+            </div>
+            <div className="details">
+              <span>{matchup.date}</span>
+              <span>{matchup.time}</span>
+              <span>CLOCK IT</span>
+              <span>{matchup.location}</span>
+            </div>
           </div>
-          <div className="vs">VS</div>
-          <div className="user">
-            <img src="path/to/jbeat.png" alt="JBEAT" />
-            <span>{matchup.user2}</span>
-          </div>
-          <div className="details">
-            <span>{matchup.date}</span>
-            <span>{matchup.time}</span>
-            <span>CLOCK IT</span>
-            <span>{matchup.location}</span>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      </div>      
     </div>
+  </div>
+</div></>
   );
 };
