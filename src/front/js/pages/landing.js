@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
 import DaPaintList from '../component/dapaintlist.js';
-import dapaintcreate, { DaPaintCreate } from '../component/dapaintcreate.js';
+import { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
+import {EditProfile} from "../component/editprofile.js";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -53,7 +54,8 @@ export const Landing = () => {
   return (
     <div className="home-container">
       <header className="top-header">
-        <Profile />
+      <Profile />
+      <EditProfile />
         <div className="actions-section">
         <Invite />
         <Setting />

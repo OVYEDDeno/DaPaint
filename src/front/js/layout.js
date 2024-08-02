@@ -7,18 +7,16 @@ import ProtectedRoute from "./component/ProtectedRoute";
 import { Home } from "./pages/home";
 import injectContext from "./store/appContext";
 
-import { Navbar } from "./component/navbar";
-import { Footer } from "./component/footer";
 import Auth from "./pages/auth";
 import { Landing } from "./pages/landing";
 import { Profile } from "./component/profile";
-import { wlsub } from "./component/wlsub";
-import { wallet } from "./component/wallet";
-import { setting } from "./component/setting";
-import { lineup } from "./component/lineup";
-import { invite } from "./component/invite";
-import { editprofile } from "./component/editprofile";
-import { dapaintlist } from "./component/dapaintlist";
+import { Wlsub } from "./component/wlsub";
+import { Wallet } from "./component/wallet";
+import { Setting } from "./component/setting";
+import { Lineup } from "./component/lineup";
+import { Invite } from "./component/invite";
+import { EditProfile } from "./component/editprofile";
+import DaPaintList from "./component/dapaintlist";
 import { DaPaintCreate } from "./component/dapaintcreate";
 // import {wlsub} from "./component/wlsub";
 
@@ -34,7 +32,6 @@ const Layout = () => {
         <div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    {/* <Navbar /> */}
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Auth />} path="/auth" />
@@ -43,15 +40,14 @@ const Layout = () => {
                             <Landing />
                         </ProtectedRoute>} path="/landing" />
                         <Route element={<DaPaintCreate />} path="/dapaintcreate" />
-                        <Route element={<dapaintlist />} path="/dapaintlist" />
-                        <Route element={<editprofile />} path="/editprofile" />
-                        <Route element={<invite />} path="/invite" />
-                        <Route element={<lineup />} path="/lineup" />
-                        <Route element={<setting />} path="/setting" />
-                        <Route element={<wallet />} path="/wallet" />
-                        <Route element={<wlsub />} path="/wlsub" />
+                        <Route element={<DaPaintList />} path="/dapaintlist" />
+                        <Route element={<EditProfile />} path="/editprofile" />
+                        <Route element={<Invite />} path="/invite" />
+                        <Route element={<Lineup />} path="/lineup" />
+                        <Route element={<Setting />} path="/setting" />
+                        <Route element={<Wallet />} path="/wallet" />
+                        <Route element={<Wlsub />} path="/wlsub" />
                     </Routes>
-                    {/* <Footer /> */}
                 </ScrollToTop>
             </BrowserRouter>
         </div>
