@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 import { DaPaintCreate } from './dapaintcreate.js';
@@ -6,11 +6,37 @@ import { DaPaintCreate } from './dapaintcreate.js';
 const DaPaintList = ({ onClose }) => {
   const [events, setEvents] = useState([
     { id: 1, username: 'OVYEDDeno', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
-    { id: 2, username: 'JBeat', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
-    { id: 3, username: 'OVYEDDeno', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
-    { id: 4, username: 'JBeat', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
-    { id: 5, username: 'OVYEDDeno', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
   ]);
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    async function getDapaintList(){
+      try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/lineup`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          
+        });
+
+        if (response.ok) {
+          const EventList = await response.json();
+          console.log('Lists event:', EventList);
+          setEvents(EventList)
+        } else {
+          const error = await response.json();
+          console.error('Failed to retrieve list of events:', error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      
+    }
+
+    getDapaintList()
+    
+  }, [])
 
   const handleClockIn = (id) => {
     console.log('Clocking in for event:', id);
@@ -41,12 +67,12 @@ const DaPaintList = ({ onClose }) => {
                   {events.map((event) => (
                     <div key={event.id} className="flex justify-between items-center mb-4">
                       <div className="flex items-center">
-                        <img src={`/path-to-${event.username.toLowerCase()}-avatar.jpg`} alt={event.username} className="w-8 h-8 rounded-full mr-2" />
-                        <span className="text-black">{event.username}</span>
+                        <img src={`/path-to-${event && event.hostFoeId && event.hostFoeId.name.toLowerCase()}-avatar.jpg`} alt={event && event.hostFoeId && event.hostFoeId.name} className="w-8 h-8 rounded-full mr-2" />
+                        <span className="text-black">{event && event.hostFoeId && event.hostFoeId.name}</span>
                       </div>
                       <div className="text-gray-500">{event.location}</div>
                       <div className="text-black">{event.distance}</div>
-                      <div className="text-black">{event.date} {event.time}</div>
+                      <div className="text-black">{event.date_time}</div>
                       <button
                         className="bg-black text-white p-2 rounded"
                         onClick={() => handleClockIn(event.id)}

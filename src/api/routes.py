@@ -216,7 +216,12 @@ def create_dapaint():
 
 @api.route('/lineup', methods=['GET'])
 def get_all_dapaint():
-    dapaint = DaPaint.query.all()
+    is_accepted = request.args.get("isaccepted")
+
+    if is_accepted == '1':
+        dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None)).all()
+    else:
+        dapaint = DaPaint.query.filter(DaPaint.foeId.is_(None)).all()
     return jsonify([d.serialize() for d in dapaint]), 200
 
 @api.route('/lineup-by-user', methods=['GET'])

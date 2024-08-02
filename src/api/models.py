@@ -68,8 +68,8 @@ class DaPaint(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "hostFoeId": self.hostFoeId,
-            "foeId": self.foeId,
+            "hostFoeId": self.host_user.serialize(),
+            "foeId": self.foe_user.serialize() if self.foe_user is not None else "N/A",
             "location": self.location,
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,

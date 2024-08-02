@@ -8,6 +8,37 @@ export const Lineup = () => {
     // Add more matchups as needed
   ];
 
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    async function getDapaintList(){
+      try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/lineup?isaccepted=1`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          
+        });
+
+        if (response.ok) {
+          const EventList = await response.json();
+          console.log('Lists event:', EventList);
+          setEvents(EventList)
+        } else {
+          const error = await response.json();
+          console.error('Failed to retrieve list of events:', error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      
+    }
+
+    getDapaintList()
+    
+  }, [])
+
   return (
     <><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lineUp">
       LINE UP

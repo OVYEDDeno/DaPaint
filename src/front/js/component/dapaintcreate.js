@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
-import { X, ChevronLeft } from 'lucide-react';
 
 export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [location, setLocation] = useState('');
@@ -47,7 +46,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
-    onClose();
+    // onClose();
   };
 
   return (
@@ -61,9 +60,8 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <ChevronLeft size={24} />
                 <h5 className="modal-title" id="exampleModalLabel">DA PAINT</h5>
-                <X size={24} onClick={handleClose} className="btn-close" />
+                <button onClick={handleClose} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
                 <div className="user-profile">
@@ -112,10 +110,10 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
-  );
+        </div>)
+
+      }
+    </>)
 };
 
 DaPaintCreate.propTypes = {
