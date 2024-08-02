@@ -78,7 +78,7 @@ export const EditProfile = ({ onClose, initialData }) => {
               <div className="fixed inset-0 bg-black text-white flex flex-col">
                 <div className="flex justify-between items-center p-4">
 
-                  <h1 className="text-2xl font-bold">EDIT</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <h1 className="text-2xl font-bold">EDIT<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></h1>
 
                 </div>
 
