@@ -17,7 +17,7 @@ export const Home = () => {
 
         <nav className="nav-links">
           <ul>
-            <li><a href="#">Blog</a></li>
+            <li><a href="#">About Diddy</a></li>
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
@@ -29,7 +29,7 @@ export const Home = () => {
 
       <main className="main-body">
         <h1 className="tagline">Defy Your Limits</h1>
-        <Link to="/profile">
+        <Link to="/auth">
           <button className="cta-button">Clock In</button>
         </Link>
       </main>

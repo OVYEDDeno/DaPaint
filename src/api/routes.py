@@ -5,6 +5,7 @@ from api.models import db, User, DaPaint, UserImg, WSH
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_
+from sqlalchemy.orm import aliased
 import re, json, os
 import cloudinary
 import cloudinary.uploader
@@ -215,25 +216,30 @@ def create_dapaint():
     return jsonify(new_dapaint.serialize()), 201
 
 @api.route('/lineup', methods=['GET'])
+@jwt_required()
 def get_all_dapaint():
     is_accepted = request.args.get("isaccepted")
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    winstreak=user.winstreak
 
     if is_accepted == '1':
         dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None)).all()
     else:
-        dapaint = DaPaint.query.filter(DaPaint.foeId.is_(None)).all()
+        dapaint = db.session.query(DaPaint).join(User, DaPaint.hostFoeId == User.id).filter(DaPaint.foeId.is_(None), User.winstreak == winstreak).all()
+
     return jsonify([d.serialize() for d in dapaint]), 200
 
-@api.route('/lineup-by-user', methods=['GET'])
-@jwt_required()
-def get_dapaint_by_user():
-    user_id = get_jwt_identity()
-    user = User.query.filter_by(id=user_id).first()
+# @api.route('/lineup-by-user', methods=['GET'])
+# @jwt_required()
+# def get_dapaint_by_user():
+#     user_id = get_jwt_identity()
+#     user = User.query.filter_by(id=user_id).first()
     
-    if not user:
-        return jsonify({"message": "User not found"}), 404
+#     if not user:
+#         return jsonify({"message": "User not found"}), 404
 
-    # dapaint_records
+#     # dapaint_records
     
 @api.route('/dapaint/delete/<int:id>', methods=['DELETE'])
 @jwt_required()
@@ -249,6 +255,27 @@ def delete_dapaint(id):
 
 
 @api.route('/max-win-streak', methods=['GET'])
-def get_max_win_streak():
-    max_win_streak = db.session.query(db.func.max(User.winstreak)).scalar() or 0
-    return jsonify({"maxWinStreak": max_win_streak, "WinStreakGoal": WINSTREAK_GOAL})
+def get_max_win_streak():    
+    # Subquery to find the maximum win streak
+    max_winstreak_subquery = db.session.query(
+        db.func.max(User.winstreak).label('max_winstreak')
+    ).subquery()
+
+    # Alias for the User table
+    user_alias = aliased(User)
+
+    # Query to get the user with the maximum win streak
+    user_with_max_winstreak = db.session.query(user_alias).join(
+        max_winstreak_subquery,
+        user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
+    ).first()
+
+    # Ensure the user is found
+    if user_with_max_winstreak:
+        return jsonify({
+            "maxWinStreak": user_with_max_winstreak.winstreak,
+            "maxWinStreakUser": user_with_max_winstreak.serialize(),
+            "WinStreakGoal": WINSTREAK_GOAL
+        }), 200
+    else:
+        return jsonify({"message": "No user found"}), 404
