@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import "../../styles/setting.css";
 
 export const Setting = ({ onClose }) => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
     console.log("Log out successful");
-    navigate("/auth");
+    navigate("/");
   };
   return (
     <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#setting">

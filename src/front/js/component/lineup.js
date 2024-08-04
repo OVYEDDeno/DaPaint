@@ -4,7 +4,7 @@ import '../../styles/lineup.css';
 export const Lineup = () => {
   const matchups = [
     { id: 1, date: '7/12/24', time: '11 AM EST', location: 'BOXR GYM 3MILES', user1: 'OVYEDDenO', user2: 'JBEAT' },
-    { id: 2, date: '7/12/24', time: '11 AM', location: 'BOXR GYM 3MILES', user1: 'OVYEDDenO', user2: 'JBEAT' },
+    { id: 1, date: '7/12/24', time: '11 AM EST', location: 'BOXR GYM 3MILES', user1: 'OVYEDDenO', user2: 'JBEAT' },
     // Add more matchups as needed
   ];
 
@@ -43,13 +43,9 @@ export const Lineup = () => {
     <><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lineUp">
       LINE UP
     </button>
-    <div class="modal fade" id="lineUp" tabindex="-1" aria-labelledby="lineUp" aria-hidden="true">
+    <div class="modal fade" id="lineUp"  aria-labelledby="lineUp" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="lineUp">LINE UP</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+    <div class="modal-content">      
       <div class="modal-body">
       <div className="lineup">
                 {matchups.map(matchup => (

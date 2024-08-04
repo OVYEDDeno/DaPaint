@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
 
 export const Profile = () => {
+  const { store, actions } = useContext(Context);
   const [user, setUser] = useState();
   const [profileData, setProfileData] = useState({
     total: 20,
@@ -16,31 +17,8 @@ export const Profile = () => {
   });
 
   const username = "OVYEDDeno"; // Example username
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-          }
-        });
-        const data = await response.json();
-        setUser(data);
-        setProfileData({
-          total: data.wins + data.losses + data.disqualifications,
-          wins: data.winsByKO + data.winsBySub,
-          winsByKnockout: 2,
-          winsBySubmission: 11,
-          losses: data.lossesByKO + data.lossesBySub,
-          lossesByKnockout: 2,
-          lossesBySubmission: 0,
-          disqualifications: 0
-        })
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-      }
-    };
-    fetchCurrentUser();
+  useEffect(() => {    
+    actions.fetchCurrentUser();
   }, []);
 
   return (
@@ -52,7 +30,7 @@ export const Profile = () => {
               src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
               alt="Profile"
               className="profile-picture" />
-            <div className="profile-name">{user && user.name}</div>
+            <div className="profile-name">{store.userData && store.userData.name}</div>
           </div>
         </div>
       </div>
@@ -69,35 +47,35 @@ export const Profile = () => {
                 <tbody>
                   <tr>
                     <td>Total</td>
-                    <td>{profileData.total}</td>
+                    <td>{store.userData && store.userData.wins+store.userData.losses}</td>
                   </tr>
                   <tr>
                     <td>Wins</td>
-                    <td className="wins">{profileData.wins}</td>
+                    <td className="wins">{store.userData && store.userData.wins}</td>
                   </tr>
                   <tr>
                     <td>By knockout</td>
-                    <td>{profileData.winsByKnockout}</td>
+                    <td>{store.userData && store.userData.winsByKO}</td>
                   </tr>
                   <tr>
                     <td>By submission</td>
-                    <td>{profileData.winsBySubmission}</td>
+                    <td>{store.userData && store.userData.winsBySub}</td>
                   </tr>
                   <tr>
                     <td>Losses</td>
-                    <td className="losses">{profileData.losses}</td>
+                    <td className="losses">{store.userData && store.userData.losses}</td>
                   </tr>
                   <tr>
                     <td>By knockout</td>
-                    <td>{profileData.lossesByKnockout}</td>
+                    <td>{store.userData && store.userData.lossesByKO}</td>
                   </tr>
                   <tr>
                     <td>By submission</td>
-                    <td>{profileData.lossesBySubmission}</td>
+                    <td>{store.userData && store.userData.lossesBySub}</td>
                   </tr>
                   <tr>
                     <td>Disqualifications</td>
-                    <td>{profileData.disqualifications}</td>
+                    <td>{store.userData && store.userData.disqualifications}</td>
                   </tr>
                 </tbody>
               </table>

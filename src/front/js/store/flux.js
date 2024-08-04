@@ -4,6 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users: [],
 			dapaints: [],
 			userId: undefined,
+			userData: {},
 			dapaintId: undefined,
 			token: localStorage.getItem('token')
 
@@ -25,44 +26,78 @@ const getState = ({ getStore, getActions, setStore }) => {
 				phone,
 				birthday,
 				img
-			  ) => {
+			) => {
 				let data = JSON.stringify({
 					email: email,
-					name : name,
+					name: name,
 					city: city,
 					zipcode: zipcode,
 					phone: phone,
 					birthday: birthday
 				});
-		
+
 				const formData = new FormData();
-		
+
 				formData.append("data", data);
-		
+
 				formData.append("file", img);
-		
+
 				const opts = {
-				  method: "PUT",
-		
-				  headers: {
-					Authorization: "Bearer " + sessionStorage.getItem("token"),
-				  },
-				  body: formData,
+					method: "PUT",
+
+					headers: {
+						Authorization: "Bearer " + sessionStorage.getItem("token"),
+					},
+					body: formData,
 				};
-				  const resp = await fetch(
+				const resp = await fetch(
 					process.env.BACKEND_URL + "/api/user/edit",
 					opts
-				  );
-				  if (resp.status != 200) {
+				);
+				if (resp.status != 200) {
 					let errorMsg = await resp.json();
-					alert("An error occured while submitted the new member: "+errorMsg.msg)
+					alert("An error occured while submitted the new member: " + errorMsg.msg)
 					return false;
-				  }
-				  const respBody= await resp.json();
-				  console.log("This comes from backend", respBody);
-				  return true;
+				}
+				const respBody = await resp.json();
+				console.log("This comes from backend", respBody);
+				return true;
+
+			},
+			fetchCurrentUser: async () => {
+				try {
+					const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {
+						headers: {
+							"Authorization": `Bearer ${localStorage.getItem("token")}`
+						}
+					});
+					const data = await response.json();
+					setStore({ userData: {...data, wins:data.winsByKO+data.winsBySub, losses:data.lossesByKO+data.lossesBySub} });
+				} catch (error) {
+					console.error("Error fetching current user:", error);
+				}
+			},
+			resetWinStreak: async () => {
+				let store = getStore()
+					let userData = store.userData
+					if(userData && userData.winstreak >= process.env.WINSTREAK_GOAL){
+						try {
+					const response = await fetch(process.env.BACKEND_URL + '/api/reset-win-streak', {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${localStorage.getItem("token")}`
+						}
+					});
+					const data = await response.json();
+					
+					userData.winstreak = 0
+					setStore({ userData:userData});
+				} catch (error) {
+					console.error("Error fetching current user:", error);
+				}
+					}
 				
-			  },   
+			}
 		}
 	};
 };

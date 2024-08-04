@@ -255,6 +255,7 @@ def delete_dapaint(id):
 
 
 @api.route('/max-win-streak', methods=['GET'])
+@jwt_required()
 def get_max_win_streak():    
     # Subquery to find the maximum win streak
     max_winstreak_subquery = db.session.query(
@@ -279,3 +280,12 @@ def get_max_win_streak():
         }), 200
     else:
         return jsonify({"message": "No user found"}), 404
+    
+@api.route('/reset-win-streak', methods=['PUT'])
+@jwt_required()
+def reset_win_streak():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    user.winstreak = 0
+    db.session.commit()
+    return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200

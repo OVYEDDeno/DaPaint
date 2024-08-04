@@ -24,7 +24,11 @@ export const Landing = () => {
   useEffect(() => {
     const fetchMaxWinStreak = async () => {
       try {
-        const response = await fetch(process.env.BACKEND_URL + '/api/max-win-streak');
+        const response = await fetch(process.env.BACKEND_URL + '/api/max-win-streak', {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        });
         const data = await response.json();
         console.log(data.maxWinStreak);
         console.log("trying to fetch Win Streak, ")

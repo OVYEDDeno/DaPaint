@@ -1,22 +1,24 @@
-.lineup {
+.modal-content {
   width: 90%;
   max-width: 400px;
   background-color: black;
   color: white;
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 17px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   position: relative;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.modal-dialog{
+  justify-content: center;
 }
 
 .lineup-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.lineup-header h2 {
-  margin: 0;
+  
 }
 
 .close-button {

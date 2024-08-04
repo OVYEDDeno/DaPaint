@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 import { DaPaintCreate } from './dapaintcreate.js';
 
 const DaPaintList = ({ onClose }) => {
+  const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([
     { id: 1, username: 'OVYEDDeno', location: 'BOXR GYM', distance: '3MILES', date: '7/12/24', time: '11 AM EST' },
   ]);
@@ -49,21 +51,21 @@ const DaPaintList = ({ onClose }) => {
 
   return (
     <>
-      <button type="button" className="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
+      <button type="button" onClick= {()=>actions.resetWinStreak()} className="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
         FIND FOE 💰0.01
       </button>
       <div className="modal fade" id="DaPaint" tabIndex="-1" aria-labelledby="DaPaint" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
             <div className="fixed inset-0 bg-black text-white flex flex-col">
-              <div className="flex justify-between items-center p-4">
+              <div className="flex justify-between items-center pt-4">
                 <h1 className="text-2xl font-bold">DA PAINT</h1>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
               </div>
             </div>
-            <div className="modal-body">
+            <div className="modal-body col-12">
               <div className="fixed inset-0 bg-black text-white flex flex-col">
-                <div className="flex-1 p-4 bg-white text-black rounded-t-3xl mt-4 overflow-y-auto">
+                <div className="flex-1-4 bg-white text-black rounded-t-3xl mt-4 overflow-y-auto">
                   {events.map((event) => (
                     <div key={event.id} className="flex justify-between items-center mb-4">
                       <div className="flex items-center">

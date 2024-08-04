@@ -51,7 +51,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
 
   return (
     <>
-      <button type="button" className="btn" onClick={handleOpen}>
+      <button type="button" className="btn position-fixed " onClick={handleOpen}>
         + ADD
       </button>
 
