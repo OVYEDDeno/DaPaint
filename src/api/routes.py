@@ -104,6 +104,48 @@ def handle_user_signup():
 
     return jsonify({'msg': 'User created successfully'}), 201
 
+# @api.route('/user/edit', methods=['POST'])
+# @jwt_required()
+# def handle_user_edit():
+#     user_id = get_jwt_identity()
+#     raw_data = request.form.get("data")
+#     picture = request.files.get("file")
+#     body = json.loads(raw_data)
+    
+#     email = body.get("email")
+#     name = body.get("name")
+#     city = body.get("city")
+#     zipcode = body.get("zipcode")
+#     phone = body.get("phone")
+#     birthday_str = body.get("birthday")
+#     birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
+    
+#     if not all([email, name, city, zipcode, phone, birthday]):
+#         return jsonify({"msg": "Some fields are missing in your request"}), 400
+    
+#     user = User.query.filter_by(id=user_id).one_or_none()
+#     if user is None:
+#         return jsonify({"msg": "No user found"}), 404
+
+#     if picture:
+#         response = cloudinary.uploader.upload(picture)
+#         if response.get('secure_url'):
+#             img = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
+#             db.session.add(img)
+#             db.session.commit()
+#         else:
+#             print("user img upload was not successful")
+
+#     user.email = email
+#     user.name = name
+#     user.city = city
+#     user.zipcode = zipcode
+#     user.phone = phone
+#     user.birthday = birthday
+#     db.session.commit()
+
+#     response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
+#     return jsonify(response_body), 200
 @api.route('/user/edit', methods=['POST'])
 @jwt_required()
 def handle_user_edit():
@@ -112,20 +154,24 @@ def handle_user_edit():
     picture = request.files.get("file")
     body = json.loads(raw_data)
     
-    email = body.get("email")
-    name = body.get("name")
-    city = body.get("city")
-    zipcode = body.get("zipcode")
-    phone = body.get("phone")
-    birthday_str = body.get("birthday")
-    birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
-    
-    if not all([email, name, city, zipcode, phone, birthday]):
-        return jsonify({"msg": "Some fields are missing in your request"}), 400
-    
     user = User.query.filter_by(id=user_id).one_or_none()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
+
+    # Update fields only if they are provided
+    if 'email' in body:
+        user.email = body['email']
+    if 'name' in body:
+        user.name = body['name']
+    if 'city' in body:
+        user.city = body['city']
+    if 'zipcode' in body:
+        user.zipcode = body['zipcode']
+    if 'phone' in body:
+        user.phone = body['phone']
+    if 'birthday' in body:
+        birthday_str = body['birthday']
+        user.birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
 
     if picture:
         response = cloudinary.uploader.upload(picture)
@@ -134,14 +180,8 @@ def handle_user_edit():
             db.session.add(img)
             db.session.commit()
         else:
-            print("user img upload was not successful")
+            print("User image upload was not successful")
 
-    user.email = email
-    user.name = name
-    user.city = city
-    user.zipcode = zipcode
-    user.phone = phone
-    user.birthday = birthday
     db.session.commit()
 
     response_body = {"msg": "Account successfully edited!", "user": user.serialize()}

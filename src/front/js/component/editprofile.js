@@ -31,24 +31,73 @@ export const EditProfile = ({ onClose, initialData }) => {
     }
   };
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append('data', JSON.stringify({
+  //       email,
+  //       name,
+  //       city,
+  //       zipcode,
+  //       phone,
+  //       birthday,
+  //     }));
+  //     if (picture) {
+  //       formData.append('file', picture);
+  //     }
+
+  //     console.log('Form data being sent:', formData);
+
+  //     const response = await fetch(`${process.env.BACKEND_URL}/api/user/edit`, {
+  //       method: 'POST',
+  //       headers: {
+  //         Authorization: `Bearer ${store.token}`,
+  //       },
+  //       body: formData,
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.msg || 'Something went wrong');
+  //     }
+
+  //     console.log('Profile updated successfully');
+
+  //     onClose();
+  //     setName("");
+  //     setCity("");
+  //     setEmail("");
+  //     setZipcode("");
+  //     setBirthday("");
+  //     setPhone("");
+  //     setPicture(null);
+  //     setPreviewURL("");
+  //     document.getElementById("pictureInput").value = "";
+  //     setImageSizeError(false);
+  //   } catch (error) {
+  //     console.error('Error during profile update:', error);
+  //   }
+  // };
   const handleSubmit = async () => {
     try {
+      const updatedFields = {};
+
+      // Add fields to updatedFields if they are not empty
+      if (name) updatedFields.name = name;
+      if (city) updatedFields.city = city;
+      if (email) updatedFields.email = email;
+      if (zipcode) updatedFields.zipcode = zipcode;
+      if (phone) updatedFields.phone = phone;
+      if (birthday) updatedFields.birthday = birthday;
+
       const formData = new FormData();
-      formData.append('data', JSON.stringify({
-        email,
-        name,
-        city,
-        zipcode,
-        phone,
-        birthday,
-      }));
+      formData.append('data', JSON.stringify(updatedFields));
+
       if (picture) {
         formData.append('file', picture);
       }
 
-      console.log('Form data being sent:', formData);
-
-      const response = await fetch(`${process.env.BACKEND_URL}/user/edit`, {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/user/edit`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${store.token}`,
@@ -74,6 +123,8 @@ export const EditProfile = ({ onClose, initialData }) => {
       setPreviewURL("");
       document.getElementById("pictureInput").value = "";
       setImageSizeError(false);
+
+      // window.location.reload();
     } catch (error) {
       console.error('Error during profile update:', error);
     }
@@ -152,7 +203,7 @@ export const EditProfile = ({ onClose, initialData }) => {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-primary" onClick={handleSubmit}>Save</button>
+              <button type="button" className="btn btn-primary" onClick={handleSubmit} data-bs-dismiss="modal">Save</button>
             </div>
           </div>
         </div>

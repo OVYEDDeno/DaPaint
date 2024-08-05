@@ -7,7 +7,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [amount, setAmount] = useState('0');
-  const [isOpen, setIsOpen] = useState(false); // State to control modal visibility
+  // const [isOpen, setIsOpen] = useState(false); // State to control modal visibility
   const [error, setError] = useState(''); // State to handle errors
 
   const handleCreate = async () => {
@@ -38,7 +38,8 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         const createdEvent = await response.json();
         console.log('Created event:', createdEvent);
         onAdd(createdEvent); // Update the event list in DaPaintList
-        handleClose(); // Close the modal
+        // handleClose(); // Close the modal
+        onClose(); // Close the modal
       } else {
         const error = await response.json();
         console.error('Failed to create event:', error);
@@ -61,15 +62,15 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     return true;
   };
 
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => {
-    setIsOpen(false);
-    // onClose();
-  };
+  // const handleOpen = () => setIsOpen(true);
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  //   // onClose();
+  // };
 
   return (
     <>
-      <button type="button" className="btn position-fixed " onClick={handleOpen}>
+      {/* <button type="button" className="btn position-fixed " onClick={handleOpen}>
         + ADD
       </button>
 
@@ -108,7 +109,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
                       className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
                   </div>
 
-                  {error && <div className="text-red-500 mb-4">{error}</div>} {/* Display error message if any */}
+                  {error && <div className="text-red-500 mb-4">{error}</div>} 
 
                   <div className="relative mb-8">
                     <span className="absolute left-0 top-2 text-2xl">$</span>
@@ -131,8 +132,49 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
             </div>
           </div>
         </div>)
+      } */}
 
-      }
+      <div className="user-profile">
+        <div className="bg-black text-white rounded-full p-2 flex items-center mb-6">
+          <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" />
+          <span>{username}</span>
+        </div>
+
+        <input
+          type="text"
+          placeholder="LOCATION"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+
+        <div className="flex mb-4">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-1/2 p-2 mr-2 border-b border-gray-300 focus:outline-none" />
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
+        </div>
+
+        <input
+          type="text"
+          placeholder="AMOUNT"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+
+        <button
+          onClick={handleCreate}
+          className="w-full bg-black text-white p-2 rounded">
+          CREATE
+        </button>
+      </div>
     </>)
 };
 
