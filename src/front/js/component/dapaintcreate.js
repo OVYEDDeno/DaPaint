@@ -8,8 +8,13 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [time, setTime] = useState('');
   const [amount, setAmount] = useState('0');
   const [isOpen, setIsOpen] = useState(false); // State to control modal visibility
+  const [error, setError] = useState(''); // State to handle errors
 
   const handleCreate = async () => {
+    if (!validateDateTime()) {
+      return;
+    }
+
     const dateTime = `${date} ${time}:00`; // Format: YYYY-MM-DD HH:MM:SS
     const token = localStorage.getItem('token'); // Assuming the token is stored here
 
@@ -43,6 +48,19 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     }
   };
 
+  const validateDateTime = () => {
+    const selectedDateTime = new Date(`${date}T${time}`);
+    const now = new Date();
+
+    if (selectedDateTime < now) {
+      setError('Please select a future date and time.');
+      return false;
+    }
+
+    setError('');
+    return true;
+  };
+
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
@@ -61,7 +79,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">DA PAINT</h5>
-                <button onClick={handleClose} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
                 <div className="user-profile">
@@ -89,6 +107,8 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
                       onChange={(e) => setTime(e.target.value)}
                       className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
                   </div>
+
+                  {error && <div className="text-red-500 mb-4">{error}</div>} {/* Display error message if any */}
 
                   <div className="relative mb-8">
                     <span className="absolute left-0 top-2 text-2xl">$</span>

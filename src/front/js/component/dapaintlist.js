@@ -11,7 +11,7 @@ const DaPaintList = ({ onClose }) => {
   ]);
   useEffect(() => {
     const token = localStorage.getItem("token")
-    async function getDapaintList(){
+    async function getDapaintList() {
       try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/lineup`, {
           method: 'GET',
@@ -19,7 +19,7 @@ const DaPaintList = ({ onClose }) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          
+
         });
 
         if (response.ok) {
@@ -33,11 +33,11 @@ const DaPaintList = ({ onClose }) => {
       } catch (error) {
         console.error('Error:', error);
       }
-      
+
     }
 
     getDapaintList()
-    
+
   }, [])
 
   const handleClockIn = (id) => {
@@ -51,7 +51,7 @@ const DaPaintList = ({ onClose }) => {
 
   return (
     <>
-      <button type="button" onClick= {()=>actions.resetWinStreak()} className="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
+      <button type="button" onClick={() => actions.resetWinStreak()} className="btn" data-bs-toggle="modal" data-bs-target="#DaPaint">
         FIND FOE 💰0.01
       </button>
       <div className="modal fade" id="DaPaint" tabIndex="-1" aria-labelledby="DaPaint" aria-hidden="true">
@@ -84,8 +84,12 @@ const DaPaintList = ({ onClose }) => {
                     </div>
                   ))}
                 </div>
-                <DaPaintCreate onClose={onClose} username="YourUsername" profilePicture="path-to-profile-pic.jpg" onAdd={addNewEvent} />
+                
               </div>
+            </div>
+            <div class="modal-footer">
+              <DaPaintCreate/>
+              <button type="button" class="btn btn-primary"><DaPaintCreate onClose={onClose} username="YourUsername" profilePicture="path-to-profile-pic.jpg" onAdd={addNewEvent} /></button>
             </div>
           </div>
         </div>

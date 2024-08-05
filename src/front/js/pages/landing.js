@@ -86,8 +86,7 @@ export const Landing = () => {
         <Lineup />
         <div className="find-foe-section">
           <DaPaintList />
-          <p className="tap-button-text">TAP THE BUTTON</p>
-          <DaPaintCreate />
+          <p className="tap-button-text">TAP THE BUTTON</p>          
         </div>
       </main>
     </div>
