@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
 
 body {
   font-family: "Anton", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
-
 
 .landing-container {
   display: flex;
@@ -42,7 +41,6 @@ body {
   flex: 1;
 }
 
-
 .cta-button {
   padding: 10px 20px;
   margin: 10px;
@@ -69,12 +67,14 @@ body {
     width: 80%;
   }
 }
+
 .custom-win-streak {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
 }
+
 .find-foe-section {
   margin: 10px;
 }
@@ -98,6 +98,7 @@ body {
 .bg-yellow {
   background-color: #f5c116 !important;
 }
+
 .custom-progress {
   background-color: #f5c116;
   height: 100%;
@@ -138,6 +139,7 @@ body {
   transform: translate(-50%, -50%);
   color: rgb(255, 255, 255);
 }
+
 .setting-container {
   position: relative;
   display: inline-block;
@@ -148,7 +150,7 @@ body {
   position: absolute;
   background-color: white;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
@@ -160,4 +162,38 @@ body {
 
 .logout-button:hover {
   background-color: #ddd;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.dark-mode .custom-progress-bar {
+  background-color: #333;
+}
+
+/* .dark-mode .custom-circle {
+  background-color: #444;
+} */
+
+.dark-mode .top-header {
+  background-color: #121212;
+}
+.dark-mode .actions-section {
+  background-color: #222;
+}
+
+.dark-mode-toggle {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #555;
 }

@@ -132,20 +132,19 @@ export const EditProfile = ({ onClose, initialData }) => {
 
   return (
     <>
-      <button type="button" className="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         <div className="profile-container">
           <div className="profile-header">
             <div className="profile-picture-section">
               <img
-                src={previewURL || "https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"}
+                src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
                 alt="Profile"
-                className="profile-picture"
-              />
+                className="profile-picture" />
+              <div className="profile-name">{store.userData && store.userData.name}</div>
             </div>
           </div>
         </div>
       </button>
-
       <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">

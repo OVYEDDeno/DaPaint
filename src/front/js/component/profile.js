@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
+import { EditProfile } from "../component/editprofile.js";
 
 export const Profile = () => {
   const { store, actions } = useContext(Context);
   const [user, setUser] = useState();
   const [profileData, setProfileData] = useState({
-    total: 20,
-    wins: 15,
-    winsByKnockout: 2,
-    winsBySubmission: 11,
-    losses: 2,
-    lossesByKnockout: 2,
+    total: 0,
+    wins: 0,
+    winsByKnockout: 0,
+    winsBySubmission: 0,
+    losses: 0,
+    lossesByKnockout: 0,
     lossesBySubmission: 0,
     disqualifications: 0
   });
 
   const username = "OVYEDDeno"; // Example username
-  useEffect(() => {    
+  useEffect(() => {
     actions.fetchCurrentUser();
   }, []);
 
@@ -25,6 +26,7 @@ export const Profile = () => {
     <><button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <div className="profile-container">
         <div className="profile-header">
+
           <div className="profile-picture-section">
             <img
               src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
@@ -34,20 +36,23 @@ export const Profile = () => {
           </div>
         </div>
       </div>
-    </button><div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </button>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-
               <h1 class="modal-title fs-5" id="exampleModalLabel">Profile</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+              <EditProfile />
+
               <table className="stats-table">
                 <tbody>
                   <tr>
                     <td>Total</td>
-                    <td>{store.userData && store.userData.wins+store.userData.losses}</td>
+                    <td>{store.userData && store.userData.wins + store.userData.losses}</td>
                   </tr>
                   <tr>
                     <td>Wins</td>
@@ -75,7 +80,7 @@ export const Profile = () => {
                   </tr>
                   <tr>
                     <td>Disqualifications</td>
-                    <td>{store.userData && store.userData.disqualifications}</td>
+                    <td className="disqualifications">{store.userData && store.userData.disqualifications}</td>
                   </tr>
                 </tbody>
               </table>

@@ -8,7 +8,6 @@ import { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-import { EditProfile } from "../component/editprofile.js";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -19,6 +18,7 @@ export const Landing = () => {
   const nextWinStreak = maxWinStreak + 1;
   const [user, setUser] = useState();
   const [maxWinStreakUser, setMaxWinStreakUser] = useState();
+  const [darkMode, setDarkMode] = useState(false); // State for dark mode
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,13 +57,20 @@ export const Landing = () => {
     fetchMaxWinStreak();
     fetchCurrentUser();
   }, []);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode); // Toggle dark mode
+  };
+
   console.log("GoalWinStreak", GoalWinStreak, "CURRENTWinStreak", currentWinStreak, "calc", ((currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) / GoalWinStreak) * 100)
   console.log("max Win Streak", maxWinStreak);
   return (
-    <div className="home-container">
+    <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
-        <EditProfile />
+        <button onClick={toggleDarkMode} className="dark-mode-toggle">
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
         <div className="actions-section">
           <Invite />
           <Setting />
