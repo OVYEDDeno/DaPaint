@@ -7,18 +7,15 @@ from datetime import datetime, date, timedelta
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 import re, json, os
-import cloudinary
-import cloudinary.uploader
+import cloudinary.uploader as uploader
+from cloudinary.uploader import destroy
+from cloudinary.api import delete_resources_by_tag
 
 api = Blueprint('api', __name__)
 
 WINSTREAK_GOAL=os.getenv("WINSTREAK_GOAL")or 30
 
-cloudinary.config( 
-  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME") ,
-  api_key = os.getenv("CLOUDINARY_API_KEY"), 
-  api_secret = os.getenv("CLOUDINARY_SECRET_KEY"), 
-)  
+
 # Allow CORS requests to this API
 CORS(api)
 
@@ -146,7 +143,7 @@ def handle_user_signup():
 
 #     response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
 #     return jsonify(response_body), 200
-@api.route('/user/edit', methods=['POST'])
+@api.route('/user/edit', methods=['PUT'])
 @jwt_required()
 def handle_user_edit():
     user_id = get_jwt_identity()
@@ -174,7 +171,7 @@ def handle_user_edit():
         user.birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
 
     if picture:
-        response = cloudinary.uploader.upload(picture)
+        response = uploader.upload(picture)
         if response.get('secure_url'):
             img = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
             db.session.add(img)
@@ -343,11 +340,11 @@ def user_img():
 
     images = request.files.getlist("file")
     for image_file in images:
-        if len(UserImage.query.filter_by(user_id=user.id).all()) > 0:
+        if len(UserImg.query.filter_by(user_id=user.id).all()) > 0:
             break
         response = uploader.upload(image_file)
         print(f"{response.items()}")
-        new_image = UserImage(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
+        new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
         db.session.add(new_image)
         db.session.commit()
         db.session.refresh(user)

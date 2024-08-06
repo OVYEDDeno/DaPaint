@@ -9,6 +9,7 @@ import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
 import { EditProfile } from "../component/editprofile.js";
+import { Wlsub } from "../component/wlsub.js";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -92,9 +93,10 @@ export const Landing = () => {
       <main className="main-body">
         <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
         <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
-        <Lineup />
+        {/* <Lineup /> */}
         <div className="find-foe-section">
           <DaPaintList />
+          <Wlsub/>
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

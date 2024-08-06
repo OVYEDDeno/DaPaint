@@ -31,13 +31,6 @@ app.config.from_mapping(
     CLOUDINARY_URL=os.environ.get("CLOUDINARY_URL")
 )
 
-# Configuration       
-# cloudinary.config( 
-#     cloud_name = "dj2umay9c", 
-#     api_key = "794253111972477", 
-#     api_secret = "<your_api_secret>", # Click 'View Credentials' below to copy your API secret
-#     secure=True
-# )
 UPLOAD_FOLDER=os.environ.get('UPLOAD_FOLDER')
 
 # database condiguration
