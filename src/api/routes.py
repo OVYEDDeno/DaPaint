@@ -332,3 +332,24 @@ def reset_win_streak():
     user.winstreak = 0
     db.session.commit()
     return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200
+
+@api.route('/user-img', methods=['POST'])
+@jwt_required()
+def user_img():
+
+    user =  User.query.filter_by(id=get_jwt_identity()).first()
+    if user is None:
+        return jsonify({"msg": "No user found"}), 404
+
+    images = request.files.getlist("file")
+    for image_file in images:
+        if len(UserImage.query.filter_by(user_id=user.id).all()) > 0:
+            break
+        response = uploader.upload(image_file)
+        print(f"{response.items()}")
+        new_image = UserImage(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
+        db.session.add(new_image)
+        db.session.commit()
+        db.session.refresh(user)
+
+    return jsonify ({"Msg": "Image Sucessfully Uploaded"})

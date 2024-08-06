@@ -8,6 +8,7 @@ import { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
+import { EditProfile } from "../component/editprofile.js";
 
 export const Landing = () => {
   const { store } = useContext(Context);
@@ -68,6 +69,7 @@ export const Landing = () => {
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
+        <EditProfile />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
@@ -93,7 +95,7 @@ export const Landing = () => {
         <Lineup />
         <div className="find-foe-section">
           <DaPaintList />
-          <p className="tap-button-text">TAP THE BUTTON</p>          
+          <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>
     </div>

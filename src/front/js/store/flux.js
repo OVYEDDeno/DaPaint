@@ -97,7 +97,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 					}
 				
-			}
+			},
+			addUserImg: async (images) => {
+           
+                let formData = new FormData();
+                console.log(">>> 🍎 images:", images);
+                console.log(">>> 🍎 images:", images.images);
+                formData.append("file", images[0]);
+            
+
+                const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
+                    method: "POST",
+                    headers: {
+                        Authorization: "Bearer " + sessionStorage.getItem("token")
+                    },
+                    body: formData
+                })
+                if (response.status !== 200) return false;
+                const responseBody = await response.json();
+                console.log(responseBody)
+                console.log("This is the Response Body")
+                return true;
+            },
 		}
 	};
 };
