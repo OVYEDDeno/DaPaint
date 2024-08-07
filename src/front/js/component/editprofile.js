@@ -1,46 +1,70 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
+import { Phone } from "lucide-react";
 
-export const EditProfile = ({ onClose, initialData }) => {
-
+export const EditProfile = ({ onClose, initialData, setProfileData }) => {
   const { store, actions } = useContext(Context);
-  const [imageSizeError, setImageSizeError] = useState(false)
+  const [imageSizeError, setImageSizeError] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
+  // const [user, setUser] = useState({
+  //   email: "",
+  //   is_active: true,
+  //   namecity: "",
+  //   zipcode: "",
+  //   Phone: "",
+  //   birthday: "",
 
+  // })
+
+  useEffect(() => {
+    fetch(process.env.BACKEND_URL + "/api/current-user", {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+    })
+      .then(resp => resp.json())
+      .then(data => setUser(data))
+      .catch(error => console.log(error))
+  }, []);
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
-    let file_size = event.target.files[0].size;
-    console.log(file_size)
-    if (file_size <= 100000) {
-      console.log(">>> files", files);
-      setImageSizeError(false)
-      const images = [];
-      for (let index = 0; index < files.length; index++) {
-        images.push(files.item(index));
+    const newImages = [];
+    for (let index = 0; index < files.length; index++) {
+      if (files[index].size <= 100000) {
+        setImageSizeError(false);
+        newImages.push(files[index]);
+      } else {
+        setImageSizeError(true);
       }
-      setUploadedImages((prev) => ([
-        ...prev,
-        ...images
-      ]));
-    } else {
-      setImageSizeError(true)
     }
+    setUploadedImages((prev) => [...prev, ...newImages]);
   };
 
   const handleNewImage = async () => {
-    const success = await actions.addUserImg(uploadedImages);
-    if (success) {
-      fetch(process.env.BACKEND_URL + "/api/mentor", {
-        headers: { Authorization: "Bearer " + sessionStorage.getItem("token") }
-      })
-        .then(resp => resp.json())
-        .then(data => setMentor(data))
-        .catch(error => console.log(error))
-    }
-  }
+    const formData = new FormData();
+    uploadedImages.forEach((image) => {
+      formData.append("file", image); // Ensure this matches the backend's expected field name
+    });
 
+    try {
+      const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Image upload success:", data);
+      // Update the user data with the new image URLs if needed
+      // setUser(data);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <div className="container">
@@ -48,7 +72,7 @@ export const EditProfile = ({ onClose, initialData }) => {
         <div className="col-md-4 offset-md-4">
           <div className="text-center">
             <img
-              src="test"
+              src={store.userData && store.userData.profile_pic ? store.userData.profile_pic : "https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"}
               alt="Profile Picture"
               className="rounded-circle img-fluid"
               style={{ width: '300px', height: '300px' }}
@@ -58,7 +82,9 @@ export const EditProfile = ({ onClose, initialData }) => {
               id="profile-picture"
               className="form-control-file"
               onChange={handleImageUpload}
+              multiple
             />
+            {imageSizeError && <div className="error">File size must be less than 100KB</div>}
             <button
               className="btn btn-primary"
               onClick={handleNewImage}
@@ -116,7 +142,7 @@ export const EditProfile = ({ onClose, initialData }) => {
   //   const success = await actions.addUserImg(uploadedImages)
   //   // if (success) {
   //   //   fetch(process.env.BACKEND_URL + "/api/current-user", {
-  //   //     headers: { Authorization: "Bearer " + sessionStorage.getItem("Token") }
+  //   //     headers: { Authorization: "Bearer " + localStorage.getItem("Token") }
   //   //   })
   //   //     .then(resp => resp.json())
   //   //     .then(data => setUser(data))

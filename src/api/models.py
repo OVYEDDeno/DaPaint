@@ -81,8 +81,9 @@ class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(500), nullable=False, unique=True)
     image_url = db.Column(db.String(500), nullable=False, unique=True)
-    user_id= db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
-    user= db.relationship("User", back_populates="profile_pic", uselist=False)
+    user_id = db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
+    user = db.relationship("User", back_populates="profile_pic", uselist=False)
+    
     def __init__(self, public_id, image_url, user_id):
         self.public_id = public_id
         self.image_url = image_url.strip()

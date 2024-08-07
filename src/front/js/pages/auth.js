@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/auth.css";
+// import "../../styles/auth.css";
 import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {

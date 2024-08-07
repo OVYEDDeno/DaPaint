@@ -333,20 +333,26 @@ def reset_win_streak():
 @api.route('/user-img', methods=['POST'])
 @jwt_required()
 def user_img():
-
-    user =  User.query.filter_by(id=get_jwt_identity()).first()
+    user = User.query.filter_by(id=get_jwt_identity()).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
     images = request.files.getlist("file")
-    for image_file in images:
-        if len(UserImg.query.filter_by(user_id=user.id).all()) > 0:
-            break
-        response = uploader.upload(image_file)
-        print(f"{response.items()}")
-        new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
-        db.session.add(new_image)
-        db.session.commit()
-        db.session.refresh(user)
+    if not images:
+        return jsonify({"msg": "No images uploaded"}), 400
 
-    return jsonify ({"Msg": "Image Sucessfully Uploaded"})
+    uploaded_images = []
+    for image_file in images:
+        try:
+            response = uploader.upload(image_file)
+            if response.get("secure_url"):
+                new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
+                db.session.add(new_image)
+                db.session.commit()
+                uploaded_images.append(new_image.image_url)
+            else:
+                print("User image upload was not successful")
+        except Exception as e:
+            return jsonify({"msg": "Image upload failed", "error": str(e)}), 500
+
+    return jsonify({"msg": "Images Successfully Uploaded", "images": uploaded_images}), 200
