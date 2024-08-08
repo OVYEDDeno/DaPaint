@@ -10,7 +10,7 @@ export const Invite = ({ onClose }) => {
   </button>
 
   <div class="modal fade" id="invite" tabindex="-1" aria-labelledby="invite" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h2 className="text-2xl font-bold flex justify-between items-center mb-4">INVITE</h2>

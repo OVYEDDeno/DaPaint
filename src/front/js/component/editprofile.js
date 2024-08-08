@@ -223,7 +223,7 @@ export const EditProfile = ({ onClose, initialData, setProfileData }) => {
 
       <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         {/* <div className="modal fade" id="editProfileModal" data-bs-backdrop="edit" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true"> */}
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="fixed inset-0 bg-black text-white flex flex-col">

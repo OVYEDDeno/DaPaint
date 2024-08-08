@@ -54,7 +54,7 @@ export const Lineup = () => {
         LINE UP
       </button>
       <div className="modal fade" id="lineUp" aria-labelledby="lineUp" aria-hidden="true">
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="lineup">

@@ -36,7 +36,7 @@ export const Landing = () => {
         console.log("trying to fetch Win Streak, ")
         setMaxWinStreak(data.maxWinStreak);
         setGoalWinStreak(data.WinStreakGoal);
-        setMaxWinStreakUser(data.maxWinStreakUser.name)
+        setMaxWinStreakUser(data.maxWinStreakUser.name);
       } catch (error) {
         console.error("Error fetching max win streak:", error);
       }
@@ -50,7 +50,7 @@ export const Landing = () => {
         });
         const data = await response.json();
         setUser(data);
-        setCurrentWinStreak(data.winstreak)
+        setCurrentWinStreak(data.winstreak);
       } catch (error) {
         console.error("Error fetching current user:", error);
       }
@@ -66,6 +66,7 @@ export const Landing = () => {
 
   console.log("GoalWinStreak", GoalWinStreak, "CURRENTWinStreak", currentWinStreak, "calc", ((currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) / GoalWinStreak) * 100)
   console.log("max Win Streak", maxWinStreak);
+
   return (
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
@@ -91,7 +92,9 @@ export const Landing = () => {
       </div>
 
       <main className="main-body">
-        <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
+        <h2 className="streak-announcement">
+          {currentWinStreak >= 40 ? "CONGRATULATIONS!!" : maxWinStreak >= 40 ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING 40 WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAK?`}
+        </h2>
         <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
         <Lineup />
         <div className="find-foe-section">
