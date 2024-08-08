@@ -45,7 +45,7 @@ const DaPaintList = ({ onClose }) => {
     console.log("userId: ", userId);
 
     // Check if the current user is not the hostFoeId
-    if (event.hostFoeId !== userId) {
+    if (event.hostFoeId && event.hostFoeId !== userId) {
       try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/lineup/${event.id}`, {
           method: 'PATCH',
@@ -131,7 +131,7 @@ const DaPaintList = ({ onClose }) => {
                     <div className="text-black">{event.date_time}</div>
                     <button
                       className="bg-black text-white p-2 rounded"
-                      onClick={() => handleClockIn(event)}
+                      onClick={() => handleClockIn(event.id)}
                     >
                       CLOCK IN
                     </button>

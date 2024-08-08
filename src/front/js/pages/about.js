@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { Link } from "react-router-dom";
 
-export const Home = () => {
+export const About = () => {
   return (
     <div className="home-container">
       <header className="top-header">
@@ -17,7 +17,7 @@ export const Home = () => {
 
         <nav className="nav-links">
           <ul>
-            <li><a href="/about">About Diddy</a></li>
+            <li><a href="#">About Diddy</a></li>
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
@@ -29,9 +29,13 @@ export const Home = () => {
 
       <main className="main-body">
         <h1 className="tagline">Defy Your Limits</h1>
-        <Link to="/auth">
-          <button className="cta-button">Clock In</button>
-        </Link>
+        <p>Somebody had the idea for a bicycle fore the minds This will be a bicycle for the body.
+
+          The avg person spend 50%+ of their time doom scrolling. This Fitness club will change that by having people get active and connect through sportsmanship.
+
+          The avg billionaire will sign and become a part of the giving pledge but you will see 0% of so called Pledge. I will personally wire transfer $1M of my own fortune to whoever get 30 win streaks in a row.
+
+          I cant change the past but WE can achieve a future where people are fitter together. At least now the first time getting punched in the face won’t be when you meet Diddy.</p>
       </main>
 
       <footer className="footer">
@@ -55,7 +59,7 @@ export const Home = () => {
         </div>
 
         <div className="footer-column">
-            <p>&copy; {new Date().getFullYear()} OVYED Labs</p>
+          <p>&copy; {new Date().getFullYear()} OVYED Labs</p>
         </div>
       </footer>
     </div>

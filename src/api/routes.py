@@ -270,6 +270,24 @@ def get_all_dapaint():
 
     return jsonify([d.serialize() for d in dapaint]), 200
 
+@api.route('/lineup/<int:event_id>', methods=['PATCH'])
+@jwt_required()
+def update_foe_id(event_id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    foe_id = data.get('foeId')
+
+    # Ensure the user is not trying to set themselves as foeId if they are host
+    event = DaPaint.query.get(event_id)
+    if event.hostFoeId == user_id:
+        return jsonify({'error': 'You cannot clock into your own event'}), 403
+
+    if event and foe_id:
+        event.foeId = foe_id
+        db.session.commit()
+        return jsonify(event.serialize()), 200
+    return jsonify({'error': 'Event not found or invalid data'}), 404
+
 # @api.route('/lineup-by-user', methods=['GET'])
 # @jwt_required()
 # def get_dapaint_by_user():
@@ -356,3 +374,16 @@ def user_img():
             return jsonify({"msg": "Image upload failed", "error": str(e)}), 500
 
     return jsonify({"msg": "Images Successfully Uploaded", "images": uploaded_images}), 200
+
+@api.route('/act', methods=['PUT'])
+@jwt_required()
+def act():
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+    if user is None:
+        return jsonify({"msg": "User not found"}), 404
+    if user.is_active==True:
+        user.is_active=False
+    else:
+        user.is_active=True
+    db.session.commit()
+    return jsonify({"msg": "Account status updated"}), 200

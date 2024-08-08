@@ -8,7 +8,7 @@ import { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-// import { EditProfile } from "../component/editprofile.js";
+import { EditProfile } from "../component/editprofile.js";
 import { Wlsub } from "../component/wlsub.js";
 
 export const Landing = () => {
@@ -70,7 +70,7 @@ export const Landing = () => {
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
-        {/* <EditProfile /> */}
+        <EditProfile />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
@@ -93,7 +93,7 @@ export const Landing = () => {
       <main className="main-body">
         <h2 className="streak-announcement">WHO WILL ACHIEVE {nextWinStreak} WIN STREAK?</h2>
         <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
-        {/* <Lineup /> */}
+        <Lineup />
         <div className="find-foe-section">
           <DaPaintList />
           <Wlsub/>

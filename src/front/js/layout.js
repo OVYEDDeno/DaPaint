@@ -5,6 +5,7 @@ import { BackendURL } from "./component/backendURL";
 import ProtectedRoute from "./component/ProtectedRoute";
 
 import { Home } from "./pages/home";
+import { About } from "./pages/about";
 import injectContext from "./store/appContext";
 
 import Auth from "./pages/auth";
@@ -34,6 +35,7 @@ const Layout = () => {
                 <ScrollToTop>
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<About />} path="/about" />
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Profile />} path="/profile" />
                         <Route element={<ProtectedRoute>

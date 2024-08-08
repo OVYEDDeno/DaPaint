@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
-import { EditProfile } from "../component/editprofile.js";
+// import { EditProfile } from "../component/editprofile.js";
 
 export const Profile = () => {
   const { store, actions } = useContext(Context);
@@ -47,10 +47,10 @@ export const Profile = () => {
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <EditProfile 
+              {/* <EditProfile 
                  setProfileData={setProfileData}
                  initialData={store.userData}
-              />
+              /> */}
 
               <table className="stats-table">
                 <tbody>
