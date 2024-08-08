@@ -129,14 +129,50 @@ const DaPaintList = ({ onClose }) => {
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-black">{event.distance}</div>
                     <div className="text-black">{event.date_time}</div>
-                    {event.hostFoeId !== store.userData.id && (
-                      <button
-                        className="bg-black text-white p-2 rounded"
-                        onClick={() => handleClockIn(event)}
-                      >
-                        CLOCK IN
-                      </button>
-                    )}
+                    {/* {event.hostFoeId !== store.userData.id && ( */}
+                    <button
+                      className="bg-black text-white p-2 rounded"
+                      onClick={() => handleClockIn(event)}
+                    >
+                      CLOCK IN
+                    </button>
+                    {/* )} */}
+
+                    {/* {events.map((event) => {
+                      console.log('Event hostFoeId:', event.hostFoeId); // Log the event's hostFoeId
+                      console.log('Current userId:', store.userData.id); // Log the current user's ID
+                      return (
+                        <div key={event.id} className="flex justify-between items-center mb-4">
+                          <div className="flex items-center">
+                            {event.hostFoeId ? (
+                              <>
+                                <img
+                                  src={`/path-to-${event.hostFoeId.name.toLowerCase()}-avatar.jpg`}
+                                  alt={event.hostFoeId.name}
+                                  className="w-8 h-8 rounded-full mr-2"
+                                />
+                                <span className="text-black">{event.hostFoeId.name}</span>
+                              </>
+                            ) : (
+                              <span className="text-black">Unknown Host</span>
+                            )}
+                          </div>
+                          <div className="text-gray-500">{event.location}</div>
+                          <div className="text-black">{event.distance}</div>
+                          <div className="text-black">{event.date_time}</div>
+                          {event.hostFoeId !== store.userData.id && (
+                            // Conditional to hide button
+                            <button
+                              className="bg-black text-white p-2 rounded"
+                              onClick={() => handleClockIn(event)}
+                            >
+                              CLOCK IN
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })} */}
+
                   </div>
                 ))}
               </div>
