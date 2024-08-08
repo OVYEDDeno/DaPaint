@@ -74,21 +74,44 @@ const DaPaintList = ({ onClose }) => {
     }
   };
 
+  // const addNewEvent = (newEvent) => {
+  //   setEvents((prevEvents) => [...prevEvents, newEvent]);
+  // };
+
+
+  // const handleAddEventClick = () => {
+  //   // Close the DaPaint modal and open DaPaintCreate
+  //   setShowDaPaintCreate(true);
+  //   const currentModal = document.getElementById('DaPaint');
+  //   const modal = bootstrap.Modal.getInstance(currentModal);
+  //   modal.hide();
+  // };
+
+  // const handleCloseDaPaintCreate = () => {
+  //   setShowDaPaintCreate(false);
+  // };
+
   const addNewEvent = (newEvent) => {
     setEvents((prevEvents) => [...prevEvents, newEvent]);
+    setShowDaPaintCreate(false); // Close DaPaintCreate
+    const currentModal = document.getElementById("DaPaint");
+    const modal = new bootstrap.Modal(currentModal);
+    modal.show(); // Reopen DaPaint modal
   };
-
 
   const handleAddEventClick = () => {
     // Close the DaPaint modal and open DaPaintCreate
     setShowDaPaintCreate(true);
-    const currentModal = document.getElementById('DaPaint');
+    const currentModal = document.getElementById("DaPaint");
     const modal = bootstrap.Modal.getInstance(currentModal);
     modal.hide();
   };
 
   const handleCloseDaPaintCreate = () => {
     setShowDaPaintCreate(false);
+    const currentModal = document.getElementById("DaPaint");
+    const modal = new bootstrap.Modal(currentModal);
+    modal.show(); // Reopen DaPaint modal
   };
 
   return (

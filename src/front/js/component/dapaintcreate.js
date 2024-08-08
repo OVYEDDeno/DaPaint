@@ -38,8 +38,12 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         const createdEvent = await response.json();
         console.log('Created event:', createdEvent);
         onAdd(createdEvent); // Update the event list in DaPaintList
-        // handleClose(); // Close the modal
-        onClose(); // Close the modal
+        
+        setLocation('');
+        setDate('');
+        setTime('');
+        setAmount('0');
+        // onClose(); 
       } else {
         const error = await response.json();
         console.error('Failed to create event:', error);
