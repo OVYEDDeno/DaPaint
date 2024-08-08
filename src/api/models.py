@@ -52,7 +52,7 @@ class User(db.Model):
 
 class DaPaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
     location = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)

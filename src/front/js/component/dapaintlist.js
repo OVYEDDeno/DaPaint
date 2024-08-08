@@ -78,16 +78,7 @@ const DaPaintList = ({ onClose }) => {
     setEvents((prevEvents) => [...prevEvents, newEvent]);
   };
 
-  // const handleAddEventClick = () => {
-  //   // Hide the current modal
-  //   const currentModal = document.getElementById('DaPaint');
-  //   const modal = bootstrap.Modal.getInstance(currentModal);
-  //   modal.hide();
 
-  //   // Show the new event modal
-  //   const newEventModal = new bootstrap.Modal(document.getElementById('DaPaintCreate'));
-  //   newEventModal.show();
-  // };
   const handleAddEventClick = () => {
     // Close the DaPaint modal and open DaPaintCreate
     setShowDaPaintCreate(true);
@@ -114,12 +105,17 @@ const DaPaintList = ({ onClose }) => {
             </div>
             <div className="modal-body">
               <div className="flex-1 bg-white text-black rounded-t-3xl mt-4 overflow-y-auto">
+
                 {events.map((event) => (
                   <div key={event.id} className="flex justify-between items-center mb-4">
                     <div className="flex items-center">
                       {event.hostFoeId ? (
                         <>
-                          <img src={`/path-to-${event.hostFoeId.name.toLowerCase()}-avatar.jpg`} alt={event.hostFoeId.name} className="w-8 h-8 rounded-full mr-2" />
+                          <img
+                            src={`/path-to-${event.hostFoeId.name.toLowerCase()}-avatar.jpg`}
+                            alt={event.hostFoeId.name}
+                            className="w-8 h-8 rounded-full mr-2"
+                          />
                           <span className="text-black">{event.hostFoeId.name}</span>
                         </>
                       ) : (
@@ -129,52 +125,17 @@ const DaPaintList = ({ onClose }) => {
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-black">{event.distance}</div>
                     <div className="text-black">{event.date_time}</div>
-                    {/* {event.hostFoeId !== store.userData.id && ( */}
-                    <button
-                      className="bg-black text-white p-2 rounded"
-                      onClick={() => handleClockIn(event)}
-                    >
-                      CLOCK IN
-                    </button>
-                    {/* )} */}
-
-                    {/* {events.map((event) => {
-                      console.log('Event hostFoeId:', event.hostFoeId); // Log the event's hostFoeId
-                      console.log('Current userId:', store.userData.id); // Log the current user's ID
-                      return (
-                        <div key={event.id} className="flex justify-between items-center mb-4">
-                          <div className="flex items-center">
-                            {event.hostFoeId ? (
-                              <>
-                                <img
-                                  src={`/path-to-${event.hostFoeId.name.toLowerCase()}-avatar.jpg`}
-                                  alt={event.hostFoeId.name}
-                                  className="w-8 h-8 rounded-full mr-2"
-                                />
-                                <span className="text-black">{event.hostFoeId.name}</span>
-                              </>
-                            ) : (
-                              <span className="text-black">Unknown Host</span>
-                            )}
-                          </div>
-                          <div className="text-gray-500">{event.location}</div>
-                          <div className="text-black">{event.distance}</div>
-                          <div className="text-black">{event.date_time}</div>
-                          {event.hostFoeId !== store.userData.id && (
-                            // Conditional to hide button
-                            <button
-                              className="bg-black text-white p-2 rounded"
-                              onClick={() => handleClockIn(event)}
-                            >
-                              CLOCK IN
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })} */}
-
+                    {event.hostFoeId?.id !== store.userData.id && event.hostFoeId ? (
+                      <button
+                        className="bg-black text-white p-2 rounded"
+                        onClick={() => handleClockIn(event)}
+                      >
+                        CLOCK IN
+                      </button>
+                    ) : null}
                   </div>
                 ))}
+
               </div>
             </div>
             <div className="modal-footer">
@@ -188,36 +149,25 @@ const DaPaintList = ({ onClose }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
-      {/* <div className="modal fade" id="DaPaintCreate" tabIndex="-1" aria-labelledby="DaPaintCreateLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="DaPaintCreateLabel">DA PAINT</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <DaPaintCreate onClose={onClose} username="YourUsername" profilePicture="path-to-profile-pic.jpg" onAdd={addNewEvent} />
-            </div>
-          </div>
-        </div>
-      </div> */}
-      {showDaPaintCreate && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog" aria-labelledby="DaPaintCreateLabel" aria-hidden="true">
-          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="DaPaintCreateLabel">DA PAINT</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button>
-              </div>
-              <div className="modal-body">
-                <DaPaintCreate onClose={handleCloseDaPaintCreate} username="YourUsername" profilePicture="path-to-profile-pic.jpg" onAdd={addNewEvent} />
+      {
+        showDaPaintCreate && (
+          <div className="modal fade show d-block" tabIndex="-1" role="dialog" aria-labelledby="DaPaintCreateLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="DaPaintCreateLabel">DA PAINT</h5>
+                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button>
+                </div>
+                <div className="modal-body">
+                  <DaPaintCreate onClose={handleCloseDaPaintCreate} username="YourUsername" profilePicture="path-to-profile-pic.jpg" onAdd={addNewEvent} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
     </>
   );
