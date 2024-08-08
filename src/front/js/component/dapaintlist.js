@@ -129,12 +129,14 @@ const DaPaintList = ({ onClose }) => {
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-black">{event.distance}</div>
                     <div className="text-black">{event.date_time}</div>
-                    <button
-                      className="bg-black text-white p-2 rounded"
-                      onClick={() => handleClockIn(event)}
-                    >
-                      CLOCK IN
-                    </button>
+                    {event.hostFoeId !== store.userData.id && (
+                      <button
+                        className="bg-black text-white p-2 rounded"
+                        onClick={() => handleClockIn(event)}
+                      >
+                        CLOCK IN
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
