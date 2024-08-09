@@ -8,7 +8,7 @@ import { Home } from "./pages/home";
 import { About } from "./pages/about";
 import injectContext from "./store/appContext";
 
-import Auth from "./pages/auth";
+import { Auth } from "./pages/auth";
 import { Landing } from "./pages/landing";
 import { Profile } from "./component/profile";
 import { Wlsub } from "./component/wlsub";

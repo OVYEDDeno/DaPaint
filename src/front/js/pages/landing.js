@@ -98,7 +98,7 @@ export const Landing = () => {
         <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
         <Lineup />
         <div className="find-foe-section">
-          <DaPaintList />
+          <DaPaintList /><p></p>
           <Wlsub/>
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>

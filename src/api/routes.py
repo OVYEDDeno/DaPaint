@@ -205,7 +205,13 @@ def get_current_user():
 @api.route('/users', methods=['GET'])
 @jwt_required()
 def get_all_users():
-    users = User.query.all()
+    search_term = request.args.get('search', '')
+    users = User.query.filter(
+        or_(
+            User.name.ilike(f"%{search_term}%"),
+            User.email.ilike(f"%{search_term}%")
+        )
+    ).all()
     return jsonify([user.serialize() for user in users]), 200
 
 # @api.route('/dapaint', methods=['POST'])
