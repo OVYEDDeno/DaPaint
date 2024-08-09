@@ -5,20 +5,7 @@ import "../../styles/profile.css"; // Assuming you will create this CSS file
 
 export const Profile = () => {
   const { store, actions } = useContext(Context);
-  const [user, setUser] = useState();
-  const [profileData, setProfileData] = useState({
-    total: 0,
-    wins: 0,
-    winsByKnockout: 0,
-    winsBySubmission: 0,
-    losses: 0,
-    lossesByKnockout: 0,
-    lossesBySubmission: 0,
-    disqualifications: 0
-  });
-
-  const username = "OVYEDDeno"; // Example username
-
+  
   useEffect(() => {
     actions.fetchCurrentUser();
   }, []);

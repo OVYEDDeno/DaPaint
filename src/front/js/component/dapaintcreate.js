@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 
@@ -8,6 +8,17 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [time, setTime] = useState('');
   const [amount, setAmount] = useState('0');
   const [error, setError] = useState(''); // State to handle errors
+  const [storedUsername, setStoredUsername] = useState('');
+
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if(storedUsername) {
+      username(storedUsername);
+    } else{
+
+    }
+  }, [])
 
   const handleCreate = async () => {
     if (!validateDateTime()) {
@@ -37,7 +48,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         const createdEvent = await response.json();
         console.log('Created event:', createdEvent);
         onAdd(createdEvent); // Update the event list in DaPaintList
-        
+
         setLocation('');
         setDate('');
         setTime('');
@@ -75,12 +86,12 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
 
   return (
     <div className="user-profile">
-      <div className="bg-black text-white rounded-full p-2 flex items-center mb-6">
+      <div className="bg-black text-white rounded-full p-2 flex items-center mb-2">
         <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" />
         <span>{username}</span>
       </div>
 
-      {error && <div className="text-red-500 mb-4">{error}</div>}
+
 
       <input
         type="text"
@@ -88,6 +99,8 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
       <div className="flex mb-4">
         <input
