@@ -80,7 +80,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			deleteEvent: async (eventId) => {
 				const token = localStorage.getItem("token");
 				try {
-					const response = await fetch(`${process.env.BACKEND_URL}api/dapaint/delete/${eventId}`, {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint/delete/${eventId}`, {
 						method: "DELETE",
 						headers: {
 							"Content-Type": "application/json",

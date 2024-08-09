@@ -176,14 +176,14 @@ const DaPaintList = ({ onClose }) => {
                       >
                         CLOCK IN
                       </button>
-                    ) :
+                    ) : (
                       <button
                         className="bg-black text-danger p-2 rounded"
                         onClick={() => handleDelete(event.id)}
                       >
                         DELETE
                       </button>
-                    }
+                    )}
                   </div>
                 ))}
               </div>
