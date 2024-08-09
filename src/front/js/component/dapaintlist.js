@@ -62,13 +62,23 @@ const DaPaintList = ({ onClose }) => {
           setEvents((prevEvents) =>
             prevEvents.map((evt) => (evt.id === updatedEvent.id ? updatedEvent : evt))
           );
+
+
+          closeCurrentModal('DaPaint');
+
+          const lineupModal = new bootstrap.Modal(document.getElementById('lineUp'));
+          lineupModal.show();
+
+          // window.location.reload();
         } else {
           const error = await response.json();
           console.error('Failed to clock in for event:', error);
         }
+
       } catch (error) {
         console.error('Error:', error);
       }
+
     }
   };
 
@@ -110,9 +120,16 @@ const DaPaintList = ({ onClose }) => {
     const hostFoeName = event.hostFoeId?.name ? event.hostFoeId.name.toLowerCase() : "";
     const foeName = event.foeId?.name ? event.foeId.name.toLowerCase() : "";
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
     return hostFoeName.includes(lowerCaseSearchTerm) || foeName.includes(lowerCaseSearchTerm);
   });
+
+  const closeCurrentModal = (modalId) => {
+    const currentModal = document.getElementById(modalId);
+    const modal = bootstrap.Modal.getInstance(currentModal);
+    if (modal) {
+      modal.hide();
+    }
+  };
 
   return (
     <>
