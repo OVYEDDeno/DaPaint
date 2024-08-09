@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 
 export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
+  const { store, actions } = useContext(Context);
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -11,14 +13,18 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [storedUsername, setStoredUsername] = useState('');
 
 
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if(storedUsername) {
-      username(storedUsername);
-    } else{
+  // useEffect(() => {
+  //   const storedUsername = localStorage.getItem("username");
+  //   if(storedUsername) {
+  //     username(storedUsername);
+  //   } else{
 
-    }
-  }, [])
+  //   }
+  // }, [])
+
+  useEffect(() => {
+    actions.fetchCurrentUser();
+  }, []);
 
   const handleCreate = async () => {
     if (!validateDateTime()) {
@@ -87,8 +93,9 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   return (
     <div className="user-profile">
       <div className="bg-black text-white rounded-full p-2 flex items-center mb-2">
-        <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" />
-        <span>{username}</span>
+        {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
+        {/* <span>{username}</span> */}
+        <span>{store.userData && store.userData.name}</span>
       </div>
 
 
@@ -116,7 +123,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
       </div>
 
       <input
-        type="text"
+        type="number"
         placeholder="AMOUNT"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}

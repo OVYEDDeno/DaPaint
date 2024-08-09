@@ -94,6 +94,16 @@ const DaPaintList = ({ onClose }) => {
     modal.show();
   };
 
+  const handleDelete = async (eventId) => {
+    const success = await actions.deleteEvent(eventId);
+    if (success) {
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+      const currentModal = document.getElementById("DaPaint");
+      const modal = new bootstrap.Modal(currentModal);
+      modal.show();
+    }
+  };
+
   // Add extensive logging to check the structure of each event
   console.log("Events Array:", events);
   const filteredEvents = events.filter(event => {
@@ -141,7 +151,7 @@ const DaPaintList = ({ onClose }) => {
                         <span className="text-black">Unknown Host</span>
                       )}
                     </div>
-                    <div className="vs">VS</div>
+                    {/* <div className="vs">VS</div>
                     <div className="flex items-center">
                       {event.foeId ? (
                         <>
@@ -155,10 +165,10 @@ const DaPaintList = ({ onClose }) => {
                       ) : (
                         <span className="text-black">Foe</span>
                       )}
-                    </div>
+                    </div> */}
                     <div className="text-gray-500">{event.location}</div>
-                    <div className="text-black">{event.distance}</div>
-                    <div className="text-black">{event.date_time}</div>
+                    <div className="text-gray-500">{event.distance}</div>
+                    <div className="text-gray-500">{event.date_time}</div>
                     {event.hostFoeId?.id !== store.userData.id && event.hostFoeId ? (
                       <button
                         className="bg-black text-white p-2 rounded"
@@ -166,7 +176,14 @@ const DaPaintList = ({ onClose }) => {
                       >
                         CLOCK IN
                       </button>
-                    ) : null}
+                    ) :
+                      <button
+                        className="bg-black text-danger p-2 rounded"
+                        onClick={() => handleDelete(event.id)}
+                      >
+                        DELETE
+                      </button>
+                    }
                   </div>
                 ))}
               </div>
