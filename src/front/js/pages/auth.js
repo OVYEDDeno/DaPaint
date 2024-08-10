@@ -59,9 +59,9 @@ export const Auth = () => {
                     console.log("Log in successful!");
                     console.log('Token:', result.access_token);
                 } else {
-                    
+
                     window.location.reload();
-                    localStorage.setItem("username". formData.name);
+                    localStorage.setItem("username".formData.name);
                 }
             } else {
                 setError({
@@ -182,6 +182,18 @@ export const Auth = () => {
                                     className="form-control"
                                     required />
                                 {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
+                                <div className="mb-3">
+                                    <label className="form-label">Invite Code</label>
+                                    <input
+                                        type="text"
+                                        name="InviteCode"
+                                        value={formData.InviteCode}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        required
+                                    />
+                                    {error.InviteCode && <div className="alert alert-danger" role="alert">{error.InviteCode}</div>}
+                                </div>
                                 <p>by signing up, you're agreeing to our terms of service and privacy policy. thanks!</p>
                             </div>
                         </>
@@ -209,18 +221,6 @@ export const Auth = () => {
                                     className="form-control"
                                     required />
                                 {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Invite Code</label>
-                                <input
-                                    type="text"
-                                    name="InviteCode"
-                                    value={formData.InviteCode}
-                                    onChange={handleChange}
-                                    className="form-control"
-                                    required
-                                />
-                                {error.InviteCode && <div className="alert alert-danger" role="alert">{error.InviteCode}</div>}
                             </div>
                         </>
                     )}

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
 
 body {
-  font-family: "Anton", sans-serif;
+  font-family: "Anton";
   font-weight: 40;
   font-style: normal;
 }
@@ -9,7 +9,6 @@ body {
 .landing-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   background-color: #000000;
   color: #000000;
   text-align: center;
