@@ -101,88 +101,37 @@ def handle_user_signup():
 
     return jsonify({'msg': 'User created successfully'}), 201
 
-# @api.route('/user/edit', methods=['POST'])
-# @jwt_required()
-# def handle_user_edit():
-#     user_id = get_jwt_identity()
-#     raw_data = request.form.get("data")
-#     picture = request.files.get("file")
-#     body = json.loads(raw_data)
-    
-#     email = body.get("email")
-#     name = body.get("name")
-#     city = body.get("city")
-#     zipcode = body.get("zipcode")
-#     phone = body.get("phone")
-#     birthday_str = body.get("birthday")
-#     birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
-    
-#     if not all([email, name, city, zipcode, phone, birthday]):
-#         return jsonify({"msg": "Some fields are missing in your request"}), 400
-    
-#     user = User.query.filter_by(id=user_id).one_or_none()
-#     if user is None:
-#         return jsonify({"msg": "No user found"}), 404
-
-#     if picture:
-#         response = cloudinary.uploader.upload(picture)
-#         if response.get('secure_url'):
-#             img = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
-#             db.session.add(img)
-#             db.session.commit()
-#         else:
-#             print("user img upload was not successful")
-
-#     user.email = email
-#     user.name = name
-#     user.city = city
-#     user.zipcode = zipcode
-#     user.phone = phone
-#     user.birthday = birthday
-#     db.session.commit()
-
-#     response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
-#     return jsonify(response_body), 200
+# Working route
 @api.route('/user/edit', methods=['PUT'])
 @jwt_required()
 def handle_user_edit():
-    user_id = get_jwt_identity()
-    raw_data = request.form.get("data")
-    picture = request.files.get("file")
-    body = json.loads(raw_data)
-    
-    user = User.query.filter_by(id=user_id).one_or_none()
+
+    email = request.json.get("email")
+    name = request.json.get("name")
+    city = request.json.get("city")
+    zipcode = request.json.get("zipcode")
+    phone = request.json.get("phone")
+    birthday = request.json.get("birthday")
+
+    if email is None or name is None or city is None or zipcode is None or phone is None or birthday is None:
+        return jsonify({"msg": "Some fields are missing in your request"}), 400
+
+    user = User.query.filter_by(id=get_jwt_identity()).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
-    # Update fields only if they are provided
-    if 'email' in body:
-        user.email = body['email']
-    if 'name' in body:
-        user.name = body['name']
-    if 'city' in body:
-        user.city = body['city']
-    if 'zipcode' in body:
-        user.zipcode = body['zipcode']
-    if 'phone' in body:
-        user.phone = body['phone']
-    if 'birthday' in body:
-        birthday_str = body['birthday']
-        user.birthday = datetime.strptime(birthday_str, '%Y-%m-%d').date() if birthday_str else None
-
-    if picture:
-        response = uploader.upload(picture)
-        if response.get('secure_url'):
-            img = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
-            db.session.add(img)
-            db.session.commit()
-        else:
-            print("User image upload was not successful")
+    user.email=email 
+    user.name=name   
+    user.city=city    
+    user.zipcode=zipcode    
+    user.phone=phone
+    user.birthday=birthday
 
     db.session.commit()
-
-    response_body = {"msg": "Account successfully edited!", "user": user.serialize()}
-    return jsonify(response_body), 200
+    db.session.refresh(user)
+    
+    response_body = {"msg": "Account succesfully edited!", "user":user.serialize()}
+    return jsonify(response_body), 201
 
 @api.route('/user/get-user/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -213,26 +162,6 @@ def get_all_users():
         )
     ).all()
     return jsonify([user.serialize() for user in users]), 200
-
-# @api.route('/dapaint', methods=['POST'])
-# def dapaint_create():
-#     hostFoeId = request.json.get("hostFoeId", None)
-#     foeId = request.json.get("foeId", None)
-#     location = request.json.get("location", None)
-#     date_time = request.json.get("dateTime", None)
-#     price = request.json.get("price", None)   
-#     winnerId = request.json.get("winnerId", None)
-#     loserId = request.json.get("loserId", None)
-    
-#     if hostFoeId is None or location is None or date_time is None or price is None:
-#         return jsonify({"msg": "Some fields are missing in your request"}), 400
-    
-#     dapaint = DaPaint(hostFoeId=hostFoeId, foeId=foeId, location=location, date_time=date_time, price=price, winnerId=winnerId, loserId=loserId)
-#     db.session.add(dapaint)
-#     db.session.commit()
-#     db.session.refresh(dapaint)
-#     response_body = {"msg": "DaPaint successfully created!", "dapaint": dapaint.serialize()}
-#     return jsonify(response_body), 201
 
 @api.route('/dapaint', methods=['POST'])
 @jwt_required()
@@ -293,17 +222,6 @@ def update_foe_id(event_id):
         db.session.commit()
         return jsonify(event.serialize()), 200
     return jsonify({'error': 'Event not found or invalid data'}), 404
-
-# @api.route('/lineup-by-user', methods=['GET'])
-# @jwt_required()
-# def get_dapaint_by_user():
-#     user_id = get_jwt_identity()
-#     user = User.query.filter_by(id=user_id).first()
-    
-#     if not user:
-#         return jsonify({"message": "User not found"}), 404
-
-#     # dapaint_records
     
 @api.route('/dapaint/delete/<int:id>', methods=['DELETE'])
 @jwt_required()

@@ -41,6 +41,7 @@ export const Landing = () => {
         console.error("Error fetching max win streak:", error);
       }
     };
+
     const fetchCurrentUser = async () => {
       try {
         const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {

@@ -18,52 +18,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					token: undefined
 				})
 			},
-			editUser: async (
-				email,
-				name,
-				city,
-				zipcode,
-				phone,
-				birthday,
-				img
-			) => {
-				let data = JSON.stringify({
-					email: email,
-					name: name,
-					city: city,
-					zipcode: zipcode,
-					phone: phone,
-					birthday: birthday
-				});
 
-				const formData = new FormData();
+			editUserbyUser: async (user) => {
+                const response = await fetch(
+                    process.env.BACKEND_URL + "/api/user/edit", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ email: user.email, name: user.name, city: user.city, zipcode: user.zipcode, phone: user.phone, birthday: user.birthday })
 
-				formData.append("data", data);
+                }
+                );
+                if (response.status !== 201) return false;
+                const responseBody = await response.json();
+                console.log(responseBody)
 
-				formData.append("file", img);
-
-				const opts = {
-					method: "PUT",
-
-					headers: {
-						Authorization: "Bearer " + localStorage.getItem("token"),
-					},
-					body: formData,
-				};
-				const resp = await fetch(
-					process.env.BACKEND_URL + "/api/user/edit",
-					opts
-				);
-				if (resp.status != 200) {
-					let errorMsg = await resp.json();
-					alert("An error occured while submitted the new member: " + errorMsg.msg)
-					return false;
-				}
-				const respBody = await resp.json();
-				console.log("This comes from backend", respBody);
-				return true;
-
-			},
+                return true;
+            },
+			
 			fetchCurrentUser: async () => {
 				try {
 					const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {

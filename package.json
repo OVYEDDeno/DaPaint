@@ -73,11 +73,18 @@
 		]
 	},
 	"dependencies": {
+		"@stripe/react-stripe-js": "^2.7.3",
+		"@stripe/stripe-js": "^4.2.0",
+		"axios": "^1.7.3",
+		"body-parser": "^1.20.2",
+		"cors": "^2.8.5",
+		"express": "^4.19.2",
 		"lucide-react": "^0.417.0",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.4",
 		"react-dom": "^16.8.4",
 		"react-polyfills": "0.0.1",
-		"react-router-dom": "^6.3.0"
+		"react-router-dom": "^6.3.0",
+		"stripe": "^16.7.0"
 	}
 }

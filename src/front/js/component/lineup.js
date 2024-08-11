@@ -52,6 +52,7 @@ export const Lineup = () => {
     matchup.user1.toLowerCase().includes(searchTerm.toLowerCase()) ||
     matchup.user2.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  //  handleBuyTicket
 
   return (
     <>
@@ -86,9 +87,9 @@ export const Lineup = () => {
                       <span>{matchup.user2}</span>
                     </div>
                     <div className="details">
-                      <span>{matchup.date}</span>
+                      <span>{matchup.date_time}</span>
                       <span>{matchup.time}</span>
-                      <span>CLOCK IT</span>
+                      {/* <button className= "btn" onClick={handleBuyTicket}>Clock It</button> */}
                       <span>{matchup.location}</span>
                     </div>
                   </div>
