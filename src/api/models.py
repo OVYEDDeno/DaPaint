@@ -47,7 +47,7 @@ class User(db.Model):
             "lossesByKO": self.lossesByKO,
             "lossesBySub": self.lossesBySub,
             "disqualifications": self.disqualifications,
-            "profile_pic": self.profile_pic.serialize()if self.profile_pic else None
+            "profile_pic": self.profile_pic.serialize() if self.profile_pic else None
         }
 
 class DaPaint(db.Model):

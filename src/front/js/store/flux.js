@@ -124,37 +124,59 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-			addUserImg: async (images) => {
-				try {
-					let formData = new FormData();
-					console.log(">>> 🍎 images:", images);
+			// addUserImg: async (images) => {
+			// 	try {
+			// 		let formData = new FormData();
+			// 		console.log(">>> 🍎 images:", images);
 
-					// Append all images to FormData
-					images.forEach((image, index) => {
-						formData.append(`file${index}`, image);
-					});
+			// 		// Append all images to FormData
+			// 		images.forEach((image, index) => {
+			// 			formData.append(`file${index}`, image);
+			// 		});
 
-					const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
-						method: "POST",
-						headers: {
-							Authorization: "Bearer " + localStorage.getItem("token")
-						},
-						body: formData
-					});
+			// 		const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
+			// 			method: "POST",
+			// 			headers: {
+			// 				Authorization: "Bearer " + localStorage.getItem("token")
+			// 			},
+			// 			body: formData
+			// 		});
 
-					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
-					}
+			// 		if (!response.ok) {
+			// 			throw new Error(`HTTP error! status: ${response.status}`);
+			// 		}
 
-					const responseBody = await response.json();
-					console.log("Response Body:", responseBody);
+			// 		const responseBody = await response.json();
+			// 		console.log("Response Body:", responseBody);
 
-					return true;
-				} catch (error) {
-					console.error("Error uploading image:", error);
-					return false;
-				}
-			}
+			// 		return true;
+			// 	} catch (error) {
+			// 		console.error("Error uploading image:", error);
+			// 		return false;
+			// 	}
+			// }
+
+			addUserImage: async (images) => {
+           
+                let formData = new FormData();
+                console.log(">>> 🍎 images:", images);
+                console.log(">>> 🍎 images:", images.images);
+                formData.append("file", images[0]);
+            
+
+                const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
+                    method: "POST",
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token")
+                    },
+                    body: formData
+                })
+                if (response.status !== 200) return false;
+                const responseBody = await response.json();
+                console.log(responseBody)
+                console.log("This is the Response Body")
+                return true;
+            }
 		}
 	};
 };

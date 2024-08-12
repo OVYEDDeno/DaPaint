@@ -24,10 +24,6 @@ export const EditProfile = () => {
     birthday: "",
   })
 
-  
-
-  
-
   useEffect(() => {
     actions.fetchCurrentUser();
   }, []);
@@ -61,6 +57,48 @@ export const EditProfile = () => {
       alert("Failed to update user data");
     }
   };
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const [imageSizeError, setImageSizeError] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  const placeholderImage = 'https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png'; // Path to your placeholder image
+	
+	const profileImageUrl = user.profile_photo?.image_url || placeholderImage;
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+    let file_size = event.target.files[0].size;
+    console.log(file_size)
+    if (file_size <= 100000) {
+      console.log(">>> files", files);
+      setImageSizeError(false)
+      const images = [];
+      for (let index = 0; index < files.length; index++) {
+        images.push(files.item(index));
+      }
+      setUploadedImages((prev) => ([
+        ...prev,
+        ...images
+      ]));
+    } else {
+      setImageSizeError(true)
+    }
+  };
+
+
+  const handleNewImage = async () => {
+    const success = await actions.addUserImage(uploadedImages);
+    if(success){
+      fetch(process.env.BACKEND_URL + "/api/user-img", {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+      })
+        .then(resp => resp.json())
+        .then(data => setUser(data))
+        .catch(error => console.log(error))
+    }
+  }
 
   return (
     <>
@@ -96,18 +134,43 @@ export const EditProfile = () => {
 
                 <div className="flex-1 p-4 bg-white text-black rounded-t-3xl mt-4">
                   <div className="flex items-center mb-6">
-                    <input
+                    {/* <input
                       type="file"
                       id="profile-picture"
                       className="form-control-file"
-                      // onChange={handleImageUpload}
-                    />
-                    <button
+                      onChange={handleImageUpload}
+                    /> */}
+                    {/* <button
                       className="btn btn-primary"
-                      // onClick={handleNewImg}
+                      onClick={handleNewImage}
                     >
                       Upload Photo
-                    </button>
+                    </button> */}
+                    <div className="text-center">
+                            <img
+                                src={profileImageUrl}
+                                alt="Profile Picture"
+                                className="rounded-circle img-fluid"
+                                style={{ width: '300px', height: '300px' }}
+                            />
+                            <input
+                                type="file"
+                                id="profile-picture"
+                                className="form-control-file"
+                                onChange={handleImageUpload}
+                            />
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleNewImage}
+                            >
+                                Upload Photo
+                            </button>
+                        </div>
+
+
+
+
+
                     <div className="space-y-2 flex-1">
                       <div className="bg-whit text-black p-2 rounded-full">
                         <input

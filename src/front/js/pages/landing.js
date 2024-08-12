@@ -72,7 +72,7 @@ export const Landing = () => {
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
-        <EditProfile />
+        <EditProfile   />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
