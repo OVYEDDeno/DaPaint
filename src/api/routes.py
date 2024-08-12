@@ -312,34 +312,44 @@ def act():
     db.session.commit()
     return jsonify({"msg": "Account status updated"}), 200
 
-@api.route('/update-win-streak', methods=['PUT'])
+@api.route('/update-win-streak/<int:id>', methods=['PUT'])
 @jwt_required()
-def update_win_streak():
+def update_win_streak(id):
+    user_id=get_jwt_identity()
     data = request.get_json()
-    host_vote = data.get('hostVote')
-    foe_vote = data.get('foeVote')
+    vote = data.get('vote')
+    daPaint_id = data.get('dapaint_id')
 
-    # Get the current user
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
-
-    # Update win streak and related statistics
-    if host_vote == 'yes':
+    daPaint = DaPaint.query.get(id)
+    if daPaint is None:
+        return jsonify({"msg": "No DaPaint found"}), 404 
+    
+    if vote not in ['winner', 'loser']:
+        return jsonify({"msg": "Invalid vote"}), 400
+    if daPaint.hostFoeId != user_id and daPaint.foeId != user_id:
+        return jsonify({"msg": "You can't vote on events you're not a part of"}), 403
+    
+    if vote == 'winner' and daPaint.winnerId is None:
+        daPaint.winnerId = user_id
         user.winstreak += 1
-        user.wins += 1
-    elif host_vote == 'no':
+    elif vote == 'winner' and daPaint.winnerId == user_id:
+        return jsonify({"msg": "You've already voted as a winner"}), 403
+    elif vote == 'winner' and daPaint.winnerId is not None:
+        return jsonify({"msg": "Another player claimed to be the winner, please contact admin if this is a mistake."}), 403
+    
+    elif vote == 'loser' and daPaint.loserId is None:
+        daPaint.loserId = user_id
         user.winstreak = 0
-        user.losses += 1
-
-    if foe_vote == 'yes':
-        user.winstreak += 1
-        user.wins += 1
-    elif foe_vote == 'no':
-        user.winstreak = 0
-        user.losses += 1
-
-    # Commit changes to the database
+    elif vote == 'loser' and daPaint.loserId == user_id:
+        return jsonify({"msg": "You've already voted as a loser"}), 403
+    elif vote == 'loser' and daPaint.loserId is not None:
+        return jsonify({"msg": "Another player claimed to be the loser, please contact admin if this is a mistake."}), 403
+    
     db.session.commit()
+    db.session.refresh(user)
+  
 
-    return jsonify({'winstreak': user.winstreak, 'wins': user.wins, 'losses': user.losses}), 200
+    return jsonify({"msg":"your winstreak has been updated", "user_winstreak":user.winstreak}), 200

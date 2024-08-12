@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import '../../styles/wlsub.css';
+import { Context } from "../store/appContext";
+
 
 export const Wlsub = () => {
   const [hostUser, setHostUser] = useState(null);
   const [foeUser, setFoeUser] = useState(null);
   const [hostVote, setHostVote] = useState(null);
+  const { store, actions } = useContext(Context);
   const [foeVote, setFoeVote] = useState(null);
 
   const handleFileUpload = (e, setUser) => {
@@ -13,40 +16,27 @@ export const Wlsub = () => {
 
   const handleHostVote = (vote) => {
     setHostVote(vote);
-    if (vote === 'yes') {
-      setFoeVote('no'); // Automatically set opponent's vote to 'no'
+    if (vote === 'winner') {
+      setFoeVote('loser'); // Automatically set opponent's vote to 'loser'
     }
   };
 
   const handleFoeVote = (vote) => {
     setFoeVote(vote);
-    if (vote === 'yes') {
-      setHostVote('no'); // Automatically set host's vote to 'no'
+    if (vote === 'winner') {
+      setHostVote('loser'); // Automatically set host's vote to 'loser'
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
-    if (!token) {
-      console.error('No token found');
-      return;}
-    try {
-      const response = await fetch(process.env.BACKEND_URL+'/api/update-win-streak', { // Ensure this matches your Flask app's URL prefix
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Include JWT token
-        },
-        body: JSON.stringify({ hostVote, foeVote }),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update win streak');
-      }
-      const data = await response.json();
-      console.log('Win streak updated:', data);
-    } catch (error) {
-      console.error('Error updating win streak:', error);
+    let dapaintId = 1
+    let result = await actions.updateWinstreak(dapaintId, hostVote);
+    if (result) {
+      alert("Winstreak has been updated");
+      actions.fetchCurrentUser(); // Refresh user data after update
+    } else {
+      alert("Failed to update win streak");
     }
   };
 
@@ -75,12 +65,12 @@ export const Wlsub = () => {
                     <div className="user-vote">
                       <button
                         type="button"
-                        style={{ backgroundColor: hostVote === 'yes' ? 'green' : 'black' }}
-                        onClick={() => handleHostVote('yes')}>Yes</button>
+                        style={{ backgroundColor: hostVote === 'winner' ? 'green' : 'black' }}
+                        onClick={() => handleHostVote('winner')}>Yes</button>
                       <button
                         type="button"
-                        style={{ backgroundColor: hostVote === 'no' ? 'red' : 'black' }}
-                        onClick={() => handleHostVote('no')}>No</button>
+                        style={{ backgroundColor: hostVote === 'loser' ? 'red' : 'black' }}
+                        onClick={() => handleHostVote('loser')}>No</button>
                     </div>
                   </div>
                   <div className="user-section">
@@ -88,12 +78,12 @@ export const Wlsub = () => {
                     <div className="user-vote">
                       <button
                         type="button"
-                        style={{ backgroundColor: foeVote === 'yes' ? 'green' : 'black' }}
-                        onClick={() => handleFoeVote('yes')}>Yes</button>
+                        style={{ backgroundColor: foeVote === 'winner' ? 'green' : 'black' }}
+                        onClick={() => handleFoeVote('winner')}>Yes</button>
                       <button
                         type="button"
-                        style={{ backgroundColor: foeVote === 'no' ? 'red' : 'black' }}
-                        onClick={() => handleFoeVote('no')}>No</button>
+                        style={{ backgroundColor: foeVote === 'loser' ? 'red' : 'black' }}
+                        onClick={() => handleFoeVote('loser')}>No</button>
                     </div>
                   </div>
                   <button type="submit">Submit</button>

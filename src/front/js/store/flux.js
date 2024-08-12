@@ -20,24 +20,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			editUserbyUser: async (user) => {
-                const response = await fetch(
-                    process.env.BACKEND_URL + "/api/user/edit", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`
-                    },
-                    body: JSON.stringify({ email: user.email, name: user.name, city: user.city, zipcode: user.zipcode, phone: user.phone, birthday: user.birthday })
+				const response = await fetch(
+					process.env.BACKEND_URL + "/api/user/edit", {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${localStorage.getItem("token")}`
+					},
+					body: JSON.stringify({ email: user.email, name: user.name, city: user.city, zipcode: user.zipcode, phone: user.phone, birthday: user.birthday })
 
-                }
-                );
-                if (response.status !== 201) return false;
-                const responseBody = await response.json();
-                console.log(responseBody)
+				}
+				);
+				if (response.status !== 201) return false;
+				const responseBody = await response.json();
+				console.log(responseBody)
 
-                return true;
-            },
-			
+				return true;
+			},
+
 			fetchCurrentUser: async () => {
 				try {
 					const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {
@@ -73,6 +73,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error("Error:", error);
 					return false;
+				}
+			},
+			updateWinstreak: async (daPaint_id, vote) => {
+				const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
+				if (!token) {
+					console.error('No token found');
+					return;
+				}
+				try {
+					const response = await fetch(process.env.BACKEND_URL + '/api/update-win-streak', {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						},
+						body: JSON.stringify({ daPaint_id, vote }),
+					});
+					if (response.status !== 200) {
+						console.log( response.status)
+						data = await response.json();
+						console.log(data);
+						return false;
+					}
+					const data = await response.json();
+					console.log(data);
+					return true;
+				} catch (error) {
+					console.error('Error updating win streak:', error);
 				}
 			},
 			resetWinStreak: async () => {
@@ -126,7 +154,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error uploading image:", error);
 					return false;
 				}
-			},
+			}
 		}
 	};
 };
