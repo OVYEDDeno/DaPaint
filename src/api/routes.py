@@ -311,3 +311,36 @@ def act():
         user.is_active=True
     db.session.commit()
     return jsonify({"msg": "Account status updated"}), 200
+
+@api.route('/update-win-streak', methods=['PUT'])
+@jwt_required()
+def update_win_streak():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    host_vote = data.get('hostVote')
+    foe_vote = data.get('foeVote')
+
+    # Get the current user
+    user = User.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "No user found"}), 404
+
+    # Update win streak and related statistics
+    if host_vote == 'yes':
+        user.winstreak += 1
+        user.wins += 1
+    elif host_vote == 'no':
+        user.winstreak = 0
+        user.losses += 1
+
+    if foe_vote == 'yes':
+        user.winstreak += 1
+        user.wins += 1
+    elif foe_vote == 'no':
+        user.winstreak = 0
+        user.losses += 1
+
+    # Commit changes to the database
+    db.session.commit()
+
+    return jsonify({'winstreak': user.winstreak, 'wins': user.wins, 'losses': user.losses}), 200
