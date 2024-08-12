@@ -70,7 +70,7 @@ export const EditProfile = () => {
 
             <div className="profile-picture-section">
               <img
-                src={previewURL}
+                src={setPreviewURL}
                 alt="Profile"
                 className="profile-picture" />
               <div className="profile-name">{store.userData && store.userData.name}</div>

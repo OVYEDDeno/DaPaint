@@ -9,6 +9,9 @@
   margin: auto;
 }
 
+.profile-modal {
+ background-color: white;
+}
 .profile-header {
   display: flex;
   justify-content: space-between;

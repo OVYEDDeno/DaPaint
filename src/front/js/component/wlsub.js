@@ -27,9 +27,12 @@ export const Wlsub = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('accessToken'); // Assuming JWT is stored in localStorage
+    const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
+    if (!token) {
+      console.error('No token found');
+      return;}
     try {
-      const response = await fetch('/api/update-win-streak', { // Ensure this matches your Flask app's URL prefix
+      const response = await fetch(process.env.BACKEND_URL+'/api/update-win-streak', { // Ensure this matches your Flask app's URL prefix
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

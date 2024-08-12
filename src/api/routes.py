@@ -315,13 +315,12 @@ def act():
 @api.route('/update-win-streak', methods=['PUT'])
 @jwt_required()
 def update_win_streak():
-    user_id = get_jwt_identity()
     data = request.get_json()
     host_vote = data.get('hostVote')
     foe_vote = data.get('foeVote')
 
     # Get the current user
-    user = User.query.get(user_id)
+    user = User.query.filter_by(id=user_id).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 

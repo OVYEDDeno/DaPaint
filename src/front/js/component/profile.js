@@ -43,7 +43,7 @@ export const Profile = () => {
                 <tbody>
                   <tr>
                     <td>Total</td>
-                    <td>{store.userData && store.userData.wins + store.userData.losses}</td>
+                    <td className="total">{store.userData && store.userData.wins + store.userData.losses}</td>
                   </tr>
                   <tr>
                     <td>Wins</td>
