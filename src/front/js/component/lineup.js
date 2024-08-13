@@ -40,9 +40,10 @@ export const Lineup = () => {
     .filter(event => event.hostFoeId)
     .map(event => ({
       id: event.id,
-      date: event.date,
-      time: event.time,
-      location: `${event.location} ${event.distance}`,
+      date: event.date_time,
+      // time: event.time,
+      // location: `${event.location} ${event.distance}`,
+      location: `${event.location}`,
       user1: event.hostFoeId.name,
       user2: event.foeId ? event.foeId.name : 'Unknown'
     }));
@@ -88,9 +89,10 @@ export const Lineup = () => {
                     </div>
                     <div className="details">
                       <span>{matchup.date_time}</span>
-                      <span>{matchup.time}</span>
+                      {/* <span>{matchup.time}</span> */}
                       {/* <button className= "btn" onClick={handleBuyTicket}>Clock It</button> */}
                       <span>{matchup.location}</span>
+
                     </div>
                   </div>
                 ))}

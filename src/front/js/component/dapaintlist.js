@@ -63,13 +63,22 @@ const DaPaintList = ({ onClose }) => {
             prevEvents.map((evt) => (evt.id === updatedEvent.id ? updatedEvent : evt))
           );
 
+          // const eventsToDelete = events.filter(evt => evt.hostFoeId === userId && evt.foeId);
+          // for (const evt of eventsToDelete) {
+          //   await handleDelete(evt.id);
+          // }
+
+          // const eventsToDelete = events.filter(evt => evt.hostFoeId.id === userId && !evt.foeId);
+          // for (const evt of eventsToDelete) {
+          //   await handleDelete(evt.id);
+          // }
 
           closeCurrentModal('DaPaint');
 
-          const lineupModal = new bootstrap.Modal(document.getElementById('lineUp'));
-          lineupModal.show();
+          // const lineupModal = new bootstrap.Modal(document.getElementById('lineUp'));
+          // lineupModal.show();
 
-          // window.location.reload();
+          window.location.reload();
         } else {
           const error = await response.json();
           console.error('Failed to clock in for event:', error);

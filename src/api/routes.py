@@ -10,6 +10,10 @@ import re, json, os
 import cloudinary.uploader as uploader
 from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
+# from mailersend import emails
+# from dotenv import load_dotenv
+
+# load_dotenv()
 
 api = Blueprint('api', __name__)
 
@@ -374,3 +378,45 @@ def update_win_streak(id):
   
 
     return jsonify({"msg":"your winstreak has been updated", "user_winstreak":user.winstreak}), 200
+
+
+
+# @api.route('/send-email', methods=['POST'])
+# @jwt_required()
+# def send_email():
+#     data = request.get_json()
+#     recipient_email = data.get('recipient_email')
+#     subject = data.get('subject')
+#     html_content = data.get('html_content')
+
+#     if not recipient_email or not subject or not html_content:
+#         return jsonify({"msg": "Missing email, subject, or content"}), 400
+
+#     # Initialize MailerSend client
+#     mailer = emails.NewEmail('mlsn.4e8f89a7bf3ec8960c46b4b885d5d03b49debe9b58383257d244e39e0effabe6')
+
+#     mail_body = {}
+
+#     mail_from = {
+#         "name": "Diddy",
+#         "email": "ovyedlabs@gmail.com",
+#     }
+
+#     recipients = [
+#         {
+#             "name": "Recipient Name",
+#             "email": recipient_email,
+#         }
+#     ]
+
+#     mailer.set_mail_from(mail_from, mail_body)
+#     mailer.set_mail_to(recipients, mail_body)
+#     mailer.set_subject(subject, mail_body)
+#     mailer.set_html_content(html_content, mail_body)
+#     mailer.set_plaintext_content("This is a plain text version of the email.", mail_body)
+
+#     try:
+#         mailer.send(mail_body)
+#         return jsonify({"msg": "Email sent successfully"}), 200
+#     except Exception as e:
+#         return jsonify({"msg": "Failed to send email", "error": str(e)}), 500

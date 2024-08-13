@@ -97,10 +97,14 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         {/* <span>{username}</span> */}
         <span>{store.userData && store.userData.name}</span>
       </div>
+      
+      <label class="form-label" for="stateSelect">Fitness Style:</label>
+      <select class="form-select" id="sportSelect" name="sport">
+        <option value="boxing">Boxing</option>
+        <option value="break dancing">Breaking Dancing</option>
+      </select>
 
-
-
-      <input
+      <label class="form-label" for="stateSelect">Select a Location:</label><input
         type="text"
         placeholder="LOCATION"
         value={location}
@@ -108,21 +112,21 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
-
-      <div className="flex mb-4">
+      
+      <label class="form-label" for="stateSelect">Select a Date:</label><div className="flex mb-4">
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className="w-1/2 p-2 mr-2 border-b border-gray-300 focus:outline-none" />
-        <input
+        <label class="form-label" for="stateSelect">Select a Time:</label><input
           type="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
       </div>
 
-      <input
+      <label class="form-label" for="stateSelect">Ticket Prices:</label><input
         type="number"
         placeholder="AMOUNT"
         value={amount}
