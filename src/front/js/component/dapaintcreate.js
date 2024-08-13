@@ -92,19 +92,20 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
 
   return (
     <div className="user-profile">
-      <div className="bg-black text-white rounded-full p-2 flex items-center mb-2">
+      <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
         {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
         {/* <span>{username}</span> */}
+        <span>{store.userData && store.userData.profilePicture}</span>
         <span>{store.userData && store.userData.name}</span>
       </div>
-      
+
       <label class="form-label" for="stateSelect">Fitness Style:</label>
-      <select class="form-select" id="sportSelect" name="sport">
+      <select class="form-select" id="fitnessSelect" name="fitness">
         <option value="boxing">Boxing</option>
         <option value="break dancing">Breaking Dancing</option>
       </select>
 
-      <label class="form-label" for="stateSelect">Select a Location:</label><input
+      <label class="form-label" for="locationSelect">Select a Location:</label><input
         type="text"
         placeholder="LOCATION"
         value={location}
@@ -112,19 +113,24 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
-      
-      <label class="form-label" for="stateSelect">Select a Date:</label><div className="flex mb-4">
+
+      <div className="flex mb-4">
+        <label className="form-label mr-4" for="stateSelect">Select a Date:</label>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-1/2 p-2 mr-2 border-b border-gray-300 focus:outline-none" />
-        <label class="form-label" for="stateSelect">Select a Time:</label><input
+          className="w-1/2 p-2 mr-6 border-b border-gray-300 focus:outline-none"
+        /><div><p></p></div>
+        <label className="form-label mr-4" for="timeSelect">Select a Time:</label>
+        <input
           type="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
+          className="w-1/2 p-2 border-b border-gray-300 focus:outline-none"
+        />
       </div>
+
 
       <label class="form-label" for="stateSelect">Ticket Prices:</label><input
         type="number"
