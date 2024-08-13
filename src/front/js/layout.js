@@ -9,6 +9,7 @@ import { About } from "./pages/about";
 import injectContext from "./store/appContext";
 
 import { Auth } from "./pages/auth";
+import { Code } from "./pages/code";
 import { Landing } from "./pages/landing";
 // import { Profile } from "./component/profile";
 // import { Wlsub } from "./component/wlsub";
@@ -37,6 +38,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<About />} path="/about" />
                         <Route element={<Auth />} path="/auth" />
+                        <Route element={<Code />} path="/code" />
                         {/* <Route element={<Profile />} path="/profile" /> */}
                         <Route element={<ProtectedRoute>
                             <Landing />
