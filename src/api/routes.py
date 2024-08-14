@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, WSH
+from api.models import db, User, DaPaint, UserImg, WSH, InviteCode
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_
@@ -12,12 +12,9 @@ from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
 from mailersend import emails
 
-
-
 api = Blueprint('api', __name__)
 
 WINSTREAK_GOAL=os.getenv("WINSTREAK_GOAL")or 30
-
 
 # Allow CORS requests to this API
 CORS(api)
@@ -428,6 +425,10 @@ def create_invite_code():
     if not user:
         return jsonify({"msg": "User not found"}), 404
     
+    # Check if the user has enough invites available
+    if user.invites <= 0:
+        return jsonify({"msg": "No invites available"}), 400
+    
     # Generate a new invite code
     new_code = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}-{user_id}"
     invite_code = InviteCode(code=new_code, user_id=user_id)
@@ -435,56 +436,22 @@ def create_invite_code():
     db.session.add(invite_code)
     db.session.commit()
     
-    return jsonify(invite_code.serialize()), 201
-
-@api.route('/invite-code/<int:code_id>', methods=['GET'])
-@jwt_required()
-def get_invite_code(code_id):
-    invite_code = InviteCode.query.get(code_id)
-    if not invite_code:
-        return jsonify({"msg": "Invite code not found"}), 404
-    
-    return jsonify(invite_code.serialize()), 200
-
-@api.route('/invite-code/<int:code_id>', methods=['DELETE'])
-@jwt_required()
-def delete_invite_code(code_id):
-    invite_code = InviteCode.query.get(code_id)
-    if not invite_code:
-        return jsonify({"msg": "Invite code not found"}), 404
-    
-    db.session.delete(invite_code)
+    # Decrement the user's invite count
+    user.invites -= 1
     db.session.commit()
     
-    return jsonify({"msg": "Invite code deleted successfully"}), 200
+    return jsonify(invite_code.serialize()), 201
 
 @api.route('/invite-code/use', methods=['POST'])
+@jwt_required()
 def use_invite_code():
-    data = request.get_json()
-    input_code = data.get('code')
-    
-    invite_code = InviteCode.query.filter_by(code=input_code, is_used=False).first()
+    code = request.json.get('code')
+    invite_code = InviteCode.query.filter_by(code=code).first()
     if not invite_code:
-        return jsonify({"msg": "Invalid or already used invite code"}), 404
+        return jsonify({"msg": "Invalid invite code"}), 404
     
     # Mark the invite code as used
     invite_code.is_used = True
-    db.session.delete(invite_code)  # Alternatively, you can delete the code
     db.session.commit()
     
     return jsonify({"msg": "Invite code used successfully"}), 200
-
-@api.route('/invite-code', methods=['POST'])
-def generate_invite_code():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    
-    if user_id is None:
-        return jsonify({'error': 'User ID is required'}), 400
-
-    # Generate a random invitation code
-    invite_code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-    
-    # You would typically save the invite code along with the user_id in your database here
-    
-    return jsonify({'invite_code': invite_code})

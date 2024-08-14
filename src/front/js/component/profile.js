@@ -29,10 +29,10 @@ export const Profile = () => {
       <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="profileModalLabel">Profile</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+          <div className="modal-header d-flex justify-content-between align-items-center">
+              <h1 className="modal-title text-2xl font-bold mx-auto" id="profileModalLabel">Profile</h1>
+              <button type="button" className="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>            
             <div class="modal-body">
               {/* <EditProfile 
                  setProfileData={setProfileData}

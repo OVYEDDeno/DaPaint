@@ -60,8 +60,16 @@ export const Invite = ({ onClose }) => {
       console.log('Generated invite code:', data.code);
     })
     .catch(error => {
-      console.error('Error generating invite code:', error);
-      alert('Error generating invite code. Please try again.');
+      if (error.message.includes('401')) {
+        console.error('Unauthorized error:', error);
+        alert('Please login to generate invite codes.');
+      } else if (error.message.includes('404')) {
+        console.error('Not found error:', error);
+        alert('Invalid request. Please try again.');
+      } else {
+        console.error('Error generating invite code:', error);
+        alert('Error generating invite code. Please try again.');
+      }
     });
   };
 

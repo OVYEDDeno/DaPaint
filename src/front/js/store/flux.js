@@ -1,8 +1,11 @@
+import DaPaintList from "../component/dapaintlist";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			users: [],
 			dapaints: [],
+			daPaintList: [],
 			userId: undefined,
 			userData: {},
 			dapaintId: undefined,
@@ -51,6 +54,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error fetching current user:", error);
 				}
 			},
+
+			getDaPaintList: async () => {
+				const token = localStorage.getItem("token");
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/lineup?isaccepted=1`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${token}`
+						},
+					});
+
+					if (response.ok) {
+						const eventList = await response.json();
+						setStore({ daPaintList: eventList });
+					} else {
+						const error = await response.json();
+						console.error('Failed to retrieve list of events:', error);
+					}
+				} catch (error) {
+					console.error('Error:', error);
+				}
+			},
 			deleteEvent: async (eventId) => {
 				const token = localStorage.getItem("token");
 				try {
@@ -91,7 +117,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify({ daPaint_id, vote }),
 					});
 					if (response.status !== 200) {
-						console.log( response.status)
+						console.log(response.status)
 						data = await response.json();
 						console.log(data);
 						return false;
@@ -157,26 +183,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// }
 
 			addUserImage: async (images) => {
-           
-                let formData = new FormData();
-                console.log(">>> 🍎 images:", images);
-                console.log(">>> 🍎 images:", images.images);
-                formData.append("file", images[0]);
-            
 
-                const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
-                    method: "POST",
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    },
-                    body: formData
-                })
-                if (response.status !== 200) return false;
-                const responseBody = await response.json();
-                console.log(responseBody)
-                console.log("This is the Response Body")
-                return true;
-            }, 
+				let formData = new FormData();
+				console.log(">>> 🍎 images:", images);
+				console.log(">>> 🍎 images:", images.images);
+				formData.append("file", images[0]);
+
+
+				const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
+					method: "POST",
+					headers: {
+						Authorization: "Bearer " + localStorage.getItem("token")
+					},
+					body: formData
+				})
+				if (response.status !== 200) return false;
+				const responseBody = await response.json();
+				console.log(responseBody)
+				console.log("This is the Response Body")
+				return true;
+			},
 			setInviteCode: (newCode) => {
 				const store = getStore();
 				setStore({ inviteCode: newCode });
