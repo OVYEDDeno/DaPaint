@@ -10,10 +10,9 @@ import re, json, os
 import cloudinary.uploader as uploader
 from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
-# from mailersend import emails
-# from dotenv import load_dotenv
+from mailersend import emails
 
-# load_dotenv()
+
 
 api = Blueprint('api', __name__)
 
@@ -381,42 +380,111 @@ def update_win_streak(id):
 
 
 
-# @api.route('/send-email', methods=['POST'])
-# @jwt_required()
-# def send_email():
-#     data = request.get_json()
-#     recipient_email = data.get('recipient_email')
-#     subject = data.get('subject')
-#     html_content = data.get('html_content')
+@api.route('/send-email', methods=['POST'])
+@jwt_required()
+def send_email():
+    data = request.get_json()
+    recipient_email = data.get('recipient_email')
+    subject = data.get('subject')
+    html_content = data.get('html_content')
 
-#     if not recipient_email or not subject or not html_content:
-#         return jsonify({"msg": "Missing email, subject, or content"}), 400
+    if not recipient_email or not subject or not html_content:
+        return jsonify({"msg": "Missing email, subject, or content"}), 400
 
-#     # Initialize MailerSend client
-#     mailer = emails.NewEmail('mlsn.4e8f89a7bf3ec8960c46b4b885d5d03b49debe9b58383257d244e39e0effabe6')
+    # Initialize MailerSend client
+    mailer = emails.NewEmail('mlsn.4e8f89a7bf3ec8960c46b4b885d5d03b49debe9b58383257d244e39e0effabe6')
 
-#     mail_body = {}
+    mail_body = {}
 
-#     mail_from = {
-#         "name": "Diddy",
-#         "email": "ovyedlabs@gmail.com",
-#     }
+    mail_from = {
+        "name": "Diddy",
+        "email": "ovyedlabs@gmail.com",
+    }
 
-#     recipients = [
-#         {
-#             "name": "Recipient Name",
-#             "email": recipient_email,
-#         }
-#     ]
+    recipients = [
+        {
+            "name": "Recipient Name",
+            "email": recipient_email,
+        }
+    ]
 
-#     mailer.set_mail_from(mail_from, mail_body)
-#     mailer.set_mail_to(recipients, mail_body)
-#     mailer.set_subject(subject, mail_body)
-#     mailer.set_html_content(html_content, mail_body)
-#     mailer.set_plaintext_content("This is a plain text version of the email.", mail_body)
+    mailer.set_mail_from(mail_from, mail_body)
+    mailer.set_mail_to(recipients, mail_body)
+    mailer.set_subject(subject, mail_body)
+    mailer.set_html_content(html_content, mail_body)
+    mailer.set_plaintext_content("This is a plain text version of the email.", mail_body)
 
-#     try:
-#         mailer.send(mail_body)
-#         return jsonify({"msg": "Email sent successfully"}), 200
-#     except Exception as e:
-#         return jsonify({"msg": "Failed to send email", "error": str(e)}), 500
+    try:
+        mailer.send(mail_body)
+        return jsonify({"msg": "Email sent successfully"}), 200
+    except Exception as e:
+        return jsonify({"msg": "Failed to send email", "error": str(e)}), 500
+
+@api.route('/invite-code', methods=['POST'])
+@jwt_required()
+def create_invite_code():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    
+    # Generate a new invite code
+    new_code = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}-{user_id}"
+    invite_code = InviteCode(code=new_code, user_id=user_id)
+    
+    db.session.add(invite_code)
+    db.session.commit()
+    
+    return jsonify(invite_code.serialize()), 201
+
+@api.route('/invite-code/<int:code_id>', methods=['GET'])
+@jwt_required()
+def get_invite_code(code_id):
+    invite_code = InviteCode.query.get(code_id)
+    if not invite_code:
+        return jsonify({"msg": "Invite code not found"}), 404
+    
+    return jsonify(invite_code.serialize()), 200
+
+@api.route('/invite-code/<int:code_id>', methods=['DELETE'])
+@jwt_required()
+def delete_invite_code(code_id):
+    invite_code = InviteCode.query.get(code_id)
+    if not invite_code:
+        return jsonify({"msg": "Invite code not found"}), 404
+    
+    db.session.delete(invite_code)
+    db.session.commit()
+    
+    return jsonify({"msg": "Invite code deleted successfully"}), 200
+
+@api.route('/invite-code/use', methods=['POST'])
+def use_invite_code():
+    data = request.get_json()
+    input_code = data.get('code')
+    
+    invite_code = InviteCode.query.filter_by(code=input_code, is_used=False).first()
+    if not invite_code:
+        return jsonify({"msg": "Invalid or already used invite code"}), 404
+    
+    # Mark the invite code as used
+    invite_code.is_used = True
+    db.session.delete(invite_code)  # Alternatively, you can delete the code
+    db.session.commit()
+    
+    return jsonify({"msg": "Invite code used successfully"}), 200
+
+@api.route('/invite-code', methods=['POST'])
+def generate_invite_code():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    
+    if user_id is None:
+        return jsonify({'error': 'User ID is required'}), 400
+
+    # Generate a random invitation code
+    invite_code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    
+    # You would typically save the invite code along with the user_id in your database here
+    
+    return jsonify({'invite_code': invite_code})

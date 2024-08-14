@@ -1,30 +1,40 @@
 import React, { useState, useContext } from "react";
 import "../../styles/profile.css";
-import { AppContext } from "../store/appContext";
-
+import { Context } from '../store/appContext';
 
 export const Invite = ({ onClose }) => {
   const [invites, setInvites] = useState(3);
-  const [inviteCode, setInviteCode] = useState('');
+  const [inviteCodeList, setInviteCodeList] = useState([]);
+  const { store, actions } = useContext(Context);
+  const { inviteCode } = store;
+  const { setInviteCode } = actions;
 
   // Function to handle sending an invite
   const handleSendInvite = () => {
     if (invites > 0) {
-      fetch('/api/send-invite', {
+      fetch('/api/invite-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ /* invite data */ }),
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ensure token is included
+        }
       })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Invite sent:', data);
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+          console.log('Invite code created:', data);
+          setInviteCode(data.code); // Set the invite code in the context
+          setInviteCodeList([...inviteCodeList, data.code]); // Add to list of invite codes
           setInvites(invites - 1); // Decrease invite count
-        })
-        .catch(error => {
-          console.error('Error sending invite:', error);
-        });
+      })
+      .catch(error => {
+          console.error('Error creating invite code:', error);
+          alert('Error creating invite code. Please try again.');
+      });
     } else {
       alert('No invites left');
     }
@@ -32,75 +42,113 @@ export const Invite = ({ onClose }) => {
 
   // Function to generate an invite code
   const handleGenerateInviteCode = () => {
-    const newCode = `INV-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    setInviteCode(newCode);
-    console.log('Generated invite code:', newCode);
+    fetch('/api/invite-code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      setInviteCode(data.code); // Use the action to update inviteCode
+      console.log('Generated invite code:', data.code);
+    })
+    .catch(error => {
+      console.error('Error generating invite code:', error);
+      alert('Error generating invite code. Please try again.');
+    });
   };
 
-  export const Invite = ({ onClose }) => {
-    const [invites, setInvites] = useState(3);
-    const { setInviteCode } = useContext(AppContext);
+  // Function to use an invite code
+  const handleUseInviteCode = (code) => {
+    fetch('/api/invite-code/use', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Invite code used:', data);
+      setInviteCodeList(inviteCodeList.filter(c => c !== code)); // Remove used code from the list
+    })
+    .catch(error => {
+      console.error('Error using invite code:', error);
+      alert('Error using invite code. Please try again.');
+    });
+  };
 
-    const handleGenerateInviteCode = () => {
-      const newCode = `INV-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      setInviteCode(newCode);
-      console.log('Generated invite code:', newCode);
-    };
-
-    return (
-      <>
-        <button type="button" className="btn" data-bs-toggle="modal" data-bs-target="#invite">
-          INVITE
-        </button>
-
-        <div className="modal fade" id="invite" tabIndex="-1" aria-labelledby="invite" aria-hidden="true">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2 className="text-2xl font-bold flex justify-between items-center mb-4">INVITE</h2>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  return (
+    <>
+      <button type="button" className="btn" data-bs-toggle="modal" data-bs-target="#invite">
+        INVITE
+      </button>
+      <div className="modal fade" id="invite" tabIndex="-1" aria-labelledby="invite" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 className="text-2xl font-bold flex justify-between items-center mb-4">INVITE</h2>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              <p className="text-center mb-4">WHO&apos;S A GREAT POTENTIAL ADDITION TO DIDDY?</p>
+              <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
+                <span>You have {invites} invites</span>
+                <span>▼</span>
               </div>
-              <div className="modal-body">
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white rounded-lg p-6 w-80">
-                    <p className="text-center mb-4">WHO'S A GREAT POTENTIAL ADDITION TO DIDDY?</p>
-                    <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
-                      <span>You have {invites} invites</span>
-                      <span>▼</span>
-                    </div>
-                    <button
-                      className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
-                      onClick={handleSendInvite}
-                    >
-                      <span className="mr-2">+</span>
-                      <span>0.01</span>
-                    </button>
-                    <div className="mb-4">
-                      <button
-                        className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
-                        onClick={handleGenerateInviteCode}
-                      >
-                        Generate Invite Code
-                      </button>
-                      {inviteCode && (
-                        <p className="text-center text-black mt-2">Invite Code: {inviteCode}</p>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-bold mb-2">NOTIFICATIONS</h3>
-                      <p>OVYEDDENO CLOCK YOUR MATCH</p>
-                      <p>OVYEDDENO ACCEPTED YOUR MATCH</p>
-                    </div>
-                  </div>
-                </div>
+              <button
+                className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
+                onClick={handleSendInvite}
+              >
+                <span className="mr-2">+</span>
+                <span>Send Invite</span>
+              </button>
+              <div className="mb-4">
+                <button
+                  className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
+                  onClick={handleGenerateInviteCode}
+                >
+                  Generate Invite Code
+                </button>
+                {inviteCode && (
+                  <p className="text-center text-black mt-2">Invite Code: {inviteCode}</p>
+                )}
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary">Save changes</button>
+              <div>
+                <h3 className="font-bold mb-2">NOTIFICATIONS</h3>
+                <p>OVYEDDENO CLOCK YOUR MATCH</p>
+                <p>OVYEDDENO ACCEPTED YOUR MATCH</p>
               </div>
+              <div>
+                <h3 className="font-bold mb-2">Your Invite Codes</h3>
+                <ul>
+                  {inviteCodeList.map((code, index) => (
+                    <li key={index}>
+                      {code} <button onClick={() => handleUseInviteCode(code)}>Use Code</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};

@@ -176,7 +176,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log(responseBody)
                 console.log("This is the Response Body")
                 return true;
-            }
+            }, 
+			setInviteCode: (newCode) => {
+				const store = getStore();
+				setStore({ inviteCode: newCode });
+			}
 		}
 	};
 };

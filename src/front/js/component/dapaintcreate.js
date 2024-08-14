@@ -77,6 +77,12 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
       setError('Please select a valid time.');
       return false;
     }
+    const handleCloseDaPaintCreate = () => {
+      setShowDaPaintCreate(false);
+      const currentModal = document.getElementById("DaPaint");
+      const modal = new bootstrap.Modal(currentModal);
+      modal.show();
+    };
 
     const selectedDateTime = new Date(`${date}T${time}`);
     const now = new Date();
@@ -91,60 +97,61 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   };
 
   return (
-    <div className="user-profile">
-      <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
-        {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
-        {/* <span>{username}</span> */}
-        <span>{store.userData && store.userData.profilePicture}</span>
-        <span>{store.userData && store.userData.name}</span>
-      </div>
+    <><div className="modal-header">
+      <h1 className="modal-title text-2xl font-bold" id="DaPaintLabel">DA PAINT</h1>
+      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button>
+    </div><div className="user-profile">
+        <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
+          {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
+          {/* <span>{username}</span> */}
+          <span>{store.userData && store.userData.profilePicture}</span>
+          <span>{store.userData && store.userData.name}</span>
+        </div>
 
-      <label class="form-label" for="stateSelect">Fitness Style:</label>
-      <select class="form-select" id="fitnessSelect" name="fitness">
-        <option value="boxing">Boxing</option>
-        <option value="break dancing">Breaking Dancing</option>
-      </select>
+        <label class="form-label" for="stateSelect">Fitness Style:</label>
+        <select class="form-select" id="fitnessSelect" name="fitness">
+          <option value="boxing">Boxing</option>
+          <option value="break dancing">Breaking Dancing</option>
+        </select>
 
-      <label class="form-label" for="locationSelect">Select a Location:</label><input
-        type="text"
-        placeholder="LOCATION"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+        <label class="form-label" for="locationSelect">Select a Location:</label><input
+          type="text"
+          placeholder="LOCATION"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
 
-      {error && <div className="text-red-500 mb-4">{error}</div>}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      <div className="flex mb-4">
-        <label className="form-label mr-4" for="stateSelect">Select a Date:</label>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-1/2 p-2 mr-6 border-b border-gray-300 focus:outline-none"
-        /><div><p></p></div>
-        <label className="form-label mr-4" for="timeSelect">Select a Time:</label>
-        <input
-          type="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          className="w-1/2 p-2 border-b border-gray-300 focus:outline-none"
-        />
-      </div>
+        <div className="flex mb-4">
+          <label className="form-label mr-4" for="stateSelect">Select a Date:</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-1/2 p-2 mr-6 border-b border-gray-300 focus:outline-none" /><div><p></p></div>
+          <label className="form-label mr-4" for="timeSelect">Select a Time:</label>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
+        </div>
 
 
-      <label class="form-label" for="stateSelect">Ticket Prices:</label><input
-        type="number"
-        placeholder="AMOUNT"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+        <label class="form-label" for="stateSelect">Ticket Prices:</label><input
+          type="number"
+          placeholder="AMOUNT"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
 
-      <button
-        onClick={handleCreate}
-        className="w-full bg-black text-white p-2 rounded">
-        CREATE
-      </button>
-    </div>
+        <button
+          onClick={handleCreate}
+          className="w-full bg-black text-white p-2 rounded">
+          CREATE
+        </button>
+      </div></>
   );
 };
 

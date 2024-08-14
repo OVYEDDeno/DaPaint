@@ -22,12 +22,13 @@ class User(db.Model):
     lossesBySub = db.Column(db.Integer, default=0)
     disqualifications = db.Column(db.Integer, default=0)
 
-    profile_pic = db.relationship("UserImg",back_populates="user",uselist=False)
+    profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
 
     dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user')
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
     dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user')
+    invite_codes = db.relationship('InviteCode', back_populates='user', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -48,6 +49,25 @@ class User(db.Model):
             "lossesBySub": self.lossesBySub,
             "disqualifications": self.disqualifications,
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None
+        }
+
+class InviteCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(10), unique=True, nullable=False)
+    is_used = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', back_populates='invite_codes')
+
+    def __repr__(self):
+        return f'<InviteCode {self.code}>'
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'is_used': self.is_used,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
 class DaPaint(db.Model):
@@ -76,18 +96,19 @@ class DaPaint(db.Model):
             "winnerId": self.winnerId,
             "loserId": self.loserId
         }
-    
+
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(500), nullable=False, unique=True)
     image_url = db.Column(db.String(500), nullable=False, unique=True)
-    user_id = db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     user = db.relationship("User", back_populates="profile_pic", uselist=False)
-    
+
     def __init__(self, public_id, image_url, user_id):
         self.public_id = public_id
         self.image_url = image_url.strip()
         self.user_id = user_id
+
     def serialize(self):
         return {
             "id": self.id,
@@ -96,6 +117,6 @@ class UserImg(db.Model):
 
 class WSH(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id= db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     wins = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
