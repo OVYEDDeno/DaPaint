@@ -4,6 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			users: [],
+			currentUser: null,
 			dapaints: [],
 			daPaintList: [],
 			userId: undefined,
@@ -53,6 +54,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error("Error fetching current user:", error);
 				}
+			},
+
+			setCurrentUser: (userData) => {
+				setStore({ currentUser: userData });
 			},
 
 			getDaPaintList: async () => {

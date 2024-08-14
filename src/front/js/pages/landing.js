@@ -12,7 +12,7 @@ import { EditProfile } from "../component/editprofile.js";
 import { Wlsub } from "../component/wlsub.js";
 
 export const Landing = () => {
-  const { store } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const [currentWinStreak, setCurrentWinStreak] = useState(0);
   const [GoalWinStreak, setGoalWinStreak] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -52,6 +52,8 @@ export const Landing = () => {
         const data = await response.json();
         setUser(data);
         setCurrentWinStreak(data.winstreak);
+        console.log("User: ", data);
+        actions.setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);
       }
@@ -72,7 +74,7 @@ export const Landing = () => {
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
-        <EditProfile   />
+        <EditProfile />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
@@ -100,7 +102,7 @@ export const Landing = () => {
         <Lineup />
         <div className="find-foe-section">
           <DaPaintList /><p></p>
-          <Wlsub/>
+          <Wlsub />
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>
