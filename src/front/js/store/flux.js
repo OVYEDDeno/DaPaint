@@ -59,6 +59,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setCurrentUser: (userData) => {
 				setStore({ currentUser: userData });
 			},
+			createDaPaint: async (newDaPaint) => {
+				let response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${localStorage.getItem("token")}`
+					},
+					body: JSON.stringify({
+						fitnessStyle: newDaPaint.fitnessStyle,
+						location: newDaPaint.location,
+						date_time: newDaPaint.date_time,
+						price: newDaPaint.price,
+						hostFoeId: newDaPaint.hostFoeId,
+						userId: newDaPaint.userId
+					})
+				});
+			
+				if (response.status !== 200) return false;
+				
+				const responseBody = await response.json();
+				console.log('Created event:', responseBody);
+				return true;
+			},
 
 			getDaPaintList: async () => {
 				const token = localStorage.getItem("token");
