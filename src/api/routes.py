@@ -192,6 +192,7 @@ def create_dapaint():
 
     return jsonify(new_dapaint.serialize()), 201
 
+
 @api.route('/lineup', methods=['GET'])
 @jwt_required()
 def get_all_dapaint():

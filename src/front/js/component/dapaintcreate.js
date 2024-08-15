@@ -35,12 +35,13 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     const dateTime = `${date} ${time}:00`; // Format: YYYY-MM-DD HH:MM:SS
     const token = localStorage.getItem('token'); // Assuming the token is stored here
 
-    const newEvent = {
-      fitnessStyle,
+    const newDaPaint = {
+      fitnessStyle:fitnessStyle,
       location,
       date_time: dateTime,
       price: parseFloat(amount)
     };
+    console.log(newDaPaint);
 
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
@@ -49,7 +50,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(newEvent)
+        body: JSON.stringify(newDaPaint)
       });
 
       if (response.ok) {
@@ -116,11 +117,12 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
           id="fitnessSelect"
           name="fitness"
           value={fitnessStyle}
-          onChange={(e) => setFitnessStyle(e.target.value)}
+          onChange={(e) => setFitnessStyle(e.target.value)}  // Ensure this is correct
           className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
         >
+          <option value="">Select Fitness Style</option>  // Default option
           <option value="boxing">Boxing</option>
-          <option value="break dancing">Breaking Dancing</option>
+          <option value="breakDancing">Break Dancing</option>
         </select>
 
         <label class="form-label" for="locationSelect">Select a Location:</label>

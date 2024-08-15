@@ -149,7 +149,7 @@ const DaPaintList = ({ onClose }) => {
               <button type="button" className="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
-              <div className="flex-1 bg-black text-white rounded-t-3xl mt-4 overflow-y-auto">
+              <div className="form-control">
                 <input
                   type="text"
                   value={searchTerm}
@@ -172,22 +172,8 @@ const DaPaintList = ({ onClose }) => {
                       ) : (
                         <span className="text-black">Unknown Host</span>
                       )}
-                    </div>
-                    {/* <div className="vs">VS</div>
-                    <div className="flex items-center">
-                      {event.foeId ? (
-                        <>
-                          <img
-                            src={`/path-to-${event.foeId.name?.toLowerCase() || "default"}-avatar.jpg`}
-                            alt={event.foeId.name || "Unknown Foe"}
-                            className="w-8 h-8 rounded-full mr-2"
-                          />
-                          <span className="text-black">{event.foeId.name || "Unknown Foe"}</span>
-                        </>
-                      ) : (
-                        <span className="text-black">Foe</span>
-                      )}
-                    </div> */}
+                    </div>                  
+                    <div className="text-gray-500">{event.fitnessStyle}</div>
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-gray-500">{event.distance}</div>
                     <div className="text-gray-500">{event.date_time}</div>

@@ -5,9 +5,18 @@ export const Invite = ({ onClose }) => {
   const [invites, setInvites] = useState(3);
   const [inviteCodeList, setInviteCodeList] = useState([]);
   const { store, actions } = useContext(Context);
-  const { inviteCode } = store;
-  const { setInviteCode } = actions;
+  const [inviteCode, setInviteCode] = useState('');
 
+
+  const generateCode = () => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return setInviteCode(result);
+  }
   const handleSendInvite = () => {
     if (invites > 0) {
       const token = localStorage.getItem('token');
@@ -87,6 +96,7 @@ export const Invite = ({ onClose }) => {
               <p className="text-center mb-4">WHO&apos;S A GREAT POTENTIAL ADDITION TO DIDDY?</p>
               <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
                 <span>You have {invites} invites left</span>
+                <h1>{inviteCode}</h1>
                 <input className="form-control"
                   type="text"
                   placeholder="enter your friend's email address here... e.g., eric@example.com</"

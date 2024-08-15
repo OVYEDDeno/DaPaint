@@ -76,7 +76,7 @@ class DaPaint(db.Model):
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
     fitnessStyle = db.Column(db.String(100), nullable=True)
     location = db.Column(db.String(100), nullable=False)
-    date_time = db.Column(db.DateTime(timezone=False), nullable=False)
+    date_time = db.Column(db.DateTime(timezone=True), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
