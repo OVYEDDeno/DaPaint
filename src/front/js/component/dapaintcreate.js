@@ -5,6 +5,7 @@ import "../../styles/landing.css";
 
 export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const { store, actions } = useContext(Context);
+  const [fitnessStyle, setFitnessStyle] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -35,6 +36,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     const token = localStorage.getItem('token'); // Assuming the token is stored here
 
     const newEvent = {
+      fitnessStyle,
       location,
       date_time: dateTime,
       price: parseFloat(amount)
@@ -56,9 +58,10 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         onAdd(createdEvent); // Update the event list in DaPaintList
 
         setLocation('');
+        setFitnessStyle('');
         setDate('');
         setTime('');
-        setAmount('0');
+        setAmount('10');
       } else {
         const error = await response.json();
         console.error('Failed to create event:', error);
@@ -108,13 +111,20 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
           <span>{store.userData && store.userData.name}</span>
         </div>
 
-        <label class="form-label" for="stateSelect">Fitness Style:</label>
-        <select class="form-select" id="fitnessSelect" name="fitness">
+        <label class="form-label" for="fitnessSelect">Fitness Style:</label>
+        <select
+          id="fitnessSelect"
+          name="fitness"
+          value={fitnessStyle}
+          onChange={(e) => setFitnessStyle(e.target.value)}
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
+        >
           <option value="boxing">Boxing</option>
           <option value="break dancing">Breaking Dancing</option>
         </select>
 
-        <label class="form-label" for="locationSelect">Select a Location:</label><input
+        <label class="form-label" for="locationSelect">Select a Location:</label>
+        <input
           type="text"
           placeholder="LOCATION"
           value={location}

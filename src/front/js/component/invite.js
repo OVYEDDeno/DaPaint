@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import "../../styles/profile.css";
 import { Context } from '../store/appContext';
 
 export const Invite = ({ onClose }) => {
@@ -9,16 +8,54 @@ export const Invite = ({ onClose }) => {
   const { inviteCode } = store;
   const { setInviteCode } = actions;
 
-  // Function to handle sending an invite
   const handleSendInvite = () => {
     if (invites > 0) {
-      fetch('/api/invite-code', {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to create an invite code.');
+        return;
+      }
+
+      fetch(`${process.env.BACKEND_URL}/api/invite-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ensure token is included
-        }
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({})
       })
+        .then(response => {
+          if (!response.ok) {
+            console.error('Error response:', response);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          setInviteCode(data.code);
+          setInviteCodeList([...inviteCodeList, data.code]);
+          setInvites(invites - 1);
+        })
+        .catch(error => {
+          console.error('Error creating invite code:', error);
+          if (error.message.includes('500')) {
+            alert('Internal server error. Please try again later.');
+          } else {
+            alert('Error creating invite code. Please try again.');
+          }
+        });
+    } else {
+      alert('No invites left');
+    }
+  };
+  const handleUseInviteCode = (code) => {
+    fetch('${process.env.BACKEND_URL}/api/invite-code/use', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -26,76 +63,12 @@ export const Invite = ({ onClose }) => {
         return response.json();
       })
       .then(data => {
-          console.log('Invite code created:', data);
-          setInviteCode(data.code); // Set the invite code in the context
-          setInviteCodeList([...inviteCodeList, data.code]); // Add to list of invite codes
-          setInvites(invites - 1); // Decrease invite count
+        setInviteCodeList(inviteCodeList.filter(c => c !== code));
       })
       .catch(error => {
-          console.error('Error creating invite code:', error);
-          alert('Error creating invite code. Please try again.');
+        console.error('Error using invite code:', error);
+        alert('Error using invite code. Please try again.');
       });
-    } else {
-      alert('No invites left');
-    }
-  };
-
-  // Function to generate an invite code
-  const handleGenerateInviteCode = () => {
-    fetch('/api/invite-code', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      setInviteCode(data.code); // Use the action to update inviteCode
-      console.log('Generated invite code:', data.code);
-    })
-    .catch(error => {
-      if (error.message.includes('401')) {
-        console.error('Unauthorized error:', error);
-        alert('Please login to generate invite codes.');
-      } else if (error.message.includes('404')) {
-        console.error('Not found error:', error);
-        alert('Invalid request. Please try again.');
-      } else {
-        console.error('Error generating invite code:', error);
-        alert('Error generating invite code. Please try again.');
-      }
-    });
-  };
-
-  // Function to use an invite code
-  const handleUseInviteCode = (code) => {
-    fetch('/api/invite-code/use', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Invite code used:', data);
-      setInviteCodeList(inviteCodeList.filter(c => c !== code)); // Remove used code from the list
-    })
-    .catch(error => {
-      console.error('Error using invite code:', error);
-      alert('Error using invite code. Please try again.');
-    });
   };
 
   return (
@@ -113,8 +86,13 @@ export const Invite = ({ onClose }) => {
             <div className="modal-body">
               <p className="text-center mb-4">WHO&apos;S A GREAT POTENTIAL ADDITION TO DIDDY?</p>
               <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
-                <span>You have {invites} invites</span>
-                <span>▼</span>
+                <span>You have {invites} invites left</span>
+                <input className="form-control"
+                  type="text"
+                  placeholder="enter your friend's email address here... e.g., eric@example.com</"
+                // Handle value and change if needed
+                />
+
               </div>
               <button
                 className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
@@ -124,20 +102,9 @@ export const Invite = ({ onClose }) => {
                 <span>Send Invite</span>
               </button>
               <div className="mb-4">
-                <button
-                  className="w-full bg-black text-white p-2 rounded-full flex items-center justify-center mb-4"
-                  onClick={handleGenerateInviteCode}
-                >
-                  Generate Invite Code
-                </button>
                 {inviteCode && (
                   <p className="text-center text-black mt-2">Invite Code: {inviteCode}</p>
                 )}
-              </div>
-              <div>
-                <h3 className="font-bold mb-2">NOTIFICATIONS</h3>
-                <p>OVYEDDENO CLOCK YOUR MATCH</p>
-                <p>OVYEDDENO ACCEPTED YOUR MATCH</p>
               </div>
               <div>
                 <h3 className="font-bold mb-2">Your Invite Codes</h3>

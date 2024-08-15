@@ -10,7 +10,8 @@ import re, json, os
 import cloudinary.uploader as uploader
 from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
-from mailersend import emails
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 api = Blueprint('api', __name__)
 
@@ -168,7 +169,7 @@ def get_all_users():
 def create_dapaint():
     user_id = get_jwt_identity()  # Assuming the user is authenticated
     data = request.get_json()
-
+    fitnessStyle = data.get('fitnessStyle')
     location = data.get('location')
     date_time_str = data.get('date_time')
     price = data.get('price')
@@ -180,6 +181,7 @@ def create_dapaint():
 
     new_dapaint = DaPaint(
         hostFoeId=user_id,
+        fitnessStyle=fitnessStyle,
         location=location,
         date_time=date_time,
         price=price
@@ -377,70 +379,54 @@ def update_win_streak(id):
 
 
 
-@api.route('/send-email', methods=['POST'])
-@jwt_required()
-def send_email():
-    data = request.get_json()
-    recipient_email = data.get('recipient_email')
-    subject = data.get('subject')
-    html_content = data.get('html_content')
-
-    if not recipient_email or not subject or not html_content:
-        return jsonify({"msg": "Missing email, subject, or content"}), 400
-
-    # Initialize MailerSend client
-    mailer = emails.NewEmail('mlsn.4e8f89a7bf3ec8960c46b4b885d5d03b49debe9b58383257d244e39e0effabe6')
-
-    mail_body = {}
-
-    mail_from = {
-        "name": "Diddy",
-        "email": "ovyedlabs@gmail.com",
-    }
-
-    recipients = [
-        {
-            "name": "Recipient Name",
-            "email": recipient_email,
-        }
-    ]
-
-    mailer.set_mail_from(mail_from, mail_body)
-    mailer.set_mail_to(recipients, mail_body)
-    mailer.set_subject(subject, mail_body)
-    mailer.set_html_content(html_content, mail_body)
-    mailer.set_plaintext_content("This is a plain text version of the email.", mail_body)
-
+@api.route('/emailtest', methods=['POST'])
+def email_test():
+    message = Mail(
+    from_email='nevad34@gmail.com',
+    to_emails='nevad34@gmail.com',
+    subject='Sending with Twilio SendGrid is Fun',
+    html_content='<strong>and easy to do anywhere, even with Python</strong>')
     try:
-        mailer.send(mail_body)
-        return jsonify({"msg": "Email sent successfully"}), 200
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
     except Exception as e:
-        return jsonify({"msg": "Failed to send email", "error": str(e)}), 500
+        print(e.message)
+
 
 @api.route('/invite-code', methods=['POST'])
 @jwt_required()
 def create_invite_code():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
-    
-    # Check if the user has enough invites available
-    if user.invites <= 0:
-        return jsonify({"msg": "No invites available"}), 400
-    
-    # Generate a new invite code
-    new_code = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}-{user_id}"
-    invite_code = InviteCode(code=new_code, user_id=user_id)
-    
-    db.session.add(invite_code)
-    db.session.commit()
-    
-    # Decrement the user's invite count
-    user.invites -= 1
-    db.session.commit()
-    
-    return jsonify(invite_code.serialize()), 201
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        if user.invites <= 0:
+            return jsonify({"error": "No invites available"}), 400
+
+        new_code = generate_invite_code(user_id)
+        invite_code = InviteCode(code=new_code, user_id=user_id)
+        db.session.add(invite_code)
+        db.session.commit()
+
+        user.invites -= 1
+        db.session.commit()
+
+        return jsonify(invite_code.serialize()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Internal server error"}), 500
+
+def generate_invite_code(user_id):
+    # Use a cryptographically secure pseudorandom number generator
+    # to generate the invite code
+    import secrets
+    return f"{secrets.token_urlsafe(16)}-{user_id}"
+
 
 @api.route('/invite-code/use', methods=['POST'])
 @jwt_required()
@@ -449,9 +435,7 @@ def use_invite_code():
     invite_code = InviteCode.query.filter_by(code=code).first()
     if not invite_code:
         return jsonify({"msg": "Invalid invite code"}), 404
-    
     # Mark the invite code as used
-    invite_code.is_used = True
+    db.session.delete(invite_code)
     db.session.commit()
-    
     return jsonify({"msg": "Invite code used successfully"}), 200

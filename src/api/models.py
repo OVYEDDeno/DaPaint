@@ -74,6 +74,7 @@ class DaPaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
+    fitnessStyle = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)
     price = db.Column(db.Integer, nullable=False)
@@ -90,6 +91,7 @@ class DaPaint(db.Model):
             "id": self.id,
             "hostFoeId": self.host_user.serialize(),
             "foeId": self.foe_user.serialize() if self.foe_user is not None else "N/A",
+            "fitnessStyle": self.fitnessStyle,
             "location": self.location,
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,
