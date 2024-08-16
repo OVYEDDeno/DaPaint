@@ -210,24 +210,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	}
 			// }
 
-			addUserImage: async (image) => {
-
+			addUserImage: async (imageFile) => {
 				let formData = new FormData();
-				formData.append("file", image);
-				console.log("image", image);
-
-
+				formData.append("file", imageFile[0]);  // Assuming imageFile is an array
+		
 				const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
 					method: "POST",
 					headers: {
-						Authorization: "Bearer " + localStorage.getItem("token")
+						Authorization: "Bearer " + localStorage.getItem("token"),
 					},
-					body: formData
-				})
+					body: formData,
+				});
+		
 				if (response.status !== 200) return false;
 				const responseBody = await response.json();
-				console.log(responseBody)
-				console.log("This is the Response Body")
+				console.log(responseBody);
 				return true;
 			},
 			setInviteCode: (newCode) => {

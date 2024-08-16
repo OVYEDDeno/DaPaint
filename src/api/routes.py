@@ -12,6 +12,7 @@ from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import cloudinary
 
 api = Blueprint('api', __name__)
 
@@ -208,6 +209,7 @@ def get_all_dapaint():
 
     return jsonify([d.serialize() for d in dapaint]), 200
 
+
 @api.route('/lineup/<int:event_id>', methods=['PATCH'])
 @jwt_required()
 def update_foe_id(event_id):
@@ -275,56 +277,24 @@ def reset_win_streak():
     db.session.commit()
     return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200
 
-# @api.route('/user-img', methods=['POST'])
-# @jwt_required()
-# def user_img():
-#     user = User.query.filter_by(id=get_jwt_identity()).first()
-#     if user is None:
-#         return jsonify({"msg": "No user found"}), 404
-
-#     images = request.files.getlist("file")
-#     if not images:
-#         return jsonify({"msg": "No images uploaded"}), 400
-
-#     uploaded_images = []
-#     for image_file in images:
-#         try:
-#             response = uploader.upload(image_file)
-#             if response.get("secure_url"):
-#                 new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"], user_id=user.id)
-#                 db.session.add(new_image)
-#                 db.session.commit()
-#                 uploaded_images.append(new_image.image_url)
-#             else:
-#                 print("User image upload was not successful")
-#         except Exception as e:
-#             return jsonify({"msg": "Image upload failed", "error": str(e)}), 500
-
-#     return jsonify({"msg": "Images Successfully Uploaded", "images": uploaded_images}), 200
-
-@api.route('/user-img', methods =['POST'])
+@api.route('/user-img', methods=['POST'])
 @jwt_required()
 def user_img():
-
-    user =  User.query.filter_by(id=get_jwt_identity()).first()
+    user = User.query.filter_by(id=get_jwt_identity()).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
-    image = request.files
-    if image :
-        print("Image", image)
+    image = request.files.get('file')
     if not image:
-        print("No image uploaded")
-    #     return jsonify({"msg": "No image uploaded"}), 400
+        return jsonify({"msg": "No image uploaded"}), 400
+
+    upload_result = cloudinary.uploader.upload(image)
+    print(upload_result)
+    new_image = UserImg(public_id=upload_result['public_id'], image_url=upload_result['secure_url'], user_id=user.id)
+    db.session.add(new_image)    
+    db.session.commit()
+    return jsonify({"msg": "Image successfully uploaded"}), 200
     
-    # response = uploader.upload(image)
-    # new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
-    # db.session.add(new_image)
-    # db.session.commit()
-    # db.session.refresh(user)
-
-    return jsonify ({"Msg": "Image Sucessfully Uploaded"}), 200
-
 @api.route('/act', methods=['PUT'])
 @jwt_required()
 def act():

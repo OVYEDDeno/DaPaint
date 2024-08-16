@@ -163,8 +163,7 @@ const DaPaintList = ({ onClose }) => {
                       {event.hostFoeId ? (
                         <>
                           <img
-                            src={`/path-to-${event.hostFoeId.name?.toLowerCase() || "default"}-avatar.jpg`}
-                            alt={event.hostFoeId.name || "Unknown Host"}
+  src={store.users.find(item=>item.id== event.hostFoeId).profile_pic}                            alt={event.hostFoeId.name || "Unknown Host"}
                             className="w-8 h-8 rounded-full mr-2"
                           />
                           <span className="text-black">{event.hostFoeId.name || "Unknown Host"}</span>
