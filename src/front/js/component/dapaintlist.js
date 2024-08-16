@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
-import "../../styles/landing.css";
+import '../../styles/dapaintlist.css';
 import { DaPaintCreate } from './dapaintcreate.js';
 
 const DaPaintList = ({ onClose }) => {
@@ -74,7 +74,7 @@ const DaPaintList = ({ onClose }) => {
           // lineupModal.show();
 
           window.location.reload();
-          
+
         } else {
           const error = await response.json();
           console.error('Failed to clock in for event:', error);
@@ -172,7 +172,7 @@ const DaPaintList = ({ onClose }) => {
                       ) : (
                         <span className="text-black">Unknown Host</span>
                       )}
-                    </div>                  
+                    </div>
                     <div className="text-gray-500">{event.fitnessStyle}</div>
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-gray-500">{event.distance}</div>
@@ -196,13 +196,13 @@ const DaPaintList = ({ onClose }) => {
                 ))}
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="modal-footer"> 
               <button
                 type="button"
-                className="btn btn-info"
+                className="mt-6 w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition"
                 onClick={handleAddEventClick}
               >
-                Add Event
+                +Add
               </button>
             </div>
           </div>

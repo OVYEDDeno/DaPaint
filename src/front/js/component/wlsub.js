@@ -112,53 +112,53 @@ export const Wlsub = () => {
       </button>
       <div className="modal fade" id="WLSubmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body">
-              <div className="wlsub-container">
-                <h2>Who Won?</h2>
-                <form onSubmit={handleSubmit}>
-                  <div className="user-section">
-                    <div className="upload-ko">
-                      <input
-                        type="file"
-                        accept="image/*,video/*"
-                        onChange={(e) => handleFileUpload(e, setHostUser)}
-                      />
-                      <button type="button">Upload KO</button>
-                    </div>
-                    {hostUser && <img src={hostUser} alt="Host User" className="user-img" />}
-                    <div className="user-vote">
-                      <span>hostUsername</span>
-                      <button
-                        type="button"
-                        style={{ backgroundColor: hostVote === 'winner' ? 'green' : 'black' }}
-                        onClick={() => handleHostVote('winner')}>Yes</button>
-                      <button
-                        type="button"
-                        style={{ backgroundColor: hostVote === 'loser' ? 'red' : 'black' }}
-                        onClick={() => handleHostVote('loser')}>No</button>
-                    </div>
+          <div className="modal-body">
+            <div className="wlsub-container">
+              <h2>Who Won?</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="user-section">
+                  <div className="upload-ko">
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={(e) => handleFileUpload(e, setHostUser)}
+                    />
+                    <button type="button">Upload KO</button>
                   </div>
-                  <div className="user-section">
-                    {foeUser && <img src={foeUser} alt="Foe User" className="user-img" />}
-                    <div className="user-vote">
-                      <span>foeUsername</span>
-                      <button
-                        type="button"
-                        style={{ backgroundColor: foeVote === 'winner' ? 'green' : 'black' }}
-                        onClick={() => handleFoeVote('winner')}>Yes</button>
-                      <button
-                        type="button"
-                        style={{ backgroundColor: foeVote === 'loser' ? 'red' : 'black' }}
-                        onClick={() => handleFoeVote('loser')}>No</button>
-                    </div>
+                  {hostUser && <img src={hostUser} alt="Host User" className="user-img" />}
+                  <div className="user-vote">
+                    <span>hostUsername</span>
+                    <button
+                      type="button"
+                      style={{ backgroundColor: hostVote === 'winner' ? 'green' : 'black' }}
+                      onClick={() => handleHostVote('winner')}>Winner</button>
+                    <button
+                      type="button"
+                      style={{ backgroundColor: hostVote === 'loser' ? 'red' : 'black' }}
+                      onClick={() => handleHostVote('loser')}>Loser</button>
                   </div>
-                  <button type="submit">Submit</button>
-                </form>
-              </div>
+                </div>
+                <div className="user-section">
+                  {foeUser && <img src={foeUser} alt="Foe User" className="user-img" />}
+                  <div className="user-vote">
+                    <span>foeUsername</span>
+                    
+                    <button type="button"
+                      style={{
+                        backgroundColor: foeVote === 'winner' ? '#f5c116' : 'black',
+                        color: foeVote === 'winner' ? 'black' : '#f5c116'
+                      }} onClick={() => handleFoeVote('winner')}>Winner</button>
+
+                    <button
+                      type="button"
+                      style={{ backgroundColor: foeVote === 'loser' ? 'red' : 'black' }}
+                      onClick={() => handleFoeVote('loser')}>Loser</button>
+                  </div>
+                </div>
+                <button type="submit">Submit</button>
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Forfeit</button>
+              </form>
             </div>
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Forfeit</button>
-            {/* <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Submit</button> */}
           </div>
         </div>
       </div>
