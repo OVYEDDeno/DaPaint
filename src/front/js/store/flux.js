@@ -210,12 +210,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	}
 			// }
 
-			addUserImage: async (images) => {
+			addUserImage: async (image) => {
 
 				let formData = new FormData();
-				console.log(">>> 🍎 images:", images);
-				console.log(">>> 🍎 images:", images.images);
-				formData.append("file", images[0]);
+				formData.append("file", image);
+				console.log("image", image);
 
 
 				const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {

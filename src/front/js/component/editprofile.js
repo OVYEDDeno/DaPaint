@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/profile.css"; // Assuming you will create this CSS file
-import { Phone } from "lucide-react";
+
 
 export const EditProfile = () => {
   const { store, actions } = useContext(Context);
@@ -74,14 +74,8 @@ export const EditProfile = () => {
     if (file_size <= 100000) {
       console.log(">>> files", files);
       setImageSizeError(false)
-      const images = [];
-      for (let index = 0; index < files.length; index++) {
-        images.push(files.item(index));
-      }
-      setUploadedImages((prev) => ([
-        ...prev,
-        ...images
-      ]));
+     
+      setUploadedImages(files);
     } else {
       setImageSizeError(true)
     }
@@ -90,14 +84,15 @@ export const EditProfile = () => {
 
   const handleNewImage = async () => {
     const success = await actions.addUserImage(uploadedImages);
-    if(success){
-      fetch(process.env.BACKEND_URL + "/api/user-img", {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-      })
-        .then(resp => resp.json())
-        .then(data => setUser(data))
-        .catch(error => console.log(error))
-    }
+    // if(success){
+    //   fetch(process.env.BACKEND_URL + "/api/user-img", {
+    //     headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+    //   })
+    //     .then(resp => resp.json())
+    //     .then(data => setUser(data))
+    //     .catch(error => console.log(error))
+    // }
+    if (success) {alert("Profile picture has been updated")};
   }
 
   return (

@@ -23,7 +23,6 @@ app.url_map.strict_slashes = False
 
 import cloudinary
 import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
 
 app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER')
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024

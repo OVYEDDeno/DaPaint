@@ -15,7 +15,7 @@ from sendgrid.helpers.mail import Mail
 
 api = Blueprint('api', __name__)
 
-WINSTREAK_GOAL=os.getenv("WINSTREAK_GOAL")or 30
+WINSTREAK_GOAL=os.getenv("WINSTREAK_GOAL") or 30
 
 # Allow CORS requests to this API
 CORS(api)
@@ -310,18 +310,20 @@ def user_img():
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
-    images = request.files.getlist("file")
-    for image_file in images:
-        if len(UserImg.query.filter_by(user_id=user.id).all()) > 0:
-            break
-        response = uploader.upload(image_file)
-        print(f"{response.items()}")
-        new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
-        db.session.add(new_image)
-        db.session.commit()
-        db.session.refresh(user)
+    image = request.files
+    if image :
+        print("Image", image)
+    if not image:
+        print("No image uploaded")
+    #     return jsonify({"msg": "No image uploaded"}), 400
+    
+    # response = uploader.upload(image)
+    # new_image = UserImg(public_id=response["public_id"], image_url=response["secure_url"],user_id=user.id)
+    # db.session.add(new_image)
+    # db.session.commit()
+    # db.session.refresh(user)
 
-    return jsonify ({"Msg": "Image Sucessfully Uploaded"})
+    return jsonify ({"Msg": "Image Sucessfully Uploaded"}), 200
 
 @api.route('/act', methods=['PUT'])
 @jwt_required()
