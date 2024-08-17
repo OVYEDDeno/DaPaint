@@ -74,7 +74,7 @@ class DaPaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
-    fitnessStyle = db.Column(db.String(100), nullable=True)
+    fitnessStyle = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime(timezone=True), nullable=False)
     price = db.Column(db.Integer, nullable=False)
