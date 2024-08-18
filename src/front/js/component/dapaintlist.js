@@ -127,6 +127,7 @@ const DaPaintList = ({ onClose }) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return hostFoeName.includes(lowerCaseSearchTerm) || foeName.includes(lowerCaseSearchTerm);
   });
+console.log(store.userData,filteredEvents)
 
   const closeCurrentModal = (modalId) => {
     const currentModal = document.getElementById(modalId);

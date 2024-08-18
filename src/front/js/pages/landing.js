@@ -53,7 +53,7 @@ export const Landing = () => {
         setUser(data);
         setCurrentWinStreak(data.winstreak);
         console.log("User: ", data);
-        actions.setCurrentUser(data);
+        // actions.setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);
       }

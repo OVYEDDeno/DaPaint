@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint, UserImg, WSH, InviteCode
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from sqlalchemy.orm import aliased
 import re, json, os
 import cloudinary.uploader as uploader
@@ -150,8 +150,13 @@ def get_current_user():
     user = User.query.get(get_jwt_identity())
     if user is None:
         return jsonify({"msg": "No user found"}), 404
-    
-    return jsonify(user.serialize()), 200
+    dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None)).all()
+    match = DaPaint.query.filter(
+        and_(or_(DaPaint.foeId == user.id, DaPaint.hostFoeId == user.id),
+        DaPaint.foeId != None)
+    ).first()
+    return jsonify({**user.serialize(), "hasfoe":True if  match else False}), 200
+
 
 @api.route('/users', methods=['GET'])
 @jwt_required()
