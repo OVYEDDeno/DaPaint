@@ -164,7 +164,7 @@ console.log(store.userData,filteredEvents)
                       {event.hostFoeId ? (
                         <>
                           <img
-                            src={`/path-to-${event.hostFoeId.name?.toLowerCase() || "default"}-avatar.jpg`}
+                            src={event.hostFoeId.profile_pic.image_url}
                             alt={event.hostFoeId.name || "Unknown Host"}
                             className="w-8 h-8 rounded-full mr-2"
                           />

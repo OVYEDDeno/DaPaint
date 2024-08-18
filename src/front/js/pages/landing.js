@@ -8,8 +8,9 @@ import { DaPaintCreate } from '../component/dapaintcreate.js';
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-// import { EditProfile } from "../component/editprofile.js";
+import { EditProfile } from "../component/editprofile.js";
 import { Wlsub } from "../component/wlsub.js";
+import { StyledModel } from "../component/StyledModel.js";
 
 export const Landing = () => {
   const { store, actions } = useContext(Context);
@@ -74,7 +75,8 @@ export const Landing = () => {
     <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
       <header className="top-header">
         <Profile />
-        {/* <EditProfile /> */}
+        <EditProfile />
+        <StyledModel />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>

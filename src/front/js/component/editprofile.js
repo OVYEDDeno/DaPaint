@@ -91,7 +91,7 @@ export const EditProfile = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
-              <div className="fixed inset-0 bg-white text-black flex flex-col">
+            <div className="wlsub-container">
                 <div className="flex justify-between items-center p-4">
                   <h1 className="text-2xl font-bold">
                     EDIT
@@ -106,7 +106,7 @@ export const EditProfile = () => {
                         src={profileImageUrl}
                         alt="Profile Picture"
                         className="rounded-circle img-fluid"
-                        style={{ width: '300px', height: '300px' }}
+                        style={{ width: '30px', height: '30px' }}
                       />
                       <input
                         type="file"
