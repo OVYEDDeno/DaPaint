@@ -122,7 +122,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         >
           <option value="">Select Fitness Style</option>  // Default option
           <option value="boxing">Boxing</option>
-          <option value="breakDancing">Break Dancing</option>
+          <option value="breakDancing">Breaking</option>
         </select>
 
         <label class="form-label" for="locationSelect">Select a Location:</label>

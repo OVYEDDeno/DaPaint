@@ -422,21 +422,29 @@ def use_invite_code():
 @jwt_required()
 def get_notif():
     user_id = get_jwt_identity()
+
+    # Get DaPaints where the user is the host
     hostDaPaints = DaPaint.query.filter_by(hostFoeId=user_id).all()
+    # Get DaPaints where the user is the foe
     foeDaPaints = DaPaint.query.filter_by(foeId=user_id).all()
+
     hosted = []
     for x in hostDaPaints:
+        # Ensure foeId exists and no winner or loser has been determined yet
         if x.foeId and x.winnerId is None and x.loserId is None:
-            foe = User.query.get(x.foeId)
-            hosted.append(foe.name)
+            foe = User.query.get(x.foeId)  # Get the foe's details
+            hosted.append(foe.name)  # Add foe's name to the hosted list
 
     foed = []
     for x in foeDaPaints:
+        # Ensure hostFoeId exists and no winner or loser has been determined yet
         if x.hostFoeId and x.winnerId is None and x.loserId is None:
-            host = User.query.get(x.hostFoeId)
-            foed.append(host.name)
+            host = User.query.get(x.hostFoeId)  # Get the host's details
+            foed.append(host.name)  # Add host's name to the foed list
+
     response = {
-        "hosted": hosted,
-        "foed": foed
-    }   
+        "hosted": hosted,  # List of foe names when the user is the host
+        "foed": foed  # List of host names when the user is the foe
+    }
+
     return jsonify(response), 200

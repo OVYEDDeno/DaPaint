@@ -41,9 +41,10 @@ export const Lineup = () => {
     .map(event => ({
       id: event.id,
       date_time: event.date_time,
+      fitnessStyle: event.fitnessStyle,
       // time: event.time,
       // location: `${event.location} ${event.distance}`,
-      location: `${event.location}`,
+      location: event.location,
       user1: event.hostFoeId.name,
       user2: event.foeId ? event.foeId.name : 'Unknown'
     }));
@@ -90,9 +91,8 @@ export const Lineup = () => {
                       <span>{matchup.user2}</span>
                     </div>
                     <div className="details">
-                      <span>{`${matchup.date_time}`}</span>
-                      {/* <span>{matchup.time}</span> */}
-                      {/* <button className= "btn" onClick={handleBuyTicket}>Clock It</button> */}
+                      <span>{matchup.date_time}</span>
+                      <span>{matchup.fitnessStyle}</span>
                       <span>{matchup.location}</span>
 
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from '../store/appContext';
 
 export const Invite = ({ onClose }) => {
@@ -6,7 +6,20 @@ export const Invite = ({ onClose }) => {
   const [inviteCodeList, setInviteCodeList] = useState([]);
   const { store, actions } = useContext(Context);
   const [inviteCode, setInviteCode] = useState('');
-
+  const [notifs, setNotifs] = useState({});
+  
+  useEffect(()=>{
+    const fetchNotifs = async ()=>{
+      let data = await actions.getNotifs()
+      if (data==false) {
+        alert('Failed to fetch notifications.')
+        return
+      } else {
+        setNotifs(data)
+      }
+    }
+    fetchNotifs()
+  },[])
 
   const generateCode = () => {
     let result = '';
@@ -129,8 +142,11 @@ export const Invite = ({ onClose }) => {
             </div>clock In
 
             <div><h3>notifications</h3>
-            {store.notifs.foed.map((item,index)=>(
-              <h4 key={index}>{item}Has accepted Your Match</h4>
+            {notifs?.foed?.map((item,index)=>(
+              <h4 key={index}>{item} Has accepted Your Match</h4>
+            ))}
+            {notifs?.hosted?.map((item,index)=>(
+              <h4 key={index}>{item} Has Clock In Your Match</h4>
             ))}
             </div>
             <div className="modal-footer">
