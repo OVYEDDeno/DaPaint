@@ -417,3 +417,26 @@ def use_invite_code():
     db.session.delete(invite_code)
     db.session.commit()
     return jsonify({"msg": "Invite code used successfully"}), 200
+
+@api.route("/notifs", methods=['GET'])
+@jwt_required()
+def get_notif():
+    user_id = get_jwt_identity()
+    hostDaPaints = DaPaint.query.filter_by(hostFoeId=user_id).all()
+    foeDaPaints = DaPaint.query.filter_by(foeId=user_id).all()
+    hosted = []
+    for x in hostDaPaints:
+        if x.foeId and x.winnerId is None and x.loserId is None:
+            foe = User.query.get(x.foeId)
+            hosted.append(foe.name)
+
+    foed = []
+    for x in foeDaPaints:
+        if x.hostFoeId and x.winnerId is None and x.loserId is None:
+            host = User.query.get(x.hostFoeId)
+            foed.append(host.name)
+    response = {
+        "hosted": hosted,
+        "foed": foed
+    }   
+    return jsonify(response), 200

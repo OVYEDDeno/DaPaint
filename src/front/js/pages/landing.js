@@ -75,7 +75,6 @@ export const Landing = () => {
       <header className="top-header">
         <Profile />
         <EditProfile />
-        <StyledModel />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>

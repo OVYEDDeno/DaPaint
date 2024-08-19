@@ -199,7 +199,7 @@ const DaPaintList = ({ onClose }) => {
                       {event.hostFoeId ? (
                         <>
                           <img
-                            src={event.hostFoeId.profile_pic.image_url}
+                            src={event.hostFoeId.profile_pic?.image_url}
                             alt={event.hostFoeId.name || "Unknown Host"}
                             className="w-8 h-8 rounded-full mr-2"
                           />

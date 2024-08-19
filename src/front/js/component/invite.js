@@ -126,8 +126,15 @@ export const Invite = ({ onClose }) => {
                   ))}
                 </ul>
               </div>
+            </div>clock In
+
+            <div><h3>notifications</h3>
+            {store.notifs.foed.map((item,index)=>(
+              <h4 key={index}>{item}Has accepted Your Match</h4>
+            ))}
             </div>
             <div className="modal-footer">
+
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" className="btn btn-primary">Save changes</button>
             </div>
