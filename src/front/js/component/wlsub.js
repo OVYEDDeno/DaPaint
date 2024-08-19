@@ -114,7 +114,12 @@ export const Wlsub = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-body">
             <div className="wlsub-container">
-              <h2>Who Won?</h2>
+            <h1
+                className="modal-title text-white text-2xl font-bold mx-auto"
+                id="WLSubLabel"
+              >
+                Who Won?
+              </h1>
               <form onSubmit={handleSubmit}>
                 <div className="user-section">
                   <div className="upload-ko">
@@ -123,17 +128,19 @@ export const Wlsub = () => {
                       accept="image/*,video/*"
                       onChange={(e) => handleFileUpload(e, setHostUser)}
                     />
-                    <button type="button">Upload KO</button>
+                    <button type="button" className='rounded-lg'>Upload KO</button>
                   </div>
                   {hostUser && <img src={hostUser} alt="Host User" className="user-img" />}
                   <div className="user-vote">
                     <span>hostUsername</span>
                     <button
                       type="button"
+                      className='rounded-lg'
                       style={{ backgroundColor: hostVote === 'winner' ? 'green' : 'black' }}
                       onClick={() => handleHostVote('winner')}>Winner</button>
                     <button
                       type="button"
+                      className='rounded-lg'
                       style={{ backgroundColor: hostVote === 'loser' ? 'red' : 'black' }}
                       onClick={() => handleHostVote('loser')}>Loser</button>
                   </div>
@@ -144,6 +151,7 @@ export const Wlsub = () => {
                     <span>foeUsername</span>
                     
                     <button type="button"
+                    className='rounded-lg'
                       style={{
                         backgroundColor: foeVote === 'winner' ? '#f5c116' : 'black',
                         color: foeVote === 'winner' ? 'black' : '#f5c116'
@@ -151,6 +159,7 @@ export const Wlsub = () => {
 
                     <button
                       type="button"
+                      className='rounded-lg'
                       style={{ backgroundColor: foeVote === 'loser' ? 'red' : 'black' }}
                       onClick={() => handleFoeVote('loser')}>Loser</button>
                   </div>

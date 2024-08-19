@@ -8,6 +8,11 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.custom-bg {
+  background-color: #3498db;
+  color: white;
+}
+
 h2 {
   text-align: center;
   margin-bottom: 20px;
