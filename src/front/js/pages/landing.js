@@ -10,7 +10,6 @@ import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
 import { EditProfile } from "../component/editprofile.js";
 import { Wlsub } from "../component/wlsub.js";
-// import { StyledModel } from "../component/StyledModel.js";
 
 export const Landing = () => {
   const { store, actions } = useContext(Context);
@@ -54,7 +53,7 @@ export const Landing = () => {
         setUser(data);
         setCurrentWinStreak(data.winstreak);
         console.log("User: ", data);
-        actions.setCurrentUser(data);
+        // actions.setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching current user:", error);
       }
@@ -76,7 +75,7 @@ export const Landing = () => {
       <header className="top-header">
         <Profile />
         <EditProfile />
-        {/* <StyledModel /> */}
+        <StyledModel />
         <button onClick={toggleDarkMode} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
