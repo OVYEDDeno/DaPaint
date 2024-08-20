@@ -1,34 +1,39 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import '../../styles/lineup.css';
+import "../../styles/lineup.css";
 
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [forfeit, setForfeit] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     async function getDapaintList() {
       try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/lineup?isaccepted=1`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-        });
+        const response = await fetch(
+          `${process.env.BACKEND_URL}/api/lineup?isaccepted=1`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const EventList = await response.json();
           setEvents(EventList);
+          console.log("EventList from lineup.js: ", EventList);
         } else {
           const error = await response.json();
-          console.error('Failed to retrieve list of events:', error);
+          console.error("Failed to retrieve list of events:", error);
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     }
 
@@ -37,39 +42,64 @@ export const Lineup = () => {
 
   // Transform events into matchups
   const matchups = events
-    .filter(event => event.hostFoeId)
-    .map(event => ({
+    .filter((event) => event.hostFoeId)
+    .map((event) => ({
       id: event.id,
       date_time: event.date_time,
       fitnessStyle: event.fitnessStyle,
       // time: event.time,
       // location: `${event.location} ${event.distance}`,
       location: event.location,
-      user1: event.hostFoeId.name,
-      user2: event.foeId ? event.foeId.name : 'Unknown'
+      user1name: event.hostFoeId.name,
+      user2name: event.foeId.name,
+      user1Id: event.hostFoeId.id,
+      user2Id: event.foeId.id,
     }));
 
-    console.log("Matchups: ", matchups);
+  console.log("Matchups: ", matchups);
 
   // Filter matchups based on search term
-  const filteredMatchups = matchups.filter(matchup =>
-    matchup.user1.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    matchup.user2.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMatchups = matchups.filter(
+    (matchup) =>
+      matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   //  handleBuyTicket
 
+  console.log("user data from store(lineup): ", store.userData);
+  const userId = store.userData.id;
+  console.log("user id from (lineup)", userId);
+  //
+
   return (
     <>
-      <button type="button" className="btn btn-info" data-bs-toggle="modal" data-bs-target="#lineUp">
+      <button
+        type="button"
+        className="btn btn-info"
+        data-bs-toggle="modal"
+        data-bs-target="#lineUp"
+      >
         LINE UP
       </button>
-      <div className="modal fade" id="lineUp" aria-labelledby="lineUp" aria-hidden="true">
+      <div
+        className="modal fade"
+        id="lineUp"
+        aria-labelledby="lineUp"
+        aria-hidden="true"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="modal-header">
-                <h5 className="modal-title" id="lineUpLabel">LINEUP</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 className="modal-title" id="lineUpLabel">
+                  LINEUP
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
               <input
                 type="text"
@@ -79,22 +109,33 @@ export const Lineup = () => {
                 className="form-control mb-3"
               />
               <div className="lineup">
-                {filteredMatchups.map(matchup => (
+                {filteredMatchups.map((matchup) => (
                   <div className="matchup" key={matchup.id}>
                     <div className="user">
-                      <img src="path/to/ovye.png" alt={matchup.user1} />
-                      <span>{matchup.user1}</span>
+                      <img src="path/to/ovye.png" alt={matchup.user1name} />
+                      <span>{matchup.user1name}</span>
                     </div>
                     <div className="vs">VS</div>
                     <div className="user">
-                      <img src="path/to/jbeat.png" alt={matchup.user2} />
-                      <span>{matchup.user2}</span>
+                      <img src="path/to/jbeat.png" alt={matchup.user2name} />
+                      <span>{matchup.user2name}</span>
                     </div>
                     <div className="details">
                       <span>{matchup.date_time}</span>
                       <span>{matchup.fitnessStyle}</span>
                       <span>{matchup.location}</span>
-
+                    </div>
+                    <div className="btn-group">
+                      {userId === matchup.user1Id ||
+                      userId === matchup.user2Id ? (
+                        <button className="bg-black text-white p-2 rounded">
+                          CANCEL (FORFEIT)
+                        </button>
+                      ) : (
+                        <button className="bg-black text-white p-2 rounded">
+                          BUY TICKETS
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

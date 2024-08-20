@@ -166,7 +166,7 @@ const DaPaintList = ({ onClose }) => {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          {/* <div className="modal-content"> */}
+          <div className="modal-content">
             <div className="modal-header d-flex justify-content-between align-items-center">
               <h1
                 className="modal-title text-2xl font-bold mx-auto"
@@ -246,7 +246,7 @@ const DaPaintList = ({ onClose }) => {
             </div>
           </div>
         </div>
-      {/* </div> */}
+      </div>
 
       {showDaPaintCreate && (
         <div
