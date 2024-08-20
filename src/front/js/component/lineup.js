@@ -70,6 +70,29 @@ export const Lineup = () => {
   const userId = store.userData.id;
   console.log("user id from (lineup)", userId);
   //
+  const verifyTime = (timeOfMatch) => {
+    let currentTime = new Date();
+    console.log("Current Time: " + currentTime);
+    console.log("Time of Match: " + timeOfMatch);
+
+    // Ensure timeOfMatch is a Date object
+    let matchTime = new Date(timeOfMatch);
+
+    // Calculate the difference in milliseconds
+    let timeDifference = matchTime - currentTime;
+
+    // Convert milliseconds to hours
+    let hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    // Check if the current time is less than 48 hours from the time of the match
+    if (hoursDifference < 48) {
+        console.log("Time is less than 48 hours from the match.");
+        return false;
+    } else {
+        console.log("Time is more than 48 hours from the match.");
+        return true;
+    }
+};
 
   return (
     <>
@@ -128,7 +151,16 @@ export const Lineup = () => {
                     <div className="btn-group">
                       {userId === matchup.user1Id ||
                       userId === matchup.user2Id ? (
-                        <button className="bg-black text-white p-2 rounded">
+                        <button className="bg-black text-white p-2 rounded" onClick={()=>{
+                          verifyTime(matchup.date_time);
+                          if (verifyTime(matchup.date_time)) {
+                            actions.forfeitMatch(matchup.id)
+                          }
+                            else {
+                              actions.cancelMatch(matchup.id)
+                            }
+
+                        }}>
                           CANCEL (FORFEIT)
                         </button>
                       ) : (

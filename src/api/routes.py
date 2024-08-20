@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, WSH, InviteCode
+from api.models import db, User, DaPaint, UserImg, WinstreakHistory, InviteCode, Notifications
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
@@ -448,3 +448,69 @@ def get_notif():
     }
 
     return jsonify(response), 200
+
+@api.route("/forfeit/<int:dapaint_id>", methods=['PUT'])
+@jwt_required()
+def forfeit(dapaint_id):
+    user_id = get_jwt_identity()
+    daPaint = DaPaint.query.get(dapaint_id)
+    if not daPaint:
+        return jsonify({"error": "DaPaint not found"}), 404
+    if daPaint.hostFoeId!= user_id and daPaint.foeId!= user_id:
+        return jsonify({"error": "You can't forfeit events you're not a part of"}), 403
+    if daPaint.winnerId or daPaint.loserId:
+        return jsonify({"error": "This event has already been decided"}), 403
+    daPaint.loserId = user_id    
+    host=User.query.filter_by(id=daPaint.hostFoeId).first()
+    foe=User.query.filter_by(id=daPaint.foeId).first()
+    if host.id == user_id:
+        host.winstreak=0
+        host.disqualifications+=1
+        foe.winstreak+=1
+        daPaint.winnerId=daPaint.foeId
+        new_win=WinstreakHistory(user_id=foe.id)        
+        db.session.add(new_win)        
+        foe_notif=Notifications(user_id=foe.id, type="Forfeit", message=f"{host.name} has forfeited the event. Your winstreak has been increased.")
+        db.session.add(foe_notif)
+    if foe.id == user_id:
+        foe.winstreak=0
+        foe.disqualifications+=1
+        host.winstreak+=1
+        daPaint.winnerId=daPaint.hostFoeId
+        new_win=WinstreakHistory(user_id=host.id)
+        db.session.add(new_win)
+        host_notif=Notifications(user_id=host.id, type="Forfeit", message=f"{foe.name} has forfeited the event. Your winstreak has been increased.")
+        db.session.add(host_notif)        
+    db.session.commit()
+    return jsonify({"msg": "Event forfeited successfully"}), 200
+
+@api.route("/cancel/<int:dapaint_id>", methods=['PUT'])
+@jwt_required()
+def cancel(dapaint_id):
+    user_id = get_jwt_identity()
+    daPaint = DaPaint.query.get(dapaint_id)
+    if not daPaint:
+        return jsonify({"error": "DaPaint not found"}), 404
+    if daPaint.hostFoeId!= user_id and daPaint.foeId!= user_id:
+        return jsonify({"error": "You can't cancel events you're not a part of"}), 403
+    if daPaint.winnerId or daPaint.loserId:
+        return jsonify({"error": "This event has already been decided"}), 403
+    host=User.query.filter_by(id=daPaint.hostFoeId).first()
+    foe=User.query.filter_by(id=daPaint.foeId).first()
+
+    if daPaint.foeId==user_id:
+        daPaint.foeId=None
+        new_notif=Notifications(user_id=host.id , type="Cancel", message=f"{foe.name} has cancelled  the event.")
+        db.session.add(new_notif)
+
+    if daPaint.hostFoeId==user_id:       
+        new_host=daPaint.foeId
+        daPaint.foeId=None
+        daPaint.hostFoeId=new_host
+        new_notif=Notifications(user_id=foe.id, type="Cancel", message=f"{host.name} has cancelled the event. You're the new host")
+        db.session.add(new_notif)
+        
+    db.session.commit()
+    return jsonify({"msg": "Event cancelled successfully"}), 200
+
+

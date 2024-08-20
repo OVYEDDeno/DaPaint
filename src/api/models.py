@@ -79,7 +79,9 @@ class DaPaint(db.Model):
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)    
+    winnerImg = db.Column(db.String(250), nullable=True)
+    loserImg = db.Column(db.String(250), nullable=True)
 
     host_user = db.relationship('User', foreign_keys=[hostFoeId], back_populates='dapaint_host')
     foe_user = db.relationship('User', foreign_keys=[foeId], back_populates='dapaint_foe')
@@ -96,7 +98,9 @@ class DaPaint(db.Model):
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,
             "winnerId": self.winnerId,
-            "loserId": self.loserId
+            "loserId": self.loserId,
+            "winnerImg": self.winnerImg,
+            "loserImg": self.loserImg
         }
 
 class UserImg(db.Model):
@@ -117,8 +121,14 @@ class UserImg(db.Model):
             "image_url": self.image_url
         }
 
-class WSH(db.Model):
+class WinstreakHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
-    wins = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class Notifications(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    message = db.Column(db.String(2000), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
