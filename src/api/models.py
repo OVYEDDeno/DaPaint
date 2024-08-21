@@ -125,6 +125,7 @@ class WinstreakHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    
 
 class Notifications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -132,3 +133,29 @@ class Notifications(db.Model):
     type = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(2000), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class Reports(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+    vid_url = db.Column(db.String(250), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'dapaint_id': self.dapaint_id,
+            'img_url': self.img_url,
+            'vid_url': self.vid_url,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(512), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+    name = db.Column(db.String(200), unique=True, nullable=False)
+    rank = db.Column(db.String(50), nullable=True)
