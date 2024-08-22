@@ -19,6 +19,8 @@ const injectContext = PassedComponent => {
 
     useEffect(() => {
       // Initialize any data or perform any actions on load
+      state.actions.fetchCurrentUser()
+      state.actions.fetchMaxWinStreak()
     }, []);
 
     return (

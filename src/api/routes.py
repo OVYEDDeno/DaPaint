@@ -268,7 +268,7 @@ def get_max_win_streak():
         return jsonify({
             "maxWinStreak": user_with_max_winstreak.winstreak,
             "maxWinStreakUser": user_with_max_winstreak.serialize(),
-            "WinStreakGoal": WINSTREAK_GOAL
+            "WinStreakGoal": int(WINSTREAK_GOAL)
         }), 200
     else:
         return jsonify({"message": "No user found"}), 404
@@ -512,5 +512,6 @@ def cancel(dapaint_id):
         
     db.session.commit()
     return jsonify({"msg": "Event cancelled successfully"}), 200
+
 
 

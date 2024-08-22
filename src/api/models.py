@@ -125,6 +125,12 @@ class WinstreakHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
     
 
 class Notifications(db.Model):
@@ -133,6 +139,14 @@ class Notifications(db.Model):
     type = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(2000), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'type': self.type,
+           'message': self.message,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
 
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -159,3 +173,10 @@ class Admin(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     rank = db.Column(db.String(50), nullable=True)
+    def serialize(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'name': self.name,
+            'rank': self.rank
+        }

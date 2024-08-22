@@ -32,7 +32,7 @@ export const Landing = () => {
           }
         });
         const data = await response.json();
-        console.log(data.maxWinStreak);
+        console.log("This is the user win most winstreak ", data.maxWinStreak);
         console.log("trying to fetch Win Streak, ")
         setMaxWinStreak(data.maxWinStreak);
         setGoalWinStreak(data.WinStreakGoal);
@@ -41,26 +41,9 @@ export const Landing = () => {
         console.error("Error fetching max win streak:", error);
       }
     };
-
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await fetch(process.env.BACKEND_URL + '/api/current-user', {
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-          }
-        });
-        const data = await response.json();
-        setUser(data);
-        setCurrentWinStreak(data.winstreak);
-        console.log("User: ", data);
-        // actions.setCurrentUser(data);
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-      }
-    };
+    actions.fetchAndSetUser(setUser, setCurrentWinStreak);
 
     fetchMaxWinStreak();
-    fetchCurrentUser();
   }, []);
 
   const toggleDarkMode = () => {
@@ -96,7 +79,7 @@ export const Landing = () => {
 
       <main className="main-body">
         <h2 className="streak-announcement">
-          {currentWinStreak >= 40 ? "CONGRATULATIONS!!" : maxWinStreak >= 40 ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING 40 WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAK?`}
+          {currentWinStreak >= GoalWinStreak ? "CONGRATULATIONS!!" : maxWinStreak >= GoalWinStreak ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING ${GoalWinStreak} WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAK?`}
         </h2>
         <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
         <Lineup />

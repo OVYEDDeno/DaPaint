@@ -10,6 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       notifs: {},
       userId: undefined,
       userData: {},
+      WinStreakGoal: 30,
       dapaintId: undefined,
       token: localStorage.getItem("token"),
     },
@@ -60,21 +61,39 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           const data = await response.json();
+          console.log(data);
           setStore({
-            userData: {
-              ...data,
-              wins: data.winsByKO + data.winsBySub,
-              losses: data.lossesByKO + data.lossesBySub,
-            },
+            userData: data,
+            //   ...data,
+            //   wins: data.winsByKO + data.winsBySub,
+            //   losses: data.lossesByKO + data.lossesBySub,
           });
         } catch (error) {
           console.error("Error fetching current user:", error);
         }
       },
-
-      setCurrentUser: (userData) => {
-        setStore({ currentUser: userData });
+      fetchAndSetUser: async (setUser, setCurrentWinStreak) => {
+        try {
+          const response = await fetch(
+            process.env.BACKEND_URL + "/api/current-user",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          const data = await response.json();
+          console.log("user data from action.fetchAndSetUser: ", data);
+          setStore({
+            userData: data,
+          });
+          setUser(data);
+          setCurrentWinStreak(data.winstreak);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
       },
+
       createDaPaint: async (newDaPaint) => {
         let response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
           method: "POST",
@@ -101,20 +120,23 @@ const getState = ({ getStore, getActions, setStore }) => {
       getNotifs: async () => {
         const token = localStorage.getItem("token");
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/notifs`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/notifs`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
           if (response.status != 200) {
             const error = await response.json();
             console.error("Failed to retrieve notifications:", error);
-			return false;
+            return false;
           } else {
             const notifs = await response.json();
-			return notifs
+            return notifs;
           }
         } catch (error) {
           console.error("Error fetching notifications:", error);
@@ -204,10 +226,30 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error updating win streak:", error);
         }
       },
+      fetchMaxWinStreak: async () => {
+        let store = getStore();
+        try {
+          const response = await fetch(
+            process.env.BACKEND_URL + "/api/max-win-streak",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          const data = await response.json();
+          setStore({ WinStreakGoal: data.WinStreakGoal });
+        } catch (error) {
+          console.error("Error fetching max win streak:", error);
+        }
+      },
       resetWinStreak: async () => {
         let store = getStore();
         let userData = store.userData;
-        if (userData && userData.winstreak >= process.env.WINSTREAK_GOAL) {
+        console.log("userData:", store.userData);
+        console.log("userData.winstreak:", userData.winstreak);
+        console.log("store.WinStreakGoal:", store.WinStreakGoal);
+        if (userData && userData.winstreak >= store.WinStreakGoal) {
           try {
             const response = await fetch(
               process.env.BACKEND_URL + "/api/reset-win-streak",
@@ -219,9 +261,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               }
             );
             const data = await response.json();
-
             userData.winstreak = 0;
-            setStore({ userData: userData });
+            // setStore({ userData: userData });
           } catch (error) {
             console.error("Error fetching current user:", error);
           }

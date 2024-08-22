@@ -51,7 +51,13 @@ export const Setting = ({ onClose }) => {
 
   return (
     <> 
-      <button className="btn rounded-lg custom-bg" data-bs-target="#setting" data-bs-toggle="modal">SETTING</button>
+      <button className="btn rounded-lg custom-bg" data-bs-target="#setting" data-bs-toggle="modal">
+  <img 
+    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Gear-3d-icon.png" 
+    alt="Settings" 
+    style={{ width: '68px', height: '68px' }} 
+  />
+</button>
 
       <div className="modal fade" id="setting" aria-labelledby="setting" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
