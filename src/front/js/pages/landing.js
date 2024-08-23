@@ -9,7 +9,9 @@ import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
 import { EditProfile } from "../component/editprofile.js";
-import { Wlsub } from "../component/wlsub.js";
+import { Start, Wlsub } from "../component/start.js";
+import { Help } from "../component/help.js";
+import { Wallet } from "../component/wallet.js";
 
 export const Landing = () => {
   const { store, actions } = useContext(Context);
@@ -24,26 +26,10 @@ export const Landing = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchMaxWinStreak = async () => {
-      try {
-        const response = await fetch(process.env.BACKEND_URL + '/api/max-win-streak', {
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-          }
-        });
-        const data = await response.json();
-        console.log("This is the user win most winstreak ", data.maxWinStreak);
-        console.log("trying to fetch Win Streak, ")
-        setMaxWinStreak(data.maxWinStreak);
-        setGoalWinStreak(data.WinStreakGoal);
-        setMaxWinStreakUser(data.maxWinStreakUser.name);
-      } catch (error) {
-        console.error("Error fetching max win streak:", error);
-      }
-    };
+
+    actions.fetchMaxWinStreak(setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser);
     actions.fetchAndSetUser(setUser, setCurrentWinStreak);
 
-    fetchMaxWinStreak();
   }, []);
 
   const toggleDarkMode = () => {
@@ -62,6 +48,7 @@ export const Landing = () => {
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
         <div className="actions-section">
+          <Help/>
           <Invite />
           <Setting />
         </div>
@@ -85,7 +72,8 @@ export const Landing = () => {
         <Lineup />
         <div className="find-foe-section">
           <DaPaintList /><p></p>
-          <Wlsub />
+          <Start />
+          {/* <Wallet/> */}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

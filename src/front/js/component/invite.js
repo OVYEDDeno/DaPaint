@@ -96,8 +96,9 @@ export const Invite = ({ onClose }) => {
   return (
     <>
       <button type="button" className="btn" data-bs-toggle="modal" data-bs-target="#invite">
-        INVITE
-      </button>
+  <img src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/People-Hugging-3d-icon.png" alt="Invite" style={{ width: '68px', height: '68px' }} />
+</button>
+
       <div className="modal fade" id="invite" tabIndex="-1" aria-labelledby="invite" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">

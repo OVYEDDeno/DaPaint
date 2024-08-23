@@ -37,7 +37,9 @@ const DaPaintList = ({ onClose }) => {
     }
 
     getDapaintList();
-  }, []);
+
+      console.log("!!!!!!UPDATED STORE.USERDATA FROM DAPAINTLIST.JS:", store.userData);
+  }, [store.userData]);
 
   const handleClockIn = async (event) => {
     const token = localStorage.getItem("token");
@@ -147,12 +149,22 @@ const DaPaintList = ({ onClose }) => {
     }
   };
 
+  const handleResetWinStreak = () => {
+    // in the useEffect, set the user winstreak user.winstreak= {userWinStreak};
+    // also in the useEffect, grab the goal win streak from store or back end = {goalWinStreak};
+
+    // set a conditional here so this action only gets called if the user win streak = goal win streak (not the highest win streak)
+    // something like that(userWinStreak >= goalWinStreak) ? actions.resetWinStreak();
+    
+    // actions.resetWinStreak();
+  }
+
   return (
     <>
       <button
         type="button"
-        onClick={() => actions.resetWinStreak()}
-        className="btn btn-danger"
+        onClick={handleResetWinStreak}
+        className="btn btn-danger btn-lg"
         data-bs-toggle="modal"
         data-bs-target="#DaPaint"
       >

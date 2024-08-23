@@ -97,14 +97,13 @@ export const Lineup = () => {
   return (
     <>
       <button
-  type="button"
-  className="btn btn-warning text-white btn-lg"
-  data-bs-toggle="modal"
-  data-bs-target="#lineUp"
->
-  LINE UP
-</button>
-
+        type="button"
+        className="btn btn-info"
+        data-bs-toggle="modal"
+        data-bs-target="#lineUp"
+      >
+        LINE UP
+      </button>
       <div
         className="modal fade"
         id="lineUp"

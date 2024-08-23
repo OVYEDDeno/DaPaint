@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
-import "../../styles/wlsub.css";
+import "../../styles/start.css";
 import { Context } from "../store/appContext";
 
-export const Wlsub = () => {
+export const Start = () => {
   const [hostUser, setHostUser] = useState(null);
   const [foeUser, setFoeUser] = useState(null);
   const [hostVote, setHostVote] = useState(null);
@@ -52,15 +52,15 @@ export const Wlsub = () => {
 
   return (
     <>
-      <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#WLSubmodal">
-        WHO WON?
+      <button type="button" className="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#startmodal">
+      START
       </button>
-      <div className="modal fade" id="WLSubmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div className="modal fade" id="startmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-body">
-            <div className="wlsub-container">
+            <div className="start-container">
               <div className="d-flex justify-content-center align-items-center">
-                <h1 className="modal-title text-white text-2xl font-bold" id="WLSubLabel">Who Won?</h1>
+                <h1 className="modal-title text-white text-2xl font-bold" id="startLabel">Who Won?</h1>
                 <button type="button" className="btn btn-secondary ms-3" data-bs-dismiss="modal">Forfeit</button>
               </div>
               <form onSubmit={handleSubmit}>

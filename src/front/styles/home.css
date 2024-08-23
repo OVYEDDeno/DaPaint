@@ -1,13 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Anton;
 }
 
 .home-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #F5F5F5;
+  background-color: #f3f3f3;
   color: #000000;
 }
 
@@ -16,7 +17,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  background-color: #F5F5F5;
+  background-color: #f3f3f3;
 }
 
 .logo {
@@ -72,7 +73,7 @@ body {
 }
 
 .footer {
-  background-color: #F5F5F5;
+  background-color: #f3f3f3;
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -160,7 +161,7 @@ form {
 }
 
 .btn-primary:hover {
-  background-color: #f5f5f5;
+  background-color: #f3f3f3;
 }
 
 .btn-secondary {

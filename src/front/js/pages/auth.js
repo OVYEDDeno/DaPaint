@@ -182,7 +182,7 @@ export const Auth = () => {
                                     className="form-control"
                                     required />
                                 {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label className="form-label">Invite Code</label>
                                     <input
                                         type="text"
@@ -193,8 +193,8 @@ export const Auth = () => {
                                         required
                                     />
                                     {error.InviteCode && <div className="alert alert-danger" role="alert">{error.InviteCode}</div>}
-                                </div>
-                                <p>by signing up, you're agreeing to our terms of service and privacy policy. thanks!</p>
+                                </div> */}
+                                <p>by signing up, you're agreeing to our terms of service and privacy policy.</p>
                             </div>
                         </>
                     )}

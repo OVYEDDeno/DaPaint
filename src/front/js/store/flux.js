@@ -10,7 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       notifs: {},
       userId: undefined,
       userData: {},
-      WinStreakGoal: 30,
+      WinStreakGoal: undefined,
       dapaintId: undefined,
       token: localStorage.getItem("token"),
     },
@@ -64,9 +64,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log(data);
           setStore({
             userData: data,
-            //   ...data,
-            //   wins: data.winsByKO + data.winsBySub,
-            //   losses: data.lossesByKO + data.lossesBySub,
+              ...data,
+              wins: data.winsByKO + data.winsBySub,
+              losses: data.lossesByKO + data.lossesBySub,
           });
         } catch (error) {
           console.error("Error fetching current user:", error);
@@ -83,10 +83,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           const data = await response.json();
-          console.log("user data from action.fetchAndSetUser: ", data);
-          setStore({
-            userData: data,
-          });
+          console.log("FLUX:actions.fetchAndSetUser: ", data);
+          setStore(prevStore => ({
+            ...prevStore,
+            userData: {
+              ...data,
+              wins: data.winsByKO + data.winsBySub,
+              losses: data.lossesByKO + data.lossesBySub,
+            },
+          }));
           setUser(data);
           setCurrentWinStreak(data.winstreak);
         } catch (error) {
@@ -226,7 +231,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error updating win streak:", error);
         }
       },
-      fetchMaxWinStreak: async () => {
+      fetchMaxWinStreak: async (setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser) => {
         let store = getStore();
         try {
           const response = await fetch(
@@ -238,18 +243,18 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           const data = await response.json();
+          console.log("FLUX:ACTIONS.FETCHMAXWINSTREAK.DATA", data);
           setStore({ WinStreakGoal: data.WinStreakGoal });
+          setMaxWinStreak(data.maxWinStreak);
+          setGoalWinStreak(data.WinStreakGoal);
+          setMaxWinStreakUser(data.maxWinStreakUser.name);
         } catch (error) {
           console.error("Error fetching max win streak:", error);
         }
       },
+
       resetWinStreak: async () => {
         let store = getStore();
-        let userData = store.userData;
-        console.log("userData:", store.userData);
-        console.log("userData.winstreak:", userData.winstreak);
-        console.log("store.WinStreakGoal:", store.WinStreakGoal);
-        if (userData && userData.winstreak >= store.WinStreakGoal) {
           try {
             const response = await fetch(
               process.env.BACKEND_URL + "/api/reset-win-streak",
@@ -261,45 +266,13 @@ const getState = ({ getStore, getActions, setStore }) => {
               }
             );
             const data = await response.json();
-            userData.winstreak = 0;
+            console.log("FLUX: actions.RESETWINSTREAK DATA RESULTS: ", data);
+            // getStore().userData.winstreak = 0;
             // setStore({ userData: userData });
           } catch (error) {
             console.error("Error fetching current user:", error);
           }
-        }
       },
-      // addUserImg: async (images) => {
-      // 	try {
-      // 		let formData = new FormData();
-      // 		console.log(">>> 🍎 images:", images);
-
-      // 		// Append all images to FormData
-      // 		images.forEach((image, index) => {
-      // 			formData.append(`file${index}`, image);
-      // 		});
-
-      // 		const response = await fetch(process.env.BACKEND_URL + "/api/user-img", {
-      // 			method: "POST",
-      // 			headers: {
-      // 				Authorization: "Bearer " + localStorage.getItem("token")
-      // 			},
-      // 			body: formData
-      // 		});
-
-      // 		if (!response.ok) {
-      // 			throw new Error(`HTTP error! status: ${response.status}`);
-      // 		}
-
-      // 		const responseBody = await response.json();
-      // 		console.log("Response Body:", responseBody);
-
-      // 		return true;
-      // 	} catch (error) {
-      // 		console.error("Error uploading image:", error);
-      // 		return false;
-      // 	}
-      // }
-
       addUserImage: async (imageFile) => {
         let formData = new FormData();
         formData.append("file", imageFile[0]); // Assuming imageFile is an array

@@ -11,16 +11,6 @@ import injectContext from "./store/appContext";
 import { Auth } from "./pages/auth";
 import { Code } from "./pages/code";
 import { Landing } from "./pages/landing";
-// import { Profile } from "./component/profile";
-// import { Wlsub } from "./component/wlsub";
-// import { Wallet } from "./component/wallet";
-// import { Setting } from "./component/setting";
-// import { Lineup } from "./component/lineup";
-// import { Invite } from "./component/invite";
-// import { EditProfile } from "./component/editprofile";
-// import DaPaintList from "./component/dapaintlist";
-// import { DaPaintCreate } from "./component/dapaintcreate";
-// import {wlsub} from "./component/wlsub";
 
 //create your first component
 const Layout = () => {
@@ -39,18 +29,9 @@ const Layout = () => {
                         <Route element={<About />} path="/about" />
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Code />} path="/code" />
-                        {/* <Route element={<Profile />} path="/profile" /> */}
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />
-                        {/* <Route element={<DaPaintCreate />} path="/dapaintcreate" />
-                        <Route element={<DaPaintList />} path="/dapaintlist" />
-                        <Route element={<EditProfile />} path="/editprofile" />
-                        <Route element={<Invite />} path="/invite" />
-                        <Route element={<Lineup />} path="/lineup" />
-                        <Route element={<Setting />} path="/setting" />
-                        <Route element={<Wallet />} path="/wallet" />
-                        <Route element={<Wlsub />} path="/wlsub" /> */}
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

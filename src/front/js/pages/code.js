@@ -25,15 +25,13 @@ export const Code = () => {
     };
 
     return (
-        <div className="center-container">
+        <><div className="center-container">
             <a href="/" onClick={() => window.location.reload()}>
                 <img
                     src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
                     alt="Logo"
-                    className="logo"
-                />
-            </a>
-            <div className="container mt">
+                    className="logo" />
+            </a></div><div className="container mt">
                 <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-300 w-50">
                     <div className="mb-3">
                         <label className="form-label">Invitation Code</label>
@@ -43,8 +41,7 @@ export const Code = () => {
                             value={formData.invitationCode}
                             onChange={handleChange}
                             className="form-control"
-                            required
-                        />
+                            required />
                         {error.invitationCode && (
                             <div className="alert alert-danger" role="alert">
                                 {error.invitationCode}
@@ -55,7 +52,6 @@ export const Code = () => {
                         Submit
                     </button>
                 </form>
-            </div>
-        </div>
+            </div></>
     );
 };
