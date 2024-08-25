@@ -103,6 +103,9 @@ export const Auth = () => {
 
 
                 <h2 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h2>
+                <button onClick={() => setIsLogin(!isLogin)} className="btn btn-secondary w-50 mx-auto mt-4 mb-3 d-block">
+                    Switch to {isLogin ? 'Sign Up' : 'Login'}
+                </button>
                 <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-300 w-50">
                     {!isLogin && (
                         <>
@@ -214,9 +217,7 @@ export const Auth = () => {
                     )}
                     <button type="submit" className="btn btn-primary w-100">{isLogin ? 'Login' : 'Sign Up'}</button>
                 </form>
-                <button onClick={() => setIsLogin(!isLogin)} className="btn btn-secondary w-50 mx-auto mt-3 d-block">
-                    Switch to {isLogin ? 'Sign Up' : 'Login'}
-                </button>
+                
                 {isLogin && (
                     <div className="text-center mt-3">
                     <button 

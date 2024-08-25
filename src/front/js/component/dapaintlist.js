@@ -37,7 +37,6 @@ const DaPaintList = ({ onClose }) => {
     }
 
     getDapaintList();
-
       console.log("!!!!!!UPDATED STORE.USERDATA FROM DAPAINTLIST.JS:", store.userData);
   }, [store.userData]);
 
@@ -156,7 +155,7 @@ const DaPaintList = ({ onClose }) => {
     // set a conditional here so this action only gets called if the user win streak = goal win streak (not the highest win streak)
     // something like that(userWinStreak >= goalWinStreak) ? actions.resetWinStreak();
     
-    // actions.resetWinStreak();
+    actions.resetWinStreak();
   }
 
   return (

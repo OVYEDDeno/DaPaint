@@ -24,30 +24,20 @@ export const Landing = () => {
   const [maxWinStreakUser, setMaxWinStreakUser] = useState();
   const [darkMode, setDarkMode] = useState(false); // State for dark mode
   const navigate = useNavigate();
-
   useEffect(() => {
-
     actions.fetchMaxWinStreak(setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser);
     actions.fetchAndSetUser(setUser, setCurrentWinStreak);
-
   }, []);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode); // Toggle dark mode
-  };
 
   console.log("GoalWinStreak", GoalWinStreak, "CURRENTWinStreak", currentWinStreak, "calc", ((currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) / GoalWinStreak) * 100)
   console.log("max Win Streak", maxWinStreak);
 
   return (
-    <div className={`home-container ${darkMode ? "dark-mode" : ""}`}>
+    <div className={`home-container`}>
       <header className="top-header">
         <h1>Welcome<EditProfile />
         {/* <Help/> */}
         {/* <Profile />                 */}</h1>
-        <button onClick={toggleDarkMode} className="dark-mode-toggle">
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
         <div className="actions-section">          
           {/* <Invite /> */}
           <Setting />
