@@ -93,11 +93,11 @@ export const Auth = () => {
 
     return (
         <><div className="center-container">
-            <a href="/" onclick="location.reload();">
+            <a href="/auth" onclick="location.reload();">
                 <img
                     src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="Logo"
-                    className="logo" />
+                    className="DIDDYlogo" />
             </a>
         </div><div className="container mt">
 
@@ -181,19 +181,7 @@ export const Auth = () => {
                                     onChange={handleChange}
                                     className="form-control"
                                     required />
-                                {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}
-                                {/* <div className="mb-3">
-                                    <label className="form-label">Invite Code</label>
-                                    <input
-                                        type="text"
-                                        name="InviteCode"
-                                        value={formData.InviteCode}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                    {error.InviteCode && <div className="alert alert-danger" role="alert">{error.InviteCode}</div>}
-                                </div> */}
+                                {error.password && <div className="alert alert-danger" role="alert">{error.password}</div>}                                
                                 <p>by signing up, you're agreeing to our terms of service and privacy policy.</p>
                             </div>
                         </>
@@ -231,8 +219,13 @@ export const Auth = () => {
                 </button>
                 {isLogin && (
                     <div className="text-center mt-3">
-                        <a href="#" onClick={() => alert("Forgot Username/Password clicked!")}>Forgot Username/Password?</a>
-                    </div>
+                    <button 
+                        className="btn forgot-button w-50" 
+                        onClick={() => alert("Forgot Username/Password clicked!")}>
+                        Forgot Username/Password?
+                    </button>
+                </div>
+                
                 )}
             </div></>
     );
