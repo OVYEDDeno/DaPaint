@@ -15,7 +15,7 @@ export const EditProfile = () => {
   const [imageSizeError, setImageSizeError] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
 
-  const placeholderImage = 'https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png';
+  const placeholderImage = 'https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png';
   const profileImageUrl = store.userData?.profile_pic?.image_url || placeholderImage;
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const EditProfile = () => {
   const handleImageUpload = (event) => {
     const files = event.target.files;
     let file_size = files[0].size;
-    if (file_size <= 100000) {
+    if (file_size <= 1000000) {
       setImageSizeError(false);
       setUploadedImages(files);
     } else {

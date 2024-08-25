@@ -58,7 +58,7 @@ export const Start = () => {
       <div className="modal fade" id="startmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-body">
-            <div className="start-container">
+            <div className="wlsub-container">
               <div className="d-flex justify-content-center align-items-center">
                 <h1 className="modal-title text-white text-2xl font-bold" id="startLabel">Who Won?</h1>
                 <button type="button" className="btn btn-secondary ms-3" data-bs-dismiss="modal">Forfeit</button>

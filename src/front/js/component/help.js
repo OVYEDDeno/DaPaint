@@ -54,14 +54,14 @@ export const Help = () => {
     <>
       <button
         type="button"
-        className="btn btn-outline-danger btn-lg"
+        className="btn"
         data-bs-toggle="modal"
         data-bs-target="#WLSubmodal"
       >
         <img
           src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
           alt="Who Won?"
-          style={{ width: "40px", height: "40px" }}
+          style={{ width: "68px", height: "68px" }}
         />
       </button>
 

@@ -9,7 +9,7 @@ export const Home = () => {
       {/* <header className="top-header">   
         <nav className="nav-links">
           <ul>
-            <li><a href="/about">About Diddy</a></li>
+            <li><a href="/about">About DIDDY</a></li>
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
@@ -17,48 +17,78 @@ export const Home = () => {
           <button className="cta-button">Clock In</button>
         </Link>
       </header> */}
-
       <main className="main-body">
         <a href="" onclick="location.reload();">
           <img
-            src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
-            alt="Logo"
-            className="logo"
+            src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+            alt="DIDDYLogo"
+            className="DIDDYLogo"
           />
         </a>
         {/* <h1 className="tagline">Defy Your Limits</h1> */}
-        <h1 className="tagline">🎉Welcome To Diddy🎉</h1><p></p>
-        <p>We're in the early stages of launching, and you can be part of the fun with an invite from a current member!</p>
-        <p>Sign up to see if you have friends on Diddy who can let you in. We can't wait for you to join!</p>
+        <h1 className="tagline">Welcome To DIDDY</h1>
+        <p></p>
+        <h5>
+          Hey, we're still launching, but you can jump in with an exclusive
+          invite from a current user!
+        </h5>
+        <p></p>
+        <p>
+          Sign up to see if you have friends on Diddy who can let you in. We
+          can't wait for you to join!
+        </p>
         <Link to="/auth">
-          <button className="cta-button">Be Part Of The Fun</button>
+          <button className="cta-button">Sign up</button>
         </Link>
       </main>
 
       <footer className="footer">
         <div className="footer-column">
           <ul>
-            <li><a href="/guidelines" target="_blank">Guidelines</a></li>
-            <li><a href="/privacy" target="_blank">Privacy</a></li>
-            <li><a href="/terms" target="_blank">Terms</a></li>
-            <li><a href="/faqs" target="_blank">FAQs</a></li>
+            <li>
+              <a href="/advertise" target="_blank">
+                Advertise With Us
+              </a>
+            </li>
+            <li>
+              <a href="/privacy" target="_blank">
+                Privacy
+              </a>
+            </li>
+            <li>
+              <a href="/terms" target="_blank">
+                Terms
+              </a>
+            </li>
+            <li>
+              <a href="/faqs" target="_blank">
+                FAQs
+              </a>
+            </li>
           </ul>
         </div>
         <div className="footer-column social-media-logos">
           <a href="https://tiktok.com" target="_blank">
-            <img src="https://static-00.iconduck.com/assets.00/tiktok-icon-445x512-xaxcw9b8.png" alt="TikTok" />
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/tiktok-white-icon.png"
+              alt="TikTok"
+            />
           </a>
-          <a href="https://twitter.com" target="_blank">
-            <img src="https://static-00.iconduck.com/assets.00/twitter-icon-512x417-ypy0580u.png" alt="Twitter" />
+          <a href="https://x.com" target="_blank">
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-white-icon.png"
+              alt="Twitter"
+            />
           </a>
           <a href="https://instagram.com" target="_blank">
-            <img src="https://static-00.iconduck.com/assets.00/instagram-icon-512x512-ek33t112.png" alt="Instagram" />
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/instagram-white-icon.png"
+              alt="Instagram"
+            />
           </a>
-
-        </div>
-
-        <div className="footer-column">
-          <p>&copy; {new Date().getFullYear()} OVYED Labs</p>
+          <div className="footer-column">
+            <p>&copy; {new Date().getFullYear()} OVYED Labs</p>
+          </div>
         </div>
       </footer>
     </div>

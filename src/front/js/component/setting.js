@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "../../styles/setting.css";
 import { Context } from "../store/appContext";
 
@@ -23,8 +23,8 @@ export const Setting = ({ onClose }) => {
       method: "PUT",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
 
     let response = await fetch(process.env.BACKEND_URL + "/api/act", options);
@@ -50,32 +50,57 @@ export const Setting = ({ onClose }) => {
   };
 
   return (
-    <> 
-      <button className="btn rounded-lg" data-bs-target="#setting" data-bs-toggle="modal">
-  <img 
-    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Gear-3d-icon.png" 
-    alt="Settings" 
-    style={{ width: '68px', height: '68px' }} 
-  />
-</button>
+    <>
+      <button
+        className="btn rounded-lg"
+        data-bs-target="#setting"
+        data-bs-toggle="modal"
+      >
+        <img
+          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
+          alt="Settings"
+          style={{ width: "68px", height: "68px" }}
+        />
+      </button>
 
-      <div className="modal fade" id="setting" aria-labelledby="setting" aria-hidden="true">
+      <div
+        className="modal fade"
+        id="setting"
+        aria-labelledby="setting"
+        aria-hidden="true"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h3 className="text-2xl font-bold text-black">SETTING</h3>
-              <button type="button" className="btn-close closeIcon" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button
+                type="button"
+                className="btn-close closeIcon"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
               <div className="space-y-4">
-                <button className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800" data-bs-target="#feedbackModal" data-bs-toggle="modal">
+                <button
+                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                  data-bs-target="#feedbackModal"
+                  data-bs-toggle="modal"
+                >
                   FEEDBACK
                 </button>
-                <button className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">
+                <button
+                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                  data-bs-target="#exampleModalToggle2"
+                  data-bs-toggle="modal"
+                >
                   {isActive ? "Deactivate" : "Activate"}
                 </button>
 
-                <button className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800" onClick={handleLogout}>
+                <button
+                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                  onClick={handleLogout}
+                >
                   CLOCK OUT
                 </button>
               </div>
@@ -84,12 +109,25 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
 
-      <div className="modal fade" id="feedbackModal" aria-hidden="true" aria-labelledby="feedbackModalLabel" tabIndex="-1">
+      <div
+        className="modal fade"
+        id="feedbackModal"
+        aria-hidden="true"
+        aria-labelledby="feedbackModalLabel"
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="feedbackModalLabel">Feedback</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 className="modal-title" id="feedbackModalLabel">
+                Feedback
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
               <textarea
@@ -101,26 +139,59 @@ export const Setting = ({ onClose }) => {
               ></textarea>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button className="btn btn-primary" onClick={handleFeedbackSubmit} data-bs-dismiss="modal">Submit Feedback</button>
+              <button className="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleFeedbackSubmit}
+                data-bs-dismiss="modal"
+              >
+                Submit Feedback
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabIndex="-1">
+      <div
+        className="modal fade"
+        id="exampleModalToggle2"
+        aria-hidden="true"
+        aria-labelledby="exampleModalToggleLabel2"
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
+                Modal 2
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
-              Are you sure you want to {isActive ? "deactivate" : "activate"} your account?
+              Are you sure you want to {isActive ? "deactivate" : "activate"}{" "}
+              your account?
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" data-bs-target="#setting" data-bs-toggle="modal">CANCEL</button>
-              <button className="btn btn-primary" data-bs-target="#setting" data-bs-toggle="modal" onClick={toggleActiveStatus}>
+              <button
+                className="btn btn-primary"
+                data-bs-target="#setting"
+                data-bs-toggle="modal"
+              >
+                CANCEL
+              </button>
+              <button
+                className="btn btn-primary"
+                data-bs-target="#setting"
+                data-bs-toggle="modal"
+                onClick={toggleActiveStatus}
+              >
                 Submit
               </button>
             </div>

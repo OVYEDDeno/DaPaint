@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/home.css";
+import "../../styles/auth.css";
 import { useNavigate } from "react-router-dom";
 
 export const Auth = () => {
@@ -95,7 +95,7 @@ export const Auth = () => {
         <><div className="center-container">
             <a href="/" onclick="location.reload();">
                 <img
-                    src="https://static-00.iconduck.com/assets.00/oncoming-fist-medium-dark-emoji-2048x1797-dmd9wvcy.png"
+                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="Logo"
                     className="logo" />
             </a>
