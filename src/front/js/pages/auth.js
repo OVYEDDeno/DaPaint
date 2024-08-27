@@ -103,7 +103,7 @@ export const Auth = () => {
 
 
                 <h2 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h2>
-                <button onClick={() => setIsLogin(!isLogin)} className="btn btn-secondary w-50 mx-auto mt-4 mb-3 d-block">
+                <button onClick={() => setIsLogin(!isLogin)} className="btn btn-switch w-50 mx-auto mt-4 mb-4 d-block">
                     Switch to {isLogin ? 'Sign Up' : 'Login'}
                 </button>
                 <form onSubmit={handleSubmit} className="mx-auto p-4 border border-2 rounded-300 w-50">

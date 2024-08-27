@@ -71,15 +71,34 @@ export const Setting = ({ onClose }) => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header">
-              <h3 className="text-2xl font-bold text-black">SETTING</h3>
-              <button
-                type="button"
-                className="btn-close closeIcon"
+            <div className="modal-header" style={{ position: "justify" }}>
+              <img
                 data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Cross-Mark-3d-icon.png"
+                alt="Close"
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  width: "20px",
+                  height: "20px",
+                  cursor: "pointer",
+                }}
+              />
+              <h3
+                className="text-2xl font-bold text-black"
+                style={{
+                  margin: "0 auto",
+                  textAlign: "center",
+                  fontStyle: "normal",
+                  // position: "absolute",
+                  // width: "0%",
+                }}
+              >
+                SETTING
+              </h3>
             </div>
+
             <div className="modal-body">
               <div className="space-y-4">
                 <button

@@ -22,7 +22,6 @@ export const Landing = () => {
   const nextWinStreak = maxWinStreak + 1;
   const [user, setUser] = useState();
   const [maxWinStreakUser, setMaxWinStreakUser] = useState();
-  const [darkMode, setDarkMode] = useState(false); // State for dark mode
   const navigate = useNavigate();
   useEffect(() => {
     actions.fetchMaxWinStreak(setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser);
@@ -58,7 +57,7 @@ export const Landing = () => {
         <h2 className="streak-announcement">
           {currentWinStreak >= GoalWinStreak ? "CONGRATULATIONS!!" : maxWinStreak >= GoalWinStreak ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING ${GoalWinStreak} WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAK?`}
         </h2>
-        <p className="current-streak">{maxWinStreakUser} HAS ACHIEVED {maxWinStreak} WIN STREAK</p>
+        <p className="current-streak">{maxWinStreakUser} has achieved {maxWinStreak} win streaks</p>
         <Lineup />
         <div className="find-foe-section">
           <DaPaintList /><p></p>

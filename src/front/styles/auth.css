@@ -16,7 +16,6 @@ h2 {
 form {
   background-color: #e3e3e3;
   padding: 2rem;
-  border: 7px solid #ca0808;
   border-radius: 21px;
 }
 
@@ -35,26 +34,27 @@ form {
 }
 
 .form-control:focus {
-  border-color: #580b0b;
+  border-color: #000000;
 }
 
-.btn-primary {
-  background-color: #ffffff;
-  color: #131313;
+/* .btn-primary {
+  background-color: #d30000;
+  color: #ff0000;
   border: none;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
+  its being controlled by start.css but hover work
+} */
 
 .btn-primary:hover {
   background-color: #131313;
   color: #ffffff;
 }
 
-.btn-secondary {
+.btn-switch {
   background-color: #e3e3e3;
   color: #131313;
   border: none;
@@ -65,10 +65,11 @@ form {
   transition: background-color 0.3s;
 }
 
-.btn-secondary:hover {
+.btn-switch:hover {
   background-color: #131313;
-  color: #ffffff;  
-  border: 4px;
+  color: #e3e3e3;  
+  border: 4px;  
+  box-shadow: 4px 4px 34px #343434;
 }
 
 .alert-danger {
@@ -131,6 +132,7 @@ form {
 }
 
 .forgot-button:hover {
-  background-color: #000000;
-  color: #e3e3e3;
+  background-color: #131313;
+  color: #e3e3e3;  
+  box-shadow: 4px 4px 34px #333333;
 }

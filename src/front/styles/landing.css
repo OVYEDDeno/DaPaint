@@ -5,6 +5,13 @@ body {
   font-weight: 40;
   font-style: normal;
 }
+/* .home-container {
+  background-image: url('https://scontent-mia3-1.xx.fbcdn.net/o1/v/t0/f1/m338/upload_img_7278527_08_25_2024_18_58_58_698855_9220323092076731198.jpeg?_nc_ht=scontent-mia3-1.xx.fbcdn.net&_nc_cat=110&ccb=9-4&oh=00_AYDCtcsSj5AeCc_7pj_BsHINsvU4nUg7ubRJ_h18jrMlNA&oe=66CDBED7&_nc_sid=5b3566');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+} */
 
 .landing-container {
   display: flex;
@@ -161,38 +168,4 @@ body {
 
 .logout-button:hover {
   background-color: #ddd;
-}
-
-/* Dark Mode Styles */
-.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
-}
-
-.dark-mode .custom-progress-bar {
-  background-color: #333;
-}
-
-/* .dark-mode .custom-circle {
-  background-color: #444;
-} */
-
-.dark-mode .top-header {
-  background-color: #121212;
-}
-.dark-mode .actions-section {
-  background-color: #222;
-}
-
-.dark-mode-toggle {
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #444;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
-.dark-mode-toggle:hover {
-  background-color: #555;
 }
