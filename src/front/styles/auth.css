@@ -54,7 +54,7 @@ form {
   color: #ffffff;
 }
 
-.btn-switch {
+.btn-secondary {
   background-color: #e3e3e3;
   color: #131313;
   border: none;
@@ -65,7 +65,7 @@ form {
   transition: background-color 0.3s;
 }
 
-.btn-switch:hover {
+.btn-secondary:hover {
   background-color: #131313;
   color: #e3e3e3;  
   border: 4px;  

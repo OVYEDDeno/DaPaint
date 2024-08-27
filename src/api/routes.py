@@ -313,65 +313,21 @@ def act():
     db.session.commit()
     return jsonify({"msg": "Account status updated"}), 200
 
-@api.route('/update-win-streak/<int:id>', methods=['PUT'])
-@jwt_required()
-def update_win_streak(id):
-    user_id=get_jwt_identity()
-    data = request.get_json()
-    vote = data.get('vote')
-    daPaint_id = data.get('dapaint_id')
-
-    user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        return jsonify({"msg": "No user found"}), 404
-    daPaint = DaPaint.query.get(id)
-    if daPaint is None:
-        return jsonify({"msg": "No DaPaint found"}), 404 
-    
-    if vote not in ['winner', 'loser']:
-        return jsonify({"msg": "Invalid vote"}), 400
-    if daPaint.hostFoeId != user_id and daPaint.foeId != user_id:
-        return jsonify({"msg": "You can't vote on events you're not a part of"}), 403
-    
-    if vote == 'winner' and daPaint.winnerId is None:
-        daPaint.winnerId = user_id
-        user.winstreak += 1
-    elif vote == 'winner' and daPaint.winnerId == user_id:
-        return jsonify({"msg": "You've already voted as a winner"}), 403
-    elif vote == 'winner' and daPaint.winnerId is not None:
-        return jsonify({"msg": "Another player claimed to be the winner, please contact admin if this is a mistake."}), 403
-    
-    elif vote == 'loser' and daPaint.loserId is None:
-        daPaint.loserId = user_id
-        user.winstreak = 0
-    elif vote == 'loser' and daPaint.loserId == user_id:
-        return jsonify({"msg": "You've already voted as a loser"}), 403
-    elif vote == 'loser' and daPaint.loserId is not None:
-        return jsonify({"msg": "Another player claimed to be the loser, please contact admin if this is a mistake."}), 403
-    
-    db.session.commit()
-    db.session.refresh(user)
-  
-
-    return jsonify({"msg":"your winstreak has been updated", "user_winstreak":user.winstreak}), 200
-
-
-
-@api.route('/emailtest', methods=['POST'])
-def email_test():
-    message = Mail(
-    from_email='nevad34@gmail.com',
-    to_emails='nevad34@gmail.com',
-    subject='Sending with Twilio SendGrid is Fun',
-    html_content='<strong>and easy to do anywhere, even with Python</strong>')
-    try:
-        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-        response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-    except Exception as e:
-        print(e.message)
+# @api.route('/emailtest', methods=['POST'])
+# def email_test():
+#     message = Mail(
+#     from_email='nevad34@gmail.com',
+#     to_emails='nevad34@gmail.com',
+#     subject='Sending with Twilio SendGrid is Fun',
+#     html_content='<strong>and easy to do anywhere, even with Python</strong>')
+#     try:
+#         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+#         response = sg.send(message)
+#         print(response.status_code)
+#         print(response.body)
+#         print(response.headers)
+#     except Exception as e:
+#         print(e.message)
 
 
 @api.route('/invite-code', methods=['POST'])
@@ -449,6 +405,48 @@ def get_notif():
 
     return jsonify(response), 200
 
+@api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
+@jwt_required()
+def update_win_streak(id):
+    user_id=get_jwt_identity()
+    data = request.get_json()
+    vote = data.get('vote')
+
+    user = User.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "No user found"}), 404
+    daPaint = DaPaint.query.get(id)
+    if daPaint is None:
+        return jsonify({"msg": "No DaPaint found"}), 404 
+    
+    if vote not in ['winner', 'loser']:
+        return jsonify({"msg": "Invalid vote"}), 400
+    if daPaint.hostFoeId != user_id and daPaint.foeId != user_id:
+        return jsonify({"msg": "You can't vote on events you're not a part of"}), 403
+    
+    if vote == 'winner' and daPaint.winnerId is None:
+        daPaint.winnerId = user_id
+        user.winstreak += 1
+    elif vote == 'winner' and daPaint.winnerId == user_id:
+        return jsonify({"msg": "You've already voted as a winner"}), 403
+    elif vote == 'winner' and daPaint.winnerId is not None and daPaint.winnerId!= user_id:
+        
+        return jsonify({"msg": "Another player claimed to be the winner, please contact admin if this is a mistake."}), 403
+    
+    elif vote == 'loser' and daPaint.loserId is None:
+        daPaint.loserId = user_id
+        user.winstreak = 0
+    elif vote == 'loser' and daPaint.loserId == user_id:
+        return jsonify({"msg": "You've already voted as a loser"}), 403
+    elif vote == 'loser' and daPaint.loserId is not None and daPaint.loserId!= user_id:
+        return jsonify({"msg": "Another player claimed to be the loser, please contact admin if this is a mistake."}), 403
+    
+    db.session.commit()
+    db.session.refresh(user)
+  
+
+    return jsonify({"msg":"your winstreak has been updated", "user_winstreak":user.winstreak}), 200
+
 @api.route("/forfeit/<int:dapaint_id>", methods=['PUT'])
 @jwt_required()
 def forfeit(dapaint_id):
@@ -512,6 +510,3 @@ def cancel(dapaint_id):
         
     db.session.commit()
     return jsonify({"msg": "Event cancelled successfully"}), 200
-
-
-
