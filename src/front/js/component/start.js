@@ -52,89 +52,27 @@ export const Start = () => {
 
   return (
     <>
-      <button type="button" className="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#startmodal">
-      START
+      {/*Button trigger modal*/}
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      <h1>👊🏾START👊🏾</h1>
       </button>
-      <div className="modal fade" id="startmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-body">
-            <div className="start-container">
-              <div className="d-flex justify-content-center align-items-center">
-                <h1 className="modal-title text-white text-2xl font-bold" id="startLabel">Who Won?</h1>
-                <button type="button" className="btn btn-secondary ms-3" data-bs-dismiss="startmodal">Forfeit</button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="user-section">
-                  <div className="upload-ko">
-                    <input
-                      type="file"
-                      accept="image/*,video/*"
-                      onChange={(e) => handleFileUpload(e, setHostUser)}
-                    />
-                    <button type="button" className='rounded-lg'>Upload KO</button>
-                  </div>
-                  <div className="win-type-radio">
-                    <label style={{ marginRight: '10px' }}>
-                      <input
-                        type="radio"
-                        name="winType"
-                        value="KO"
-                        checked={winType === 'KO'}
-                        onChange={() => setWinType('KO')}
-                        style={{ marginRight: '5px' }}
-                      />
-                      Win By KO
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="winType"
-                        value="Sub"
-                        checked={winType === 'Sub'}
-                        onChange={() => setWinType('Sub')}
-                        style={{ marginRight: '5px' }}
-                      />
-                      Win By Sub
-                    </label>
-                  </div>
-                  {hostUser && <img src={hostUser} alt="Host User" className="user-img" />}
-                  <div className="user-vote">
-                    <span>hostUsername</span>
-                    <button
-                      type="button"
-                      className='rounded-lg'
-                      style={{ backgroundColor: hostVote === 'winner' ? 'green' : 'black' }}
-                      onClick={() => handleHostVote('winner')}>Winner</button>
-                    <button
-                      type="button"
-                      className='rounded-lg'
-                      style={{ backgroundColor: hostVote === 'loser' ? 'red' : 'black' }}
-                      onClick={() => handleHostVote('loser')}>Loser</button>
-                  </div>
-                </div>
-                <div className="user-section">
-                  {foeUser && <img src={foeUser} alt="Foe User" className="user-img" />}
-                  <div className="user-vote">
-                    <span>foeUsername</span>
-                    <button type="button"
-                      className='rounded-lg'
-                      style={{
-                        backgroundColor: foeVote === 'winner' ? '#f5c116' : 'black',
-                        color: foeVote === 'winner' ? 'black' : '#f5c116'
-                      }} onClick={() => handleFoeVote('winner')}>Winner</button>
-                    <button
-                      type="button"
-                      className='rounded-lg'
-                      style={{ backgroundColor: foeVote === 'loser' ? 'red' : 'black' }}
-                      onClick={() => handleFoeVote('loser')}>Loser</button>
-                  </div>
-                </div>
-                <button type="submit">Submit</button>
-              </form>
+      {/* StartModal */}
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Understood</button>
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </div></>
   );
 };

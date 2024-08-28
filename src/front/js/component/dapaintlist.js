@@ -167,7 +167,7 @@ const DaPaintList = ({ onClose }) => {
         data-bs-toggle="modal"
         data-bs-target="#DaPaint"
       >
-        FIND FOE 💰0.01
+        <h1>⚔️FIND FOE⚔️</h1>
       </button>
       <div
         className="modal fade"

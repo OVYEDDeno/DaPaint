@@ -33,8 +33,9 @@ export const Landing = () => {
 
   return (
     <div className={`home-container`}>
-      <header className="top-header">
-        <h1>Welcome<EditProfile />
+      <main className="main-body">
+        <header className="top-header">
+        <h1><EditProfile />
         {/* <Help/> */}
         {/* <Profile />                 */}</h1>
         <div className="actions-section">          
@@ -44,21 +45,20 @@ export const Landing = () => {
       </header>
       <div className="custom-win-streak">
         <div className="custom-progress-container">
-          <div className="custom-circle custom-start">{currentWinStreak}</div>
+          <div className="custom-circle custom-start"><h4>{currentWinStreak}</h4></div>
           <div className="custom-progress-bar">
-            <span className="custom-progress-text">WIN STREAK</span>
+            <span className="custom-progress-text"><h4>WIN STREAK</h4></span>
             <div className="custom-progress" style={{ width: `${((currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) / GoalWinStreak) * 100}%` }}>
-            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak >= GoalWinStreak ? "bg-yellow" : ""}`}>{GoalWinStreak}</div>
+            </div><div className={`custom-circle ms-auto custom-end ${currentWinStreak >= GoalWinStreak ? "bg-yellow" : ""}`}><h4>{GoalWinStreak}</h4></div>
           </div>
         </div>
-      </div>
-
-      <main className="main-body">
-        <h2 className="streak-announcement">
-          {currentWinStreak >= GoalWinStreak ? "CONGRATULATIONS!!" : maxWinStreak >= GoalWinStreak ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING ${GoalWinStreak} WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAK?`}
-        </h2>
-        <p className="current-streak">{maxWinStreakUser} has achieved {maxWinStreak} win streaks</p>
-        <Lineup />
+      </div><p></p><p></p>
+      
+        <h1 className="streak-announcement">
+          {currentWinStreak >= GoalWinStreak ? "CONGRATULATIONS!!" : maxWinStreak >= GoalWinStreak ? `CONGRATULATIONS TO ${maxWinStreakUser} FOR REACHING ${GoalWinStreak} WIN STREAK!` : `WHO WILL ACHIEVE ${nextWinStreak} WIN STREAKS?`}
+        </h1>
+        <h3 className="current-streak">{maxWinStreakUser} has achieved {maxWinStreak} win streaks</h3>
+        <p></p><Lineup /><p></p><p></p>
         <div className="find-foe-section">
           <DaPaintList /><p></p>
           <Start />

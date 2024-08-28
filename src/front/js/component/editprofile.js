@@ -81,7 +81,7 @@ export const EditProfile = () => {
           <div className="profile-header">
             <div className="profile-picture-section">
               <img src={previewURL} alt="Profile" className="profile-picture" />
-              <div className="profile-name">{store.userData && store.userData.name}</div>
+              <div className="profile-name"><h3>{store.userData && store.userData.name}</h3></div>
             </div>
           </div>
         </div>

@@ -59,7 +59,7 @@ export const Setting = ({ onClose }) => {
         <img
           src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
           alt="Settings"
-          style={{ width: "68px", height: "68px" }}
+          style={{ width: "51px", height: "51px" }}
         />
       </button>
 

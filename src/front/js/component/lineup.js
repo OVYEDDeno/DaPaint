@@ -98,11 +98,11 @@ export const Lineup = () => {
     <>
       <button
   type="button"
-  className="btn btn-warning text-white btn-lg"
+  className="btn btn-secondary btn-lg"
   data-bs-toggle="modal"
   data-bs-target="#lineUp"
 >
-  LINE UP
+<h1>🥇LINEUP🥇</h1>
 </button>
 
       <div
