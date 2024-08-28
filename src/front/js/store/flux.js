@@ -207,7 +207,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
         try {
           const response = await fetch(
-            process.env.BACKEND_URL + "/api/update-win-streak",
+            process.env.BACKEND_URL + "/api/update-win-streak/"+daPaint_id,
             {
               method: "PUT",
               headers: {

@@ -155,7 +155,10 @@ def get_current_user():
         and_(or_(DaPaint.foeId == user.id, DaPaint.hostFoeId == user.id),
         DaPaint.foeId != None)
     ).first()
-    return jsonify({**user.serialize(), "hasfoe":True if  match else False}), 200
+    return jsonify({**user.serialize(), "hasfoe":True if  match else False, "dapaintId":match.id if match.winnerId is None else None, "players":{
+        "host":match.host_user.serialize() if match.hostFoeId else None,
+        "foe":match.foe_user.serialize() if match.foeId else None
+    }}), 200
 
 
 @api.route('/users', methods=['GET'])
@@ -208,7 +211,7 @@ def get_all_dapaint():
     winstreak=user.winstreak
 
     if is_accepted == '1':
-        dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None)).all()
+        dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None), DaPaint.winnerId==None).all()
     else:
         dapaint = db.session.query(DaPaint).join(User, DaPaint.hostFoeId == User.id).filter(DaPaint.foeId.is_(None), User.winstreak == winstreak).all()
 
@@ -407,7 +410,7 @@ def get_notif():
 
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
-def update_win_streak(id):
+def update_win_streak(dapaint_id):
     user_id=get_jwt_identity()
     data = request.get_json()
     vote = data.get('vote')
@@ -415,7 +418,7 @@ def update_win_streak(id):
     user = User.query.get(user_id)
     if user is None:
         return jsonify({"msg": "No user found"}), 404
-    daPaint = DaPaint.query.get(id)
+    daPaint = DaPaint.query.get(dapaint_id)
     if daPaint is None:
         return jsonify({"msg": "No DaPaint found"}), 404 
     

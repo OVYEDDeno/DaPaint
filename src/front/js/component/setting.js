@@ -85,8 +85,8 @@ export const Setting = ({ onClose }) => {
                   cursor: "pointer",
                 }}
               />
-              <h3
-                className="text-2xl font-bold text-black"
+              <h1
+                className="text-3x5 text-black"
                 style={{
                   margin: "0 auto",
                   textAlign: "center",
@@ -96,7 +96,7 @@ export const Setting = ({ onClose }) => {
                 }}
               >
                 SETTING
-              </h3>
+              </h1>
             </div>
 
             <div className="modal-body">

@@ -6,7 +6,8 @@ export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [forfeit, setForfeit] = useState(false);
+
+  const placeholderImage = 'https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png';
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -40,70 +41,60 @@ export const Lineup = () => {
     getDapaintList();
   }, []);
 
-  // Transform events into matchups
+  useEffect(() => {
+    // Update component when userData changes
+    console.log("Updated user data:", store.userData);
+  }, [store.userData]);
+
+  // Helper function to append a cache-busting query parameter
+  const getProfileImageUrl = (url) => {
+    return url ? `${url}?${new Date().getTime()}` : placeholderImage;
+  };
+
   const matchups = events
     .filter((event) => event.hostFoeId)
     .map((event) => ({
       id: event.id,
       date_time: event.date_time,
       fitnessStyle: event.fitnessStyle,
-      // time: event.time,
-      // location: `${event.location} ${event.distance}`,
       location: event.location,
       user1name: event.hostFoeId.name,
       user2name: event.foeId.name,
       user1Id: event.hostFoeId.id,
       user2Id: event.foeId.id,
+      user1Image: getProfileImageUrl(event.hostFoeId.profileImageUrl),
+      user2Image: getProfileImageUrl(event.foeId?.profileImageUrl),
     }));
 
   console.log("Matchups: ", matchups);
 
-  // Filter matchups based on search term
   const filteredMatchups = matchups.filter(
     (matchup) =>
       matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  //  handleBuyTicket
 
-  console.log("user data from store(lineup): ", store.userData);
   const userId = store.userData.id;
-  console.log("user id from (lineup)", userId);
-  //
+
   const verifyTime = (timeOfMatch) => {
     let currentTime = new Date();
-    console.log("Current Time: " + currentTime);
-    console.log("Time of Match: " + timeOfMatch);
-
-    // Ensure timeOfMatch is a Date object
     let matchTime = new Date(timeOfMatch);
-
-    // Calculate the difference in milliseconds
     let timeDifference = matchTime - currentTime;
-
-    // Convert milliseconds to hours
     let hoursDifference = timeDifference / (1000 * 60 * 60);
 
-    // Check if the current time is less than 48 hours from the time of the match
-    if (hoursDifference < 48) {
-        console.log("Time is less than 48 hours from the match.");
-        return false;
-    } else {
-        console.log("Time is more than 48 hours from the match.");
-        return true;
-    }
-};
+    return hoursDifference >= 48;
+  };
 
   return (
     <>
       <button
-  type="button"
-  className="btn btn-secondary btn-lg"
-  data-bs-toggle="modal"
-  data-bs-target="#lineUp"
->
-<h1>🥇LINEUP🥇</h1>
-</button>
+        type="button"
+        className="btn btn-secondary btn-lg"
+        data-bs-toggle="modal"
+        data-bs-target="#lineUp"
+      >
+        <h1>🥇LINEUP🥇</h1>
+      </button>
 
       <div
         className="modal fade"
@@ -136,12 +127,12 @@ export const Lineup = () => {
                 {filteredMatchups.map((matchup) => (
                   <div className="matchup" key={matchup.id}>
                     <div className="user">
-                      <img src="path/to/ovye.png" alt={matchup.user1name} />
+                      <img src={matchup.user1Image} alt={matchup.user1name} />
                       <span>{matchup.user1name}</span>
                     </div>
                     <div className="vs">VS</div>
                     <div className="user">
-                      <img src="path/to/jbeat.png" alt={matchup.user2name} />
+                      <img src={matchup.user2Image} alt={matchup.user2name} />
                       <span>{matchup.user2name}</span>
                     </div>
                     <div className="details">
@@ -152,15 +143,12 @@ export const Lineup = () => {
                     <div className="btn-group">
                       {userId === matchup.user1Id ||
                       userId === matchup.user2Id ? (
-                        <button className="bg-black text-white p-2 rounded" onClick={()=>{
-                          verifyTime(matchup.date_time);
+                        <button className="bg-black text-white p-2 rounded" onClick={() => {
                           if (verifyTime(matchup.date_time)) {
-                            actions.forfeitMatch(matchup.id)
+                            actions.forfeitMatch(matchup.id);
+                          } else {
+                            actions.cancelMatch(matchup.id);
                           }
-                            else {
-                              actions.cancelMatch(matchup.id)
-                            }
-
                         }}>
                           CANCEL (FORFEIT)
                         </button>

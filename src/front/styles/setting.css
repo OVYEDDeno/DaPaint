@@ -1,4 +1,4 @@
-.wlsub-container {
+/* .wlsub-container {
   width: 100%;
   max-width: 600px;
   margin: auto;
@@ -6,12 +6,12 @@
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+} */
 
-.custom-bg {
+/* .custom-bg {
   background-color: #3498db;
   color: white;
-}
+} */
 
 h2 {
   text-align: center;
