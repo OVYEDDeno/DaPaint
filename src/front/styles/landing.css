@@ -17,7 +17,7 @@ body {
 .landing-container {
   display: flex;
   flex-direction: column;
-  background-color: #000000;
+  background-color: #c8afaf;
   color: #000000;
   text-align: center;
   align-items: center;
@@ -28,7 +28,7 @@ body {
   display: flex;
   justify-content: flex-end;
   padding: 20px;
-  background-color: #ea0000;
+  background-color: transparent;
 }
 
 .header-icons {
@@ -46,7 +46,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #ea0000;
+  background-color: transparent;
   width: 100%;
 }
 

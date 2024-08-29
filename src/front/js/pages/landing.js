@@ -39,7 +39,7 @@ export const Landing = () => {
         {/* <Help/> */}
         {/* <Profile />                 */}</h1>
         <div className="actions-section">          
-          {/* <Invite /> */}
+          <Invite />
           <Setting />
         </div>
       </header>

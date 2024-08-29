@@ -377,36 +377,38 @@ def use_invite_code():
     db.session.commit()
     return jsonify({"msg": "Invite code used successfully"}), 200
 
-@api.route("/notifs", methods=['GET'])
-@jwt_required()
-def get_notif():
-    user_id = get_jwt_identity()
 
-    # Get DaPaints where the user is the host
-    hostDaPaints = DaPaint.query.filter_by(hostFoeId=user_id).all()
-    # Get DaPaints where the user is the foe
-    foeDaPaints = DaPaint.query.filter_by(foeId=user_id).all()
 
-    hosted = []
-    for x in hostDaPaints:
-        # Ensure foeId exists and no winner or loser has been determined yet
-        if x.foeId and x.winnerId is None and x.loserId is None:
-            foe = User.query.get(x.foeId)  # Get the foe's details
-            hosted.append(foe.name)  # Add foe's name to the hosted list
+# @api.route("/notifs", methods=['GET'])
+# @jwt_required()
+# def get_notif():
+#     user_id = get_jwt_identity()
 
-    foed = []
-    for x in foeDaPaints:
-        # Ensure hostFoeId exists and no winner or loser has been determined yet
-        if x.hostFoeId and x.winnerId is None and x.loserId is None:
-            host = User.query.get(x.hostFoeId)  # Get the host's details
-            foed.append(host.name)  # Add host's name to the foed list
+#     # Get DaPaints where the user is the host
+#     hostDaPaints = DaPaint.query.filter_by(hostFoeId=user_id).all()
+#     # Get DaPaints where the user is the foe
+#     foeDaPaints = DaPaint.query.filter_by(foeId=user_id).all()
 
-    response = {
-        "hosted": hosted,  # List of foe names when the user is the host
-        "foed": foed  # List of host names when the user is the foe
-    }
+#     hosted = []
+#     for x in hostDaPaints:
+#         # Ensure foeId exists and no winner or loser has been determined yet
+#         if x.foeId and x.winnerId is None and x.loserId is None:
+#             foe = User.query.get(x.foeId)  # Get the foe's details
+#             hosted.append(foe.name)  # Add foe's name to the hosted list
 
-    return jsonify(response), 200
+#     foed = []
+#     for x in foeDaPaints:
+#         # Ensure hostFoeId exists and no winner or loser has been determined yet
+#         if x.hostFoeId and x.winnerId is None and x.loserId is None:
+#             host = User.query.get(x.hostFoeId)  # Get the host's details
+#             foed.append(host.name)  # Add host's name to the foed list
+
+#     response = {
+#         "hosted": hosted,  # List of foe names when the user is the host
+#         "foed": foed  # List of host names when the user is the foe
+#     }
+
+#     return jsonify(response), 200
 
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
@@ -483,7 +485,19 @@ def forfeit(dapaint_id):
         host_notif=Notifications(user_id=host.id, type="Forfeit", message=f"{foe.name} has forfeited the event. Your winstreak has been increased.")
         db.session.add(host_notif)        
     db.session.commit()
-    return jsonify({"msg": "Event forfeited successfully"}), 200
+    notifications=Notifications.query.filter_by(user_id=user_id).all()
+    return jsonify({"msg": "Event forfeited successfully", "notifications": [notif.serialize() for notif in  notifications]}), 200
+
+@api.route("/notifs", methods=['GET'])
+@jwt_required()
+def get_notif():
+    user_id = get_jwt_identity()
+    notifications=Notifications.query.filter_by(user_id=user_id).all()
+    message= ""
+    if notifications is None:
+        message="No notifications"
+    return jsonify({"msg": message, "notifications": [notif.serialize() for notif in  notifications]}), 200
+
 
 @api.route("/cancel/<int:dapaint_id>", methods=['PUT'])
 @jwt_required()
@@ -512,4 +526,5 @@ def cancel(dapaint_id):
         db.session.add(new_notif)
         
     db.session.commit()
-    return jsonify({"msg": "Event cancelled successfully"}), 200
+    notifications=Notifications.query.filter_by(user_id=user_id).all()
+    return jsonify({"msg": "Event cancelled successfully", "notifications": [notif.serialize() for notif in  notifications]}), 200

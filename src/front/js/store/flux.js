@@ -7,7 +7,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       currentUser: null,
       dapaints: [],
       daPaintList: [],
-      notifs: {},
+      notifs: [],
       userId: undefined,
       userData: {},
       WinStreakGoal: undefined,
@@ -48,6 +48,44 @@ const getState = ({ getStore, getActions, setStore }) => {
         console.log(responseBody);
 
         return true;
+      },
+      forfeitMatch: async (dapaintId) => {
+        const response = await fetch(
+          process.env.BACKEND_URL + "/api/forfeit/" + dapaintId,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          console.log("Match forfeited successfully!");
+          let data=await response.json()
+          setStore({
+            notifs:data.notifications
+          })
+      }},
+      cancelMatch: async (dapaintId) => {
+        const response = await fetch(
+          process.env.BACKEND_URL + "/api/cancel/" + dapaintId,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          console.log("Match canceled successfully!");
+          let data=await response.json()
+          setStore({
+            notifs:data.notifications
+          })
+
+        } else {
+          console.error("Failed to cancel match:", response.statusText);
+        }
       },
 
       fetchCurrentUser: async () => {
@@ -140,7 +178,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             return false;
           } else {
             const notifs = await response.json();
-            return notifs;
+            setStore(
+              {notifs:data.notifications}
+            );
+            return true;
           }
         } catch (error) {
           console.error("Error fetching notifications:", error);

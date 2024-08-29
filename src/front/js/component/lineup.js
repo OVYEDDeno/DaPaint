@@ -145,12 +145,12 @@ export const Lineup = () => {
                       userId === matchup.user2Id ? (
                         <button className="bg-black text-white p-2 rounded" onClick={() => {
                           if (verifyTime(matchup.date_time)) {
-                            actions.forfeitMatch(matchup.id);
-                          } else {
                             actions.cancelMatch(matchup.id);
+                          } else {
+                            actions.forfeitMatch(matchup.id);
                           }
                         }}>
-                          CANCEL (FORFEIT)
+                          {verifyTime(matchup.date_time) ?"CANCEL":"FORFEIT"}
                         </button>
                       ) : (
                         <button className="bg-black text-white p-2 rounded">
