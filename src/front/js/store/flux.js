@@ -177,7 +177,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             console.error("Failed to retrieve notifications:", error);
             return false;
           } else {
-            const notifs = await response.json();
+            const data = await response.json();
             setStore(
               {notifs:data.notifications}
             );

@@ -23,6 +23,8 @@ class User(db.Model):
     disqualifications = db.Column(db.Integer, default=0)
 
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
+    notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
+    reports = db.relationship('Reports', back_populates='user', cascade='all, delete-orphan')
 
     dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user')
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
@@ -87,6 +89,8 @@ class DaPaint(db.Model):
     foe_user = db.relationship('User', foreign_keys=[foeId], back_populates='dapaint_foe')
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
+    
+    reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')  # Added reports relationship
 
     def serialize(self):
         return {
@@ -102,6 +106,7 @@ class DaPaint(db.Model):
             "winnerImg": self.winnerImg,
             "loserImg": self.loserImg
         }
+
 
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -139,6 +144,7 @@ class Notifications(db.Model):
     type = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(2000), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    user=db.relationship('User', back_populates='notifications')
     def serialize(self):
         return {
             'id': self.id,
@@ -147,14 +153,17 @@ class Notifications(db.Model):
            'message': self.message,
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
-
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('da_paint.id'), nullable=False)  # Corrected foreign key reference
     img_url = db.Column(db.String(250), nullable=False)
     vid_url = db.Column(db.String(250), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+    user = db.relationship('User', back_populates='reports')
+    dapaint = db.relationship('DaPaint', back_populates='reports')  # Added back_populates to establish a bidirectional relationship
+
     def serialize(self):
         return {
             'id': self.id,

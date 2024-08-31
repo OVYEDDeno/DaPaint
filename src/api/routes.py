@@ -150,15 +150,32 @@ def get_current_user():
     user = User.query.get(get_jwt_identity())
     if user is None:
         return jsonify({"msg": "No user found"}), 404
-    dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None)).all()
+    
+    # Find a match where the user is either the host or the foe
     match = DaPaint.query.filter(
         and_(or_(DaPaint.foeId == user.id, DaPaint.hostFoeId == user.id),
-        DaPaint.foeId != None)
+             DaPaint.foeId.isnot(None))
     ).first()
-    return jsonify({**user.serialize(), "hasfoe":True if  match else False, "dapaintId":match.id if match.winnerId is None else None, "players":{
-        "host":match.host_user.serialize() if match.hostFoeId else None,
-        "foe":match.foe_user.serialize() if match.foeId else None
-    }}), 200
+    
+    if match is None:
+        return jsonify({
+            "user": user.serialize(),
+            "hasfoe": False,
+            "dapaintId": None,
+            "indulgers": None
+        }), 200
+
+    # If match is found, return relevant details
+    return jsonify({
+        "user": user.serialize(),
+        "hasfoe": True,
+        "dapaintId": match.id if match.winnerId is None else None,
+        "indulgers": {
+            "host": match.host_user.serialize() if match.hostFoeId else None,
+            "foe": match.foe_user.serialize() if match.foeId else None
+        }
+    }), 200
+
 
 
 @api.route('/users', methods=['GET'])
