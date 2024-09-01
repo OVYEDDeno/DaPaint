@@ -35,9 +35,10 @@ export const Landing = () => {
     <div className={`home-container`}>
       <main className="main-body">
         <header className="top-header">
-        <h1><EditProfile />
-        {/* <Help/> */}
-        {/* <Profile />                 */}</h1>
+        <h1>
+          <EditProfile />
+        <Help/>
+        <Profile />                </h1>
         <div className="actions-section">          
           <Invite />
           <Setting />

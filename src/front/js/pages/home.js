@@ -68,6 +68,12 @@ export const Home = () => {
           </ul>
         </div>
         <div className="footer-column social-media-logos">
+        <a href="https://discord.gg/xFHEHkB8ag" target="_blank">
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png"
+              alt="Discord"
+            />
+          </a>
           <a href="https://tiktok.com" target="_blank">
             <img
               src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/tiktok-white-icon.png"
