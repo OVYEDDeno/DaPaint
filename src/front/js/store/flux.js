@@ -282,6 +282,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               },
             }
           );
+          if (response.status!== 200) {
+            console.error("Failed to retrieve max win streak:", response.statusText);
+            return;
+          }
           const data = await response.json();
           console.log("FLUX:ACTIONS.FETCHMAXWINSTREAK.DATA", data);
           setStore({ WinStreakGoal: data.WinStreakGoal });

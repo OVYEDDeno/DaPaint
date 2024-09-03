@@ -13,16 +13,6 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const [error, setError] = useState(''); // State to handle errors
   const [storedUsername, setStoredUsername] = useState('');
 
-
-  // useEffect(() => {
-  //   const storedUsername = localStorage.getItem("username");
-  //   if(storedUsername) {
-  //     username(storedUsername);
-  //   } else{
-
-  //   }
-  // }, [])
-
   useEffect(() => {
     actions.fetchCurrentUser();
   }, []);
@@ -108,7 +98,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
         <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
           {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
           {/* <span>{username}</span> */}
-          <span>{store.userData && store.userData.profile_pic.image_url}</span>
+          <span>{store.userData && store.userData.profile_pic?.image_url}</span>
           <span>{store.userData && store.userData.name}</span>
         </div>
 

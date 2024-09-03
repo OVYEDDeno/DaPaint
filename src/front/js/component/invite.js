@@ -174,7 +174,7 @@ export const Invite = ({ onClose }) => {
             clock In
             <div>
               <h3>notifications</h3>
-              {notifs?.map((item, index) => (
+              {store.notifs?.map((item, index) => (
                 <h4 key={index}>{item.message}</h4>
               ))}
               

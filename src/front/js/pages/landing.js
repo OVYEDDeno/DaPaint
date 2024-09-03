@@ -61,9 +61,8 @@ export const Landing = () => {
         <h3 className="current-streak">{maxWinStreakUser} has achieved {maxWinStreak} win streaks</h3>
         <p></p><Lineup /><p></p><p></p>
         <div className="find-foe-section">
-          {store.userData.dapaintId && <Start /> || <DaPaintList />}
-          
-          
+          {store.userData.dapaintId && <Start /> || <DaPaintList />}         
+    
           {/* <Wallet/> */}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>

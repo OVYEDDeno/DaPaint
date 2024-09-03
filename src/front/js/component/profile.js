@@ -28,7 +28,7 @@ export const Profile = () => {
       setPhone(store.userData.phone || '');
       setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
     }
-  }, [store.userData, actions]);
+  }, []);
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
