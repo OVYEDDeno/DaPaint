@@ -130,7 +130,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           setUser(data);
-          setCurrentWinStreak(data.winstreak);
+          setCurrentWinStreak(data.user?.winstreak);
         } catch (error) {
           console.error("Error fetching users:", error);
         }
@@ -240,37 +240,82 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
-      updateWinstreak: async (daPaint_id, vote) => {
-        const token = localStorage.getItem("token"); // Assuming JWT is stored in localStorage
+      updateWinstreak: async (daPaint_id, winner_id, loser_id) => {
+        const token = localStorage.getItem("token");
+    
+        // Validate daPaint_id
+        if (typeof daPaint_id !== 'number' && typeof daPaint_id !== 'string') {
+            console.error("Invalid daPaint_id");
+            return;
+        }
+    
         if (!token) {
-          console.error("No token found");
-          return;
+            console.error("No token found");
+            return;
         }
+    
         try {
-          const response = await fetch(
-            process.env.BACKEND_URL + "/api/update-win-streak/"+daPaint_id,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ daPaint_id, vote }),
+            const response = await fetch(
+                `${process.env.BACKEND_URL}/api/update-win-streak/${daPaint_id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ "winner": winner_id, "loser": loser_id }),
+                }
+            );
+    
+            if (response.status !== 200) {
+                const errorData = await response.json();
+                console.error("Failed to update win streak:", errorData);
+                return false;
             }
-          );
-          if (response.status !== 200) {
-            console.log(response.status);
-            data = await response.json();
-            console.log(data);
-            return false;
-          }
-          const data = await response.json();
-          console.log(data);
-          return true;
+    
+            const data = await response.json();
+            console.log("Win streak updated:", data);
+            return true;
         } catch (error) {
-          console.error("Error updating win streak:", error);
+            console.error("Error updating win streak:", error);
         }
-      },
+    },
+
+    fetchCurrentUser: async () => {
+      try {
+        const response = await fetch(
+          process.env.BACKEND_URL + "/api/current-user",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        
+        // Debugging log
+        console.log("Fetched current user data:", data);
+
+        if (!data.dapaintId) {
+          console.error("dapaintId is missing from fetched data.");
+        }
+
+        setStore({
+          userData: {
+            ...data,
+            wins: data.winsByKO + data.winsBySub,
+            losses: data.lossesByKO + data.lossesBySub,
+          }
+        });
+        
+        console.log("Current User DATA has been set", getStore().userData);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    },
+
+    
+    
       fetchMaxWinStreak: async (setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser) => {
         let store = getStore();
         try {

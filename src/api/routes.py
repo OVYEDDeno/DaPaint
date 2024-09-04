@@ -430,44 +430,52 @@ def use_invite_code():
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
 def update_win_streak(dapaint_id):
-    user_id=get_jwt_identity()
     data = request.get_json()
-    vote = data.get('vote')
+    winner_vote = data.get('winner')
+    loser_vote = data.get('loser')
+    winType= data.get('winType')
+    
+    print(f"Received winner_vote: {winner_vote}, loser_vote: {loser_vote}")
 
-    user = User.query.get(user_id)
-    if user is None:
-        return jsonify({"msg": "No user found"}), 404
     daPaint = DaPaint.query.get(dapaint_id)
     if daPaint is None:
-        return jsonify({"msg": "No DaPaint found"}), 404 
-    
-    if vote not in ['winner', 'loser']:
-        return jsonify({"msg": "Invalid vote"}), 400
-    if daPaint.hostFoeId != user_id and daPaint.foeId != user_id:
-        return jsonify({"msg": "You can't vote on events you're not a part of"}), 403
-    
-    if vote == 'winner' and daPaint.winnerId is None:
-        daPaint.winnerId = user_id
-        user.winstreak += 1
-    elif vote == 'winner' and daPaint.winnerId == user_id:
-        return jsonify({"msg": "You've already voted as a winner"}), 403
-    elif vote == 'winner' and daPaint.winnerId is not None and daPaint.winnerId!= user_id:
-        
-        return jsonify({"msg": "Another player claimed to be the winner, please contact admin if this is a mistake."}), 403
-    
-    elif vote == 'loser' and daPaint.loserId is None:
-        daPaint.loserId = user_id
-        user.winstreak = 0
-    elif vote == 'loser' and daPaint.loserId == user_id:
-        return jsonify({"msg": "You've already voted as a loser"}), 403
-    elif vote == 'loser' and daPaint.loserId is not None and daPaint.loserId!= user_id:
-        return jsonify({"msg": "Another player claimed to be the loser, please contact admin if this is a mistake."}), 403
-    
-    db.session.commit()
-    db.session.refresh(user)
-  
+        return jsonify({"msg": "No DaPaint found"}), 404
 
-    return jsonify({"msg":"your winstreak has been updated", "user_winstreak":user.winstreak}), 200
+    daPaint.winnerId = winner_vote
+    daPaint.loserId = loser_vote
+
+    print(f"Updating DaPaint with winnerId: {daPaint.winnerId}, loserId: {daPaint.loserId}")
+
+   
+    try:
+        db.session.commit()
+        print("Database commit successful.")
+    except Exception as e:
+        print(f"Database commit failed: {e}")
+        return jsonify({"msg": "Database commit failed"}), 500
+
+    updated_dapaint = DaPaint.query.get(dapaint_id)
+    winner=User.query.get(winner_vote)
+    if not winner:
+        return jsonify({"msg": "No winner found"}), 404
+    loser=User.query.get(loser_vote)
+    if not loser:
+        return jsonify({"msg": "No loser found"}), 404
+    if winType=='winsByKO':
+        winner.winsByKO+=1
+        loser.lossesByKO+=1
+        winner.winstreak+=1
+        loser.winstreak=0
+    if winType=='winsBySub':
+        winner.winsBySub+=1
+        loser.lossesBySub+=1
+        winner.winstreak+=1
+        loser.winstreak=0
+    print(f"Updated DaPaint: winnerId={updated_dapaint.winnerId}, loserId={updated_dapaint.loserId}")
+    db.session.commit()
+
+    return jsonify(daPaint.serialize()), 200
+
 
 @api.route("/forfeit/<int:dapaint_id>", methods=['PUT'])
 @jwt_required()

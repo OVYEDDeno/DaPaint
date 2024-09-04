@@ -90,7 +90,7 @@ class DaPaint(db.Model):
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
     
-    reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')  # Added reports relationship
+    reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')  
 
     def serialize(self):
         return {
@@ -102,7 +102,9 @@ class DaPaint(db.Model):
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,
             "winnerId": self.winnerId,
+            "winnerUser": self.winner_user.serialize() if self.winner_user else "N/A",
             "loserId": self.loserId,
+            "loserUser": self.loser_user.serialize() if self.loser_user else "N/A",
             "winnerImg": self.winnerImg,
             "loserImg": self.loserImg
         }

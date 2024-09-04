@@ -30,10 +30,19 @@ export const Start = () => {
       alert("No valid event found for this user");
       return;
     }
-
+let winner=0
+let loser=0
+    if (hostVote === "winner") {
+      winner = store.userData.indulgers.host.id;
+      loser = store.userData.indulgers.foe.id;
+    } else {
+      loser = store.userData.indulgers.host.id;
+      winner = store.userData.indulgers.foe.id;
+    }
     let result = await actions.updateWinstreak(
       store.userData.dapaintId,
-      hostVote,
+      winner,
+      loser,
       winType
     );
     if (result) {

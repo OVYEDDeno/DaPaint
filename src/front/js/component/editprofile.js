@@ -24,16 +24,16 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (store.userData) {
-      setName(store.userData.name || '');
-      setCity(store.userData.city || '');
-      setEmail(store.userData.email || '');
-      setZipcode(store.userData.zipcode || '');
-      setBirthday(store.userData.birthday || '');
-      setPhone(store.userData.phone || '');
-      setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
+      setName(store.userData?.user?.name || '');
+      setCity(store.userData?.user?.city || '');
+      setEmail(store.userData?.user?.email || '');
+      setZipcode(store.userData?.user?.zipcode || '');
+      setBirthday(store.userData?.user?.birthday || '');
+      setPhone(store.userData?.user?.phone || '');
+      setPreviewURL(store.userData.user?.profile_pic?.image_url || placeholderImage);
     }
   }, []);
-
+console.log("USER DATA EditProfile", store.userData)
   const handleImageUpload = (event) => {
     const files = event.target.files;
     let file_size = files[0].size;
@@ -81,7 +81,7 @@ export const EditProfile = () => {
           <div className="profile-header">
             <div className="profile-picture-section">
               <img src={previewURL} alt="Profile" className="profile-picture" />
-              <div className="profile-name"><h3>{store.userData && store.userData.name}</h3></div>
+              <div className="profile-name"><h3>{store.userData && store.userData.user?.name}</h3></div>
             </div>
           </div>
         </div>
