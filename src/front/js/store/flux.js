@@ -65,6 +65,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             notifs:data.notifications
           })
+          window.location.reload();
       }},
       cancelMatch: async (dapaintId) => {
         const response = await fetch(
@@ -103,8 +104,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           // console.log(data);
           setStore({
             userData: {...data,
-              wins: data.winsByKO + data.winsBySub,
-              losses: data.lossesByKO + data.lossesBySub,}
+              wins: data.user?.winsByKO + data.user?.winsBySub,
+              losses: data.user?.lossesByKO + data.user?.lossesBySub,}
           });
           console.log("Current User DATA has been set", data)
         } catch (error) {
@@ -125,8 +126,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("FLUX:actions.fetchAndSetUser: ", data);
           setStore({userData: {
               ...data,
-              wins: data.winsByKO + data.winsBySub,
-              losses: data.lossesByKO + data.lossesBySub,
+              wins: data.user?.winsByKO + data.user?.winsBySub,
+              losses: data.user?.lossesByKO + data.user?.lossesBySub,
             },
           });
           setUser(data);

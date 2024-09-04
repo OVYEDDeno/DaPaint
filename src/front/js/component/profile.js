@@ -29,6 +29,7 @@ export const Profile = () => {
       setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
     }
   }, []);
+// console.log("Profile User Info", fetchCurrentUser)
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
@@ -86,42 +87,42 @@ export const Profile = () => {
                 <div className="profile-header">
                   <div className="profile-picture-section">
                     <img src={profileImageUrl} alt="Profile" className="profile-picture" />
-                    <div className="profile-name">{store.userData && store.userData.name}</div>
+                    <div className="profile-name">{store.userData && store.userData.user?.name}</div>
                   </div>
                 </div>
                 <table className="stats-table">
                   <tbody>
                     <tr>
                       <td>Total</td>
-                      <td className="total">{store.userData && store.userData.wins + store.userData.losses}</td>
+                      <td className="total">{store.userData && store.userData.user?.wins + store.userData.user?.losses}</td>
                     </tr>
                     <tr>
                       <td>Wins</td>
-                      <td className="wins">{store.userData && store.userData.wins}</td>
+                      <td className="wins">{store.userData && store.userData.user?.wins}</td>
                     </tr>
                     <tr>
                       <td>By knockout</td>
-                      <td>{store.userData && store.userData.winsByKO}</td>
+                      <td>{store.userData && store.userData.user?.winsByKO}</td>
                     </tr>
                     <tr>
                       <td>By submission</td>
-                      <td>{store.userData && store.userData.winsBySub}</td>
+                      <td>{store.userData && store.userData.user?.winsBySub}</td>
                     </tr>
                     <tr>
                       <td>Losses</td>
-                      <td className="losses">{store.userData && store.userData.losses}</td>
+                      <td className="losses">{store.userData && store.userData.user?.losses}</td>
                     </tr>
                     <tr>
                       <td>By knockout</td>
-                      <td>{store.userData && store.userData.lossesByKO}</td>
+                      <td>{store.userData && store.userData.user?.lossesByKO}</td>
                     </tr>
                     <tr>
                       <td>By submission</td>
-                      <td>{store.userData && store.userData.lossesBySub}</td>
+                      <td>{store.userData && store.userData.user?.lossesBySub}</td>
                     </tr>
                     <tr>
                       <td>Disqualifications</td>
-                      <td className="disqualifications">{store.userData && store.userData.disqualifications}</td>
+                      <td className="disqualifications">{store.userData && store.userData.user?.disqualifications}</td>
                     </tr>
                   </tbody>
                 </table>

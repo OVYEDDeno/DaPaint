@@ -7,7 +7,8 @@ export const Lineup = () => {
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const placeholderImage = 'https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png';
+  const placeholderImage =
+    "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -74,7 +75,7 @@ export const Lineup = () => {
       matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const userId = store.userData.id;
+  const userId = store.userData.user?.id;
 
   const verifyTime = (timeOfMatch) => {
     let currentTime = new Date();
@@ -143,14 +144,17 @@ export const Lineup = () => {
                     <div className="btn-group">
                       {userId === matchup.user1Id ||
                       userId === matchup.user2Id ? (
-                        <button className="bg-black text-white p-2 rounded" onClick={() => {
-                          if (verifyTime(matchup.date_time)) {
-                            actions.cancelMatch(matchup.id);
-                          } else {
-                            actions.forfeitMatch(matchup.id);
-                          }
-                        }}>
-                          {verifyTime(matchup.date_time) ?"CANCEL":"FORFEIT"}
+                        <button
+                          className="bg-black text-white p-2 rounded"
+                          onClick={() => {
+                            if (verifyTime(matchup.date_time)) {
+                              actions.cancelMatch(matchup.id);
+                            } else {
+                              actions.forfeitMatch(matchup.id);
+                            }
+                          }}
+                        >
+                          {verifyTime(matchup.date_time) ? "CANCEL" : "FORFEIT"}
                         </button>
                       ) : (
                         <button className="bg-black text-white p-2 rounded">

@@ -495,6 +495,7 @@ def forfeit(dapaint_id):
         host.winstreak=0
         host.disqualifications+=1
         foe.winstreak+=1
+        foe.wins+=1
         daPaint.winnerId=daPaint.foeId
         new_win=WinstreakHistory(user_id=foe.id)        
         db.session.add(new_win)        
@@ -504,6 +505,7 @@ def forfeit(dapaint_id):
         foe.winstreak=0
         foe.disqualifications+=1
         host.winstreak+=1
+        host.wins+=1
         daPaint.winnerId=daPaint.hostFoeId
         new_win=WinstreakHistory(user_id=host.id)
         db.session.add(new_win)
