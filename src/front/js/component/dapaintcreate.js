@@ -5,13 +5,13 @@ import "../../styles/landing.css";
 
 export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   const { store, actions } = useContext(Context);
-  const [fitnessStyle, setFitnessStyle] = useState('');
-  const [location, setLocation] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [amount, setAmount] = useState('0');
-  const [error, setError] = useState(''); // State to handle errors
-  const [storedUsername, setStoredUsername] = useState('');
+  const [fitnessStyle, setFitnessStyle] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [amount, setAmount] = useState("0");
+  const [error, setError] = useState(""); // State to handle errors
+  const [storedUsername, setStoredUsername] = useState("");
 
   useEffect(() => {
     actions.fetchCurrentUser();
@@ -23,52 +23,52 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     }
 
     const dateTime = `${date} ${time}:00`; // Format: YYYY-MM-DD HH:MM:SS
-    const token = localStorage.getItem('token'); // Assuming the token is stored here
+    const token = localStorage.getItem("token"); // Assuming the token is stored here
 
     const newDaPaint = {
-      fitnessStyle:fitnessStyle,
+      fitnessStyle: fitnessStyle,
       location,
       date_time: dateTime,
-      price: parseFloat(amount)
+      price: parseFloat(amount),
     };
     console.log(newDaPaint);
 
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newDaPaint)
+        body: JSON.stringify(newDaPaint),
       });
 
       if (response.ok) {
         const createdEvent = await response.json();
-        console.log('Created event:', createdEvent);
+        console.log("Created event:", createdEvent);
         onAdd(createdEvent); // Update the event list in DaPaintList
 
-        setLocation('');
-        setFitnessStyle('');
-        setDate('');
-        setTime('');
-        setAmount('10');
+        setLocation("");
+        setFitnessStyle("");
+        setDate("");
+        setTime("");
+        setAmount("10");
       } else {
         const error = await response.json();
-        console.error('Failed to create event:', error);
+        console.error("Failed to create event:", error);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const validateDateTime = () => {
     if (!date) {
-      setError('Please select a valid date.');
+      setError("Please select a valid date.");
       return false;
     }
     if (!time) {
-      setError('Please select a valid time.');
+      setError("Please select a valid time.");
       return false;
     }
     const handleCloseDaPaintCreate = () => {
@@ -82,78 +82,103 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
     const now = new Date();
 
     if (selectedDateTime < now) {
-      setError('Please select a future date and time.');
+      setError("Please select a future date and time.");
       return false;
     }
 
-    setError('');
+    setError("");
     return true;
   };
 
   return (
-    <><div className="modal-header">
-      <h1 className="modal-title text-2xl font-bold" id="DaPaintLabel">DA PAINT</h1>
-      {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button> */}
-    </div><div className="user-profile">
+    <>
+      <div className="modal-header">
+        <h1 className="modal-title text-2xl font-bold" id="DaPaintLabel">
+          DA PAINT
+        </h1>
+        {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button> */}
+      </div>
+      <div className="user-profile">
         <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
           {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
           {/* <span>{username}</span> */}
-          <span>{store.userData && store.userData.profile_pic?.image_url}</span>
-          <span>{store.userData && store.userData.name}</span>
+          <span>
+            {store.userData && store.userData.user?.profile_pic?.image_url}
+          </span>
+          <span>{store.userData && store.userData.user?.name}</span>
         </div>
 
-        <label class="form-label" for="fitnessSelect">Fitness Style:</label>
+        <label class="form-label" for="fitnessSelect">
+          Fitness Style:
+        </label>
         <select
           id="fitnessSelect"
           name="fitness"
           value={fitnessStyle}
-          onChange={(e) => setFitnessStyle(e.target.value)}  // Ensure this is correct
+          onChange={(e) => setFitnessStyle(e.target.value)} // Ensure this is correct
           className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
         >
-          <option value="">Select Fitness Style</option>  // Default option
+          <option value="">Select Fitness Style</option> // Default option
           <option value="boxing">Boxing</option>
           <option value="breakDancing">Breaking</option>
         </select>
 
-        <label class="form-label" for="locationSelect">Select a Location:</label>
+        <label class="form-label" for="locationSelect">
+          Select a Location:
+        </label>
         <input
           type="text"
           placeholder="LOCATION"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
+        />
 
         {error && <div className="text-red-500 mb-4">{error}</div>}
 
         <div className="flex mb-4">
-          <label className="form-label mr-4" for="stateSelect">Select a Date:</label>
+          <label className="form-label mr-4" for="stateSelect">
+            Select a Date:
+          </label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-1/2 p-2 mr-6 border-b border-gray-300 focus:outline-none" /><div><p></p></div>
-          <label className="form-label mr-4" for="timeSelect">Select a Time:</label>
+            className="w-1/2 p-2 mr-6 border-b border-gray-300 focus:outline-none"
+          />
+          <div>
+            <p></p>
+          </div>
+          <label className="form-label mr-4" for="timeSelect">
+            Select a Time:
+          </label>
           <input
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none" />
+            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none"
+          />
         </div>
 
-
-        <label class="form-label" for="stateSelect">Ticket Prices:</label><input
+        <label class="form-label" for="stateSelect">
+          Ticket Prices:
+        </label>
+        <input
           type="number"
           placeholder="AMOUNT"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none" />
+          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
+        />
 
         <button
           onClick={handleCreate}
-          className="w-full bg-black text-white p-2 rounded">
+          className="w-full bg-black text-white p-2 rounded"
+        >
           CREATE
         </button>
-      </div></>
+      </div>
+    </>
   );
 };
 
@@ -161,5 +186,5 @@ DaPaintCreate.propTypes = {
   onClose: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   profilePicture: PropTypes.string.isRequired,
-  onAdd: PropTypes.func.isRequired
+  onAdd: PropTypes.func.isRequired,
 };

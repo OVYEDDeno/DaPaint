@@ -6,6 +6,7 @@ body {
   background-color: #131313;
 }
 
+
 .home-container {
   display: flex;
   flex-direction: column;
@@ -119,3 +120,36 @@ body {
 .footer-column p {
   margin: 0;
 }
+
+
+
+/* Default styles for all screen sizes
+body {
+  font-size: 16px;
+  background-color: white;
+  color: black;
+}
+
+Styles for screens larger than 768px (tablets and larger devices)
+@media screen and (min-width: 768px) {
+  body {
+    font-size: 18px;
+    background-color: lightgray;
+  }
+}
+
+Styles for screens larger than 1024px (desktops)
+@media screen and (min-width: 1024px) {
+  body {
+    font-size: 20px;
+    background-color: gray;
+  }
+}
+
+Styles for small screens (mobile devices)
+@media screen and (max-width: 767px) {
+  body {
+    font-size: 14px;
+    background-color: lightblue;
+  }
+}*/ 

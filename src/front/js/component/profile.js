@@ -4,32 +4,34 @@ import "../../styles/profile.css"; // Assuming you will create this CSS file
 
 export const Profile = () => {
   const { store, actions } = useContext(Context);
-  const [name, setName] = useState('');
-  const [city, setCity] = useState('');
-  const [email, setEmail] = useState('');
-  const [zipcode, setZipcode] = useState('');
+  const [name, setName] = useState("");
+  const [city, setCity] = useState("");
+  const [email, setEmail] = useState("");
+  const [zipcode, setZipcode] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [phone, setPhone] = useState('');
-  const [previewURL, setPreviewURL] = useState('');
+  const [phone, setPhone] = useState("");
+  const [previewURL, setPreviewURL] = useState("");
   const [imageSizeError, setImageSizeError] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
 
-  const placeholderImage = 'https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png';
-  const profileImageUrl = store.userData?.profile_pic?.image_url || placeholderImage;
+  const placeholderImage =
+    "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
+  const profileImageUrl =
+    store.userData?.profile_pic?.image_url || placeholderImage;
 
   useEffect(() => {
     actions.fetchCurrentUser();
     if (store.userData) {
-      setName(store.userData.name || '');
-      setCity(store.userData.city || '');
-      setEmail(store.userData.email || '');
-      setZipcode(store.userData.zipcode || '');
-      setBirthday(store.userData.birthday || '');
-      setPhone(store.userData.phone || '');
+      setName(store.userData.name || "");
+      setCity(store.userData.city || "");
+      setEmail(store.userData.email || "");
+      setZipcode(store.userData.zipcode || "");
+      setBirthday(store.userData.birthday || "");
+      setPhone(store.userData.phone || "");
       setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
     }
   }, []);
-// console.log("Profile User Info", fetchCurrentUser)
+  // console.log("Profile User Info", fetchCurrentUser)
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
@@ -59,7 +61,7 @@ export const Profile = () => {
       email,
       zipcode,
       birthday,
-      phone
+      phone,
     };
     let result = await actions.editUserbyUser(updatedUser);
     if (result) {
@@ -72,33 +74,87 @@ export const Profile = () => {
 
   return (
     <>
-      <button className="btn btn-primary" data-bs-target="#profileModal" data-bs-toggle="modal">Open Profile</button>
+      {/* <button
+        className="btn btn-primary"
+        data-bs-target="#profileModal"
+        data-bs-toggle="modal"
+      >
+        Open Profile
+      </button> */}
+      <button
+        type="button"
+        className="btn"
+        data-bs-toggle="modal"
+        data-bs-target="#profileModal"
+      >
+        <div className="profile-container">
+          <div className="profile-header">
+            <div className="profile-picture-section">
+              <img src={previewURL} alt="Profile" className="profile-picture" />
+              <div className="profile-name">
+                <h3>{store.userData && store.userData.user?.name}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
 
       {/* Profile Modal */}
-      <div className="modal fade" id="profileModal" aria-hidden="true" aria-labelledby="profileModalLabel" tabIndex="-1">
+      <div
+        className="modal fade"
+        id="profileModal"
+        aria-hidden="true"
+        aria-labelledby="profileModalLabel"
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="profileModalLabel">Profile</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 className="modal-title fs-5" id="profileModalLabel">
+                Profile
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
               <div className="profile-container">
                 <div className="profile-header">
                   <div className="profile-picture-section">
-                    <img src={profileImageUrl} alt="Profile" className="profile-picture" />
-                    <div className="profile-name">{store.userData && store.userData.user?.name}</div>
+                    <div
+                      className="d-flex"
+                      data-bs-target="#editProfileModal"
+                      data-bs-toggle="modal"
+                    >
+                      <img
+                        src={profileImageUrl}
+                        alt="Profile"
+                        className="profile-picture"
+                      />
+                      <div className="profile-name">
+                        {store.userData && store.userData.user?.name}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <table className="stats-table">
                   <tbody>
                     <tr>
                       <td>Total</td>
-                      <td className="total">{store.userData && store.userData.user?.wins + store.userData.user?.losses}</td>
+                      <td className="total">
+                        {store.userData &&
+                          store.userData.user?.wins +
+                            store.userData.user?.losses}
+                      </td>
                     </tr>
                     <tr>
                       <td>Wins</td>
-                      <td className="wins">{store.userData && store.userData.user?.wins}</td>
+                      <td className="wins">
+                        {store.userData && store.userData.user?.wins}
+                      </td>
                     </tr>
                     <tr>
                       <td>By knockout</td>
@@ -106,50 +162,96 @@ export const Profile = () => {
                     </tr>
                     <tr>
                       <td>By submission</td>
-                      <td>{store.userData && store.userData.user?.winsBySub}</td>
+                      <td>
+                        {store.userData && store.userData.user?.winsBySub}
+                      </td>
                     </tr>
                     <tr>
                       <td>Losses</td>
-                      <td className="losses">{store.userData && store.userData.user?.losses}</td>
+                      <td className="losses">
+                        {store.userData && store.userData.user?.losses}
+                      </td>
                     </tr>
                     <tr>
                       <td>By knockout</td>
-                      <td>{store.userData && store.userData.user?.lossesByKO}</td>
+                      <td>
+                        {store.userData && store.userData.user?.lossesByKO}
+                      </td>
                     </tr>
                     <tr>
                       <td>By submission</td>
-                      <td>{store.userData && store.userData.user?.lossesBySub}</td>
+                      <td>
+                        {store.userData && store.userData.user?.lossesBySub}
+                      </td>
                     </tr>
                     <tr>
                       <td>Disqualifications</td>
-                      <td className="disqualifications">{store.userData && store.userData.user?.disqualifications}</td>
+                      <td className="disqualifications">
+                        {store.userData &&
+                          store.userData.user?.disqualifications}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" data-bs-target="#editProfileModal" data-bs-toggle="modal">Edit Profile</button>
+              <button
+                className="btn btn-primary"
+                data-bs-target="#editProfileModal"
+                data-bs-toggle="modal"
+              >
+                Edit Profile
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Edit Profile Modal */}
-      <div className="modal fade" id="editProfileModal" aria-hidden="true" aria-labelledby="editProfileModalLabel" tabIndex="-1">
+      <div
+        className="modal fade"
+        id="editProfileModal"
+        aria-hidden="true"
+        aria-labelledby="editProfileModalLabel"
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="editProfileModalLabel">Edit Profile</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 className="modal-title fs-5" id="editProfileModalLabel">
+                Edit Profile
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
               <div className="flex items-center mb-6">
                 <div className="text-center">
-                  <img src={profileImageUrl} alt="Profile Picture" className="rounded-circle img-fluid" style={{ width: '30px', height: '30px' }} />
-                  <input type="file" id="profile-picture" className="form-control-file" onChange={handleImageUpload} />
-                  <button className="btn btn-primary" onClick={handleNewImage}>Upload Photo</button>
-                  {imageSizeError && <div className="text-danger">Image size exceeds the limit.</div>}
+                  <img
+                    src={profileImageUrl}
+                    alt="Profile Picture"
+                    className="rounded-circle img-fluid"
+                    style={{ width: "30px", height: "30px" }}
+                  />
+                  <input
+                    type="file"
+                    id="profile-picture"
+                    className="form-control-file"
+                    onChange={handleImageUpload}
+                  />
+                  <button className="btn btn-primary" onClick={handleNewImage}>
+                    Upload Photo
+                  </button>
+                  {imageSizeError && (
+                    <div className="text-danger">
+                      Image size exceeds the limit.
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -193,9 +295,23 @@ export const Profile = () => {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button className="btn btn-primary" onClick={handleEditSubmit} data-bs-dismiss="modal">Save</button>
-              <button className="btn btn-primary" data-bs-target="#profileModal" data-bs-toggle="modal">Back to Profile</button>
+              <button className="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleEditSubmit}
+                data-bs-dismiss="modal"
+              >
+                Save
+              </button>
+              <button
+                className="btn btn-primary"
+                data-bs-target="#profileModal"
+                data-bs-toggle="modal"
+              >
+                Back to Profile
+              </button>
             </div>
           </div>
         </div>

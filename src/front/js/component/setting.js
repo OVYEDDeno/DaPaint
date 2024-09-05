@@ -38,6 +38,12 @@ export const Setting = ({ onClose }) => {
   };
 
   const handleLogout = () => {
+    document.body.classList.remove("modal-open");
+    const overlay = document.querySelector(".modal-backdrop");
+    if (overlay) {
+      overlay.remove();
+    }
+
     localStorage.removeItem("token");
     console.log("Log out successful");
     navigate("/");

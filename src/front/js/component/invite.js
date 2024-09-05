@@ -131,7 +131,7 @@ export const Invite = ({ onClose }) => {
             </div>
             <div className="modal-body">
               <p className="text-center mb-4">
-                WHO&apos;S A GREAT POTENTIAL ADDITION TO DIDDY?
+              Invite the most people by the end of this winstreak and win 500K!
               </p>
               <div className="bg-black text-white p-2 rounded-full flex justify-between items-center mb-4">
                 <span>You have {invites} invites left</span>

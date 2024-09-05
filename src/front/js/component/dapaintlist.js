@@ -37,12 +37,15 @@ const DaPaintList = ({ onClose }) => {
     }
 
     getDapaintList();
-      console.log("!!!!!!UPDATED STORE.USERDATA FROM DAPAINTLIST.JS:", store.userData);
+    console.log(
+      "!!!!!!UPDATED STORE.USERDATA FROM DAPAINTLIST.JS:",
+      store.userData
+    );
   }, [store.userData]);
 
   const handleClockIn = async (event) => {
     const token = localStorage.getItem("token");
-    const userId = store.userData.id;
+    const userId = store.userData.user?.id;
     console.log("userId: ", userId);
 
     if (event.hostFoeId !== userId) {
@@ -154,9 +157,9 @@ const DaPaintList = ({ onClose }) => {
 
     // set a conditional here so this action only gets called if the user win streak = goal win streak (not the highest win streak)
     // something like that(userWinStreak >= goalWinStreak) ? actions.resetWinStreak();
-    
+
     actions.resetWinStreak();
-  }
+  };
 
   return (
     <>
@@ -226,7 +229,7 @@ const DaPaintList = ({ onClose }) => {
                     <div className="text-gray-500">{event.location}</div>
                     <div className="text-gray-500">{event.distance}</div>
                     <div className="text-gray-500">{event.date_time}</div>
-                    {event.hostFoeId?.id !== store.userData.id &&
+                    {event.hostFoeId?.id !== store.userData.user?.id &&
                     event.hostFoeId ? (
                       <button
                         className="bg-black text-white p-2 rounded"
