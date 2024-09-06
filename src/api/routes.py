@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, decode_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User, DaPaint, UserImg, WinstreakHistory, InviteCode, Notifications
 from flask_cors import CORS
@@ -13,6 +13,8 @@ from cloudinary.api import delete_resources_by_tag
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import cloudinary
+
+from api.send_email import send_email
 
 api = Blueprint('api', __name__)
 
@@ -103,6 +105,60 @@ def handle_user_signup():
 
     return jsonify({'msg': 'User created successfully'}), 201
 
+@api.route("/forgot-password", methods=["POST"])
+def forgetpassword():
+    data = request.json
+    email = data.get("email")
+    if not email:
+        return jsonify({"message": "email is required"}), 400    
+    user = User.query.filter_by(email = email).first()
+    if user is None:
+        return jsonify({"message": "Email does not exist"}), 400
+    # jwt_access_token
+    # token = encrypt_string(json.dumps({
+    #     "email": email,
+    #     "exp":15,
+    #     "current_time": datetime.datetime.now().isoformat()
+    # }), os.getenv('FLASK_APP_KEY'))    
+    token = create_access_token(identity=email, expires_delta=timedelta(hours=1))
+
+    email_value = f"Here is the password recovery link!\n{os.getenv('FRONTEND_URL')}/forgot-password/{token}"
+    send_email(email, email_value, "Subject: Password Recovery")
+    return jsonify({"message": "Recovery password has been sent"}), 200
+
+@api.route("/change-password", methods=["PUT"])
+def changepassword():
+    data = request.get_json()
+    password = data.get("password")
+    # secret = data.get("secret")
+    token = data.get("token")
+
+    if not password:
+        return jsonify({"message": "Please provide a new password."}), 400
+
+    try:
+        # json_secret = json.loads(decrypt_string(secret, os.getenv('FLASK_APP_KEY')))
+        decoded_token = decode_token(token)
+        email = decoded_token['identity']
+    except Exception as e:
+        return jsonify({"message": "Invalid or expired token."}), 400
+
+    # email = json_secret.get('email')
+    # if not email:
+    #     return jsonify({"message": "Invalid token data."}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"message": "Email does not exist"}), 400
+
+    # user.password = hashlib.sha256(password.encode()).hexdigest()
+    user.password = generate_password_hash(password)
+    db.session.commit()
+
+    send_email(email, "Your password has been changed successfully.", "Password Change Notification")
+
+    return jsonify({"message": "Password successfully changed."}), 200
+
 # Working route
 @api.route('/user/edit', methods=['PUT'])
 @jwt_required()
@@ -175,8 +231,6 @@ def get_current_user():
             "foe": match.foe_user.serialize() if match.foeId else None
         }
     }), 200
-
-
 
 @api.route('/users', methods=['GET'])
 @jwt_required()

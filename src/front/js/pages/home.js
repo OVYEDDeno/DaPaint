@@ -38,7 +38,7 @@ export const Home = () => {
           can't wait for you to join!
         </p>
         <Link to="/auth">
-          <button className="cta-button">Sign up</button>
+          <button className="cta-button">Join Now!</button>
         </Link>
       </main>
 
