@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import ProtectedRoute from "./component/ProtectedRoute";
+import {ForgotPassword} from "./component/forgotpassword";
+
 
 import { Home } from "./pages/home";
 import { About } from "./pages/about";
@@ -29,6 +31,7 @@ const Layout = () => {
                         <Route element={<About />} path="/about" />
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Code />} path="/code" />
+                        <Route element={<ForgotPassword />} path="/forgot-password" />
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />

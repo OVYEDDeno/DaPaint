@@ -113,45 +113,28 @@ def forgetpassword():
         return jsonify({"message": "email is required"}), 400    
     user = User.query.filter_by(email = email).first()
     if user is None:
-        return jsonify({"message": "Email does not exist"}), 400
-    # jwt_access_token
-    # token = encrypt_string(json.dumps({
-    #     "email": email,
-    #     "exp":15,
-    #     "current_time": datetime.datetime.now().isoformat()
-    # }), os.getenv('FLASK_APP_KEY'))    
+        return jsonify({"message": "Email does not exist"}), 400  
     token = create_access_token(identity=email, expires_delta=timedelta(hours=1))
 
-    email_value = f"Here is the password recovery link!\n{os.getenv('FRONTEND_URL')}/forgot-password/{token}"
+    email_value = f"Here is the password recovery link!\n{os.getenv('FRONTEND_URL')}/forgot-password?token={token}"
     send_email(email, email_value, "Subject: Password Recovery")
     return jsonify({"message": "Recovery password has been sent"}), 200
 
 @api.route("/change-password", methods=["PUT"])
+@jwt_required()
 def changepassword():
     data = request.get_json()
     password = data.get("password")
     # secret = data.get("secret")
-    token = data.get("token")
 
     if not password:
         return jsonify({"message": "Please provide a new password."}), 400
+    email = get_jwt_identity()
 
-    try:
-        # json_secret = json.loads(decrypt_string(secret, os.getenv('FLASK_APP_KEY')))
-        decoded_token = decode_token(token)
-        email = decoded_token['identity']
-    except Exception as e:
-        return jsonify({"message": "Invalid or expired token."}), 400
-
-    # email = json_secret.get('email')
-    # if not email:
-    #     return jsonify({"message": "Invalid token data."}), 400
 
     user = User.query.filter_by(email=email).first()
     if not user:
         return jsonify({"message": "Email does not exist"}), 400
-
-    # user.password = hashlib.sha256(password.encode()).hexdigest()
     user.password = generate_password_hash(password)
     db.session.commit()
 
