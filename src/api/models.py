@@ -1,13 +1,14 @@
+from datetime import datetime, timedelta, timezone
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone
 
 db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(512), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+    password = db.Column(db.String(512), nullable=False)
+    is_active = db.Column(db.Boolean(), nullable=False, default=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
     zipcode = db.Column(db.Integer, nullable=False)
@@ -15,24 +16,22 @@ class User(db.Model):
     birthday = db.Column(db.Date, nullable=False)
     winstreak = db.Column(db.Integer, default=0)
     wins = db.Column(db.Integer, default=0)
-    # winsByKO = db.Column(db.Integer, default=0)
-    # winsBySub = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
-    # lossesByKO = db.Column(db.Integer, default=0)
-    # lossesBySub = db.Column(db.Integer, default=0)
-    disqualifications = db.Column(db.Integer, default=0)
     disqualifications = db.relationship('UserDisqualification', back_populates='user')
-
+    
+    # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
+    
+    # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
-    reports = db.relationship('Reports', back_populates='user', cascade='all, delete-orphan')
 
+    # Other relationships
+    reports = db.relationship('Reports', back_populates='user', cascade='all, delete-orphan')
     dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user')
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
     dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user')
     invite_codes = db.relationship('InviteCode', back_populates='user', cascade='all, delete-orphan')
-    # user_disqualification = db.relationship('UserDisqualification', back_populates='user')
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -47,13 +46,13 @@ class User(db.Model):
             "phone": self.phone,
             "birthday": self.birthday.strftime("%m/%d/%Y"),
             "winstreak": self.winstreak,
-            "winsByKO": self.winsByKO,
-            "winsBySub": self.winsBySub,
-            "lossesByKO": self.lossesByKO,
-            "lossesBySub": self.lossesBySub,
-            "disqualifications": self.disqualifications,
-            "profile_pic": self.profile_pic.serialize() if self.profile_pic else None
+            "wins": self.wins,
+            "losses": self.losses,
+            "disqualifications": [dq.serialize() for dq in self.disqualifications],
+            "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
+            "notifications": [n.serialize() for n in self.notifications]  # Include notifications in serialization
         }
+
 
 class InviteCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,16 +82,22 @@ class DaPaint(db.Model):
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)    
+    loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     winnerImg = db.Column(db.String(250), nullable=True)
     loserImg = db.Column(db.String(250), nullable=True)
-
+    
+    # Relationships
     host_user = db.relationship('User', foreign_keys=[hostFoeId], back_populates='dapaint_host')
     foe_user = db.relationship('User', foreign_keys=[foeId], back_populates='dapaint_foe')
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
     
-    reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')  
+    reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')
+    lastmodify = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
+    
+    # Dispute handling
+    dispute_status = db.Column(db.String(50), nullable=True)  # e.g., 'pending', 'resolved'
+    dispute_reported = db.Column(db.Boolean, default=False)
 
     def serialize(self):
         return {
@@ -108,8 +113,11 @@ class DaPaint(db.Model):
             "loserId": self.loserId,
             "loserUser": self.loser_user.serialize() if self.loser_user else "N/A",
             "winnerImg": self.winnerImg,
-            "loserImg": self.loserImg
+            "loserImg": self.loserImg,
+            "dispute_status": self.dispute_status,
+            "dispute_reported": self.dispute_reported
         }
+
 
 
 class UserImg(db.Model):
@@ -130,21 +138,45 @@ class UserImg(db.Model):
             "image_url": self.image_url
         }
     
+
 class Notifications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     type = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(2000), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    user=db.relationship('User', back_populates='notifications')
+    
+    user = db.relationship('User', back_populates='notifications')
+
     def serialize(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
             'type': self.type,
-           'message': self.message,
+            'message': self.message,
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
+
+    @property
+    def is_expired(self):
+        # Check if notification is older than 24 hours
+        return datetime.now(timezone.utc) - self.created_at > timedelta(hours=24)
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    # Utility function to delete expired notifications
+    def delete_expired_notifications():
+        expired_notifications = Notifications.query.filter(
+            Notifications.created_at < datetime.now(timezone.utc) - timedelta(hours=24)
+        ).all()
+        for notification in expired_notifications:
+            db.session.delete(notification)
+        db.session.commit()
+
+    # You can run this function periodically using a background task    
+
 
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -168,6 +200,32 @@ class Reports(db.Model):
         }
 
 
+class UserDisqualification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # Foreign key linking to AdminUser
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin_user.id'), nullable=False)  # Match the correct table name 'admin_user'
+    
+    # Foreign key linking to User
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    reason = db.Column(db.String(500), nullable=False)
+    disqualified_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationship back to AdminUser
+    admin = db.relationship('AdminUser', back_populates='disqualified_users')
+    
+    # Relationship back to User
+    user = db.relationship('User', back_populates='disqualifications')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'admin_id': self.admin_id,
+            'user_id': self.user_id,
+            'reason': self.reason,
+            'disqualified_at': self.disqualified_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 class AdminUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -185,9 +243,8 @@ class AdminUser(db.Model):
     losers_per_day = db.Column(db.Integer, nullable=True, default=0)
     inactive_users_per_day = db.Column(db.Integer, nullable=True, default=0)
 
-    # AdminUser moderation    
-    disqualified_users = db.relationship('UserDisqualification', backref='admin')  # Establish relationship
-
+    # Relationship with UserDisqualification
+    disqualified_users = db.relationship('UserDisqualification', back_populates='admin', cascade="all, delete-orphan")
 
     def serialize(self):
         return {
@@ -204,23 +261,4 @@ class AdminUser(db.Model):
             'inactive_users_per_day': self.inactive_users_per_day,
         }
 
-class UserDisqualification(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('adminUser.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    reason = db.Column(db.String(500), nullable=False)
-    disqualified_at = db.Column(db.DateTime, default=datetime.utcnow)
-        
-    user = db.relationship('User', back_populates='disqualifications')
-    admin_user_id = db.Column(db.Integer, db.ForeignKey('admin_user.id'))  # Add foreign key
-
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'admin_id': self.admin_id,
-            'user_id': self.user_id,
-            'reason': self.reason,
-            'disqualified_at': self.disqualified_at.strftime("%Y-%m-%d %H:%M:%S"),
-        }
 

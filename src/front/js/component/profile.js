@@ -155,35 +155,13 @@ export const Profile = () => {
                       <td className="wins">
                         {store.userData && store.userData.user?.wins}
                       </td>
-                    </tr>
-                    <tr>
-                      <td>By knockout</td>
-                      <td>{store.userData && store.userData.user?.winsByKO}</td>
-                    </tr>
-                    <tr>
-                      <td>By submission</td>
-                      <td>
-                        {store.userData && store.userData.user?.winsBySub}
-                      </td>
-                    </tr>
+                    </tr>                    
                     <tr>
                       <td>Losses</td>
                       <td className="losses">
                         {store.userData && store.userData.user?.losses}
                       </td>
-                    </tr>
-                    <tr>
-                      <td>By knockout</td>
-                      <td>
-                        {store.userData && store.userData.user?.lossesByKO}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>By submission</td>
-                      <td>
-                        {store.userData && store.userData.user?.lossesBySub}
-                      </td>
-                    </tr>
+                    </tr>                    
                     <tr>
                       <td>Disqualifications</td>
                       <td className="disqualifications">

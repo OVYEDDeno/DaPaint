@@ -6,7 +6,6 @@ export const Start = () => {
   const [hostUser, setHostUser] = useState(null);
   const [foeUser, setFoeUser] = useState(null);
   const [hostVote, setHostVote] = useState(null);
-  const [winType, setWinType] = useState("KO");
   const { store, actions } = useContext(Context);
   const [foeVote, setFoeVote] = useState(null);
 
@@ -43,7 +42,7 @@ let loser=0
       store.userData.dapaintId,
       winner,
       loser,
-      winType
+      
     );
     if (result) {
       alert("Winstreak has been updated");
@@ -99,31 +98,7 @@ let loser=0
                       <button type="button" className="rounded-lg">
                         Upload KO
                       </button>
-                    </div>
-                    <div className="win-type-radio">
-                      <label style={{ marginRight: "10px" }}>
-                        <input
-                          type="radio"
-                          name="winType"
-                          value="KO"
-                          checked={winType === "KO"}
-                          onChange={() => setWinType("KO")}
-                          style={{ marginRight: "5px" }}
-                        />
-                        Win By KO
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="winType"
-                          value="Sub"
-                          checked={winType === "Sub"}
-                          onChange={() => setWinType("Sub")}
-                          style={{ marginRight: "5px" }}
-                        />
-                        Win By Sub
-                      </label>
-                    </div>
+                    </div>                    
                     {hostUser && (
                       <img
                         src={hostUser}

@@ -104,8 +104,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           // console.log(data);
           setStore({
             userData: {...data,
-              wins: data.user?.winsByKO + data.user?.winsBySub,
-              losses: data.user?.lossesByKO + data.user?.lossesBySub,}
+              wins: data.user?.wins,
+              losses: data.user?.losses,}
           });
           console.log("Current User DATA has been set", data)
         } catch (error) {
@@ -126,8 +126,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("FLUX:actions.fetchAndSetUser: ", data);
           setStore({userData: {
               ...data,
-              wins: data.user?.winsByKO + data.user?.winsBySub,
-              losses: data.user?.lossesByKO + data.user?.lossesBySub,
+              wins: data.user?.wins,
+              losses: data.user?.losses,
             },
           });
           setUser(data);
@@ -304,8 +304,8 @@ const getState = ({ getStore, getActions, setStore }) => {
         setStore({
           userData: {
             ...data,
-            wins: data.winsByKO + data.winsBySub,
-            losses: data.lossesByKO + data.lossesBySub,
+            wins: data.wins,
+            losses: data.losses,
           }
         });
         

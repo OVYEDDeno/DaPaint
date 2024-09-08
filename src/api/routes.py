@@ -203,12 +203,12 @@ def get_current_user():
             "dapaintId": None,
             "indulgers": None
         }), 200
-
+    print("winnerID", match.winnerId)
     # If match is found, return relevant details
     return jsonify({
         "user": user.serialize(),
         "hasfoe": True,
-        "dapaintId": match.id if match.winnerId is None else None,
+        "dapaintId": match.id,
         "indulgers": {
             "host": match.host_user.serialize() if match.hostFoeId else None,
             "foe": match.foe_user.serialize() if match.foeId else None
@@ -470,7 +470,6 @@ def update_win_streak(dapaint_id):
     data = request.get_json()
     winner_vote = data.get('winner')
     loser_vote = data.get('loser')
-    winType= data.get('winType')
     
     print(f"Received winner_vote: {winner_vote}, loser_vote: {loser_vote}")
 
@@ -498,16 +497,10 @@ def update_win_streak(dapaint_id):
     loser=User.query.get(loser_vote)
     if not loser:
         return jsonify({"msg": "No loser found"}), 404
-    if winType=='winsByKO':
-        winner.winsByKO+=1
-        loser.lossesByKO+=1
-        winner.winstreak+=1
-        loser.winstreak=0
-    if winType=='winsBySub':
-        winner.winsBySub+=1
-        loser.lossesBySub+=1
-        winner.winstreak+=1
-        loser.winstreak=0
+    winner.wins+=1
+    loser.losses+=1
+    winner.winstreak+=1
+    loser.winstreak=0
     print(f"Updated DaPaint: winnerId={updated_dapaint.winnerId}, loserId={updated_dapaint.loserId}")
     db.session.commit()
 
