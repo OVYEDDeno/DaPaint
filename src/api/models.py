@@ -15,12 +15,13 @@ class User(db.Model):
     birthday = db.Column(db.Date, nullable=False)
     winstreak = db.Column(db.Integer, default=0)
     wins = db.Column(db.Integer, default=0)
-    winsByKO = db.Column(db.Integer, default=0)
-    winsBySub = db.Column(db.Integer, default=0)
+    # winsByKO = db.Column(db.Integer, default=0)
+    # winsBySub = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
-    lossesByKO = db.Column(db.Integer, default=0)
-    lossesBySub = db.Column(db.Integer, default=0)
+    # lossesByKO = db.Column(db.Integer, default=0)
+    # lossesBySub = db.Column(db.Integer, default=0)
     disqualifications = db.Column(db.Integer, default=0)
+    disqualifications = db.relationship('UserDisqualification', back_populates='user')
 
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
@@ -31,6 +32,7 @@ class User(db.Model):
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
     dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user')
     invite_codes = db.relationship('InviteCode', back_populates='user', cascade='all, delete-orphan')
+    # user_disqualification = db.relationship('UserDisqualification', back_populates='user')
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -127,19 +129,7 @@ class UserImg(db.Model):
             "id": self.id,
             "image_url": self.image_url
         }
-
-class WinstreakHistory(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    def serialize(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        }
     
-
 class Notifications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -155,6 +145,7 @@ class Notifications(db.Model):
            'message': self.message,
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
+
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -177,17 +168,59 @@ class Reports(db.Model):
         }
 
 
-class Admin(db.Model):
+class AdminUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(512), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     rank = db.Column(db.String(50), nullable=True)
+
+    # New columns
+    num_users = db.Column(db.Integer, nullable=True, default=0)
+    daily_active_users = db.Column(db.Integer, nullable=True, default=0)
+    market_share = db.Column(db.Float, nullable=True, default=0.0)  # Percentage
+    matches_per_day = db.Column(db.Integer, nullable=True, default=0)
+    winners_per_day = db.Column(db.Integer, nullable=True, default=0)
+    losers_per_day = db.Column(db.Integer, nullable=True, default=0)
+    inactive_users_per_day = db.Column(db.Integer, nullable=True, default=0)
+
+    # AdminUser moderation    
+    disqualified_users = db.relationship('UserDisqualification', backref='admin')  # Establish relationship
+
+
     def serialize(self):
         return {
             'id': self.id,
             'email': self.email,
             'name': self.name,
-            'rank': self.rank
+            'rank': self.rank,
+            'num_users': self.num_users,
+            'daily_active_users': self.daily_active_users,
+            'market_share': self.market_share,
+            'matches_per_day': self.matches_per_day,
+            'winners_per_day': self.winners_per_day,
+            'losers_per_day': self.losers_per_day,
+            'inactive_users_per_day': self.inactive_users_per_day,
         }
+
+class UserDisqualification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('adminUser.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    reason = db.Column(db.String(500), nullable=False)
+    disqualified_at = db.Column(db.DateTime, default=datetime.utcnow)
+        
+    user = db.relationship('User', back_populates='disqualifications')
+    admin_user_id = db.Column(db.Integer, db.ForeignKey('admin_user.id'))  # Add foreign key
+
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'admin_id': self.admin_id,
+            'user_id': self.user_id,
+            'reason': self.reason,
+            'disqualified_at': self.disqualified_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+

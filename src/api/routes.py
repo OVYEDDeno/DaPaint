@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, decode_token
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, WinstreakHistory, InviteCode, Notifications
+from api.models import db, User, DaPaint, UserImg, InviteCode, Notifications, AdminUser, UserDisqualification
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
@@ -534,7 +534,7 @@ def forfeit(dapaint_id):
         foe.winstreak+=1
         foe.wins+=1
         daPaint.winnerId=daPaint.foeId
-        new_win=WinstreakHistory(user_id=foe.id)        
+        # new_win=WinstreakHistory(user_id=foe.id)        
         db.session.add(new_win)        
         foe_notif=Notifications(user_id=foe.id, type="Forfeit", message=f"{host.name} has forfeited the event. Your winstreak has been increased.")
         db.session.add(foe_notif)
@@ -544,7 +544,7 @@ def forfeit(dapaint_id):
         host.winstreak+=1
         host.wins+=1
         daPaint.winnerId=daPaint.hostFoeId
-        new_win=WinstreakHistory(user_id=host.id)
+        # new_win=WinstreakHistory(user_id=host.id)
         db.session.add(new_win)
         host_notif=Notifications(user_id=host.id, type="Forfeit", message=f"{foe.name} has forfeited the event. Your winstreak has been increased.")
         db.session.add(host_notif)        

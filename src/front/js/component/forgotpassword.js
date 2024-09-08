@@ -1,4 +1,5 @@
 import React, { useState, Component } from "react";
+import "../../styles/auth.css";
 import { searchParams, useSearchParams } from "react-router-dom";
 
 export const ForgotPassword = () => {

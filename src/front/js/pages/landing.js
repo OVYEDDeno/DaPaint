@@ -8,7 +8,7 @@ import { DaPaintCreate } from "../component/dapaintcreate.js";
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-import { EditProfile } from "../component/editprofile.js";
+// import { EditProfile } from "../component/editprofile.js";
 import { Start, Wlsub } from "../component/start.js";
 import { Help } from "../component/help.js";
 import { Wallet } from "../component/wallet.js";
