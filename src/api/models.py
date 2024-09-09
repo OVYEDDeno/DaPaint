@@ -75,27 +75,37 @@ class InviteCode(db.Model):
 
 class DaPaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    foeId = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
+    hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Host user
+    foeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Foe user
+    
     fitnessStyle = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    winnerImg = db.Column(db.String(250), nullable=True)
-    loserImg = db.Column(db.String(250), nullable=True)
     
-    # Relationships
+    # Host user results
+    host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    host_winnerImg = db.Column(db.String(250), nullable=True)
+    
+    # Foe user results
+    foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    foe_winnerImg = db.Column(db.String(250), nullable=True)
+
+    # Relationships for host and foe
     host_user = db.relationship('User', foreign_keys=[hostFoeId], back_populates='dapaint_host')
     foe_user = db.relationship('User', foreign_keys=[foeId], back_populates='dapaint_foe')
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
     
+    # Reports and dispute handling
     reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')
     lastmodify = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
     
-    # Dispute handling
+    # Dispute tracking
     dispute_status = db.Column(db.String(50), nullable=True)  # e.g., 'pending', 'resolved'
     dispute_reported = db.Column(db.Boolean, default=False)
 
@@ -103,22 +113,20 @@ class DaPaint(db.Model):
         return {
             "id": self.id,
             "hostFoeId": self.host_user.serialize(),
-            "foeId": self.foe_user.serialize() if self.foe_user is not None else "N/A",
+            "foeId": self.foe_user.serialize() if self.foe_user else "N/A",
             "fitnessStyle": self.fitnessStyle,
             "location": self.location,
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,
-            "winnerId": self.winnerId,
-            "winnerUser": self.winner_user.serialize() if self.winner_user else "N/A",
-            "loserId": self.loserId,
-            "loserUser": self.loser_user.serialize() if self.loser_user else "N/A",
-            "winnerImg": self.winnerImg,
-            "loserImg": self.loserImg,
+            "host_winnerId": self.host_winnerId,
+            "host_loserId": self.host_loserId,
+            "host_winnerImg": self.host_winnerImg,
+            "foe_winnerId": self.foe_winnerId,
+            "foe_loserId": self.foe_loserId,
+            "foe_winnerImg": self.foe_winnerImg,
             "dispute_status": self.dispute_status,
             "dispute_reported": self.dispute_reported
         }
-
-
 
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -187,7 +195,7 @@ class Reports(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     user = db.relationship('User', back_populates='reports')
-    dapaint = db.relationship('DaPaint', back_populates='reports')  # Added back_populates to establish a bidirectional relationship
+    dapaint = db.relationship('DaPaint', back_populates='reports')
 
     def serialize(self):
         return {
@@ -199,66 +207,105 @@ class Reports(db.Model):
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
-
 class UserDisqualification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    
-    # Foreign key linking to AdminUser
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin_user.id'), nullable=False)  # Match the correct table name 'admin_user'
-    
-    # Foreign key linking to User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
     reason = db.Column(db.String(500), nullable=False)
-    disqualified_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    # Relationship back to AdminUser
-    admin = db.relationship('AdminUser', back_populates='disqualified_users')
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     
-    # Relationship back to User
     user = db.relationship('User', back_populates='disqualifications')
 
     def serialize(self):
         return {
             'id': self.id,
-            'admin_id': self.admin_id,
             'user_id': self.user_id,
             'reason': self.reason,
-            'disqualified_at': self.disqualified_at.strftime("%Y-%m-%d %H:%M:%S"),
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
+
 class AdminUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(512), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
-    name = db.Column(db.String(200), unique=True, nullable=False)
-    rank = db.Column(db.String(50), nullable=True)
-
-    # New columns
-    num_users = db.Column(db.Integer, nullable=True, default=0)
-    daily_active_users = db.Column(db.Integer, nullable=True, default=0)
-    market_share = db.Column(db.Float, nullable=True, default=0.0)  # Percentage
-    matches_per_day = db.Column(db.Integer, nullable=True, default=0)
-    winners_per_day = db.Column(db.Integer, nullable=True, default=0)
-    losers_per_day = db.Column(db.Integer, nullable=True, default=0)
-    inactive_users_per_day = db.Column(db.Integer, nullable=True, default=0)
-
-    # Relationship with UserDisqualification
-    disqualified_users = db.relationship('UserDisqualification', back_populates='admin', cascade="all, delete-orphan")
-
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(512), nullable=False)
+    is_active = db.Column(db.Boolean(), nullable=False, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Admin statistics fields
+    total_users = db.Column(db.Integer, default=0)
+    daily_active_users = db.Column(db.Integer, default=0)
+    sports_market_percentage = db.Column(db.Float, default=0.0)
+    matches_per_day = db.Column(db.Integer, default=0)
+    number_of_winners = db.Column(db.Integer, default=0)
+    number_of_losers = db.Column(db.Integer, default=0)
+    inactive_users = db.Column(db.Integer, default=0)
+    
+    def __repr__(self):
+        return f'<AdminUser {self.username}>'
+    
     def serialize(self):
         return {
-            'id': self.id,
-            'email': self.email,
-            'name': self.name,
-            'rank': self.rank,
-            'num_users': self.num_users,
-            'daily_active_users': self.daily_active_users,
-            'market_share': self.market_share,
-            'matches_per_day': self.matches_per_day,
-            'winners_per_day': self.winners_per_day,
-            'losers_per_day': self.losers_per_day,
-            'inactive_users_per_day': self.inactive_users_per_day,
+            "id": self.id,
+            "username": self.username,
+            "is_active": self.is_active,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "total_users": self.total_users,
+            "daily_active_users": self.daily_active_users,
+            "sports_market_percentage": self.sports_market_percentage,
+            "matches_per_day": self.matches_per_day,
+            "number_of_winners": self.number_of_winners,
+            "number_of_losers": self.number_of_losers,
+            "inactive_users": self.inactive_users
         }
+    
+    def update_statistics(self):
+        # Example method to update admin statistics
+        self.total_users = User.query.count()
+        self.daily_active_users = User.query.filter(
+            User.last_login >= datetime.utcnow() - timedelta(days=1)
+        ).count()
+        self.sports_market_percentage = self.calculate_sports_market_percentage()
+        self.matches_per_day = DaPaint.query.filter(
+            DaPaint.date_time >= datetime.utcnow() - timedelta(days=1)
+        ).count()
+        self.number_of_winners = DaPaint.query.filter(
+            DaPaint.winnerId.isnot(None)
+        ).count()
+        self.number_of_losers = DaPaint.query.filter(
+            DaPaint.loserId.isnot(None)
+        ).count()
+        self.inactive_users = self.total_users - self.daily_active_users
+        db.session.commit()
+    
+    def calculate_sports_market_percentage(self):
+        # Implement your logic to calculate the sports market percentage
+        # This is just a placeholder example
+        total_sports = DaPaint.query.count()
+        return (total_sports / self.total_users) * 100 if self.total_users else 0
 
+# class Advertiser(db.Model):
+#     __tablename__ = 'advertisers'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#     contact_email = db.Column(db.String(100), nullable=False, unique=True)
+#     budget = db.Column(db.Float, nullable=False)
+#     targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
+    
+#     def __repr__(self):
+#         return f'<Advertiser {self.name}>'
 
+# class AdCampaign(db.Model):
+#     __tablename__ = 'ad_campaigns'
+#     id = db.Column(db.Integer, primary_key=True)
+#     advertiser_id = db.Column(db.Integer, db.ForeignKey('advertisers.id'), nullable=False)
+#     name = db.Column(db.String(100), nullable=False)
+#     start_date = db.Column(db.Date, nullable=False)
+#     end_date = db.Column(db.Date, nullable=False)
+#     budget = db.Column(db.Float, nullable=False)
+#     ad_content = db.Column(db.Text, nullable=False)
+    
+#     advertiser = db.relationship('Advertiser', back_populates='ad_campaigns')
+    
+#     def __repr__(self):
+#         return f'<AdCampaign {self.name}>'
+
+# Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')

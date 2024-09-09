@@ -6,8 +6,8 @@ export const Start = () => {
   const [hostUser, setHostUser] = useState(null);
   const [foeUser, setFoeUser] = useState(null);
   const [hostVote, setHostVote] = useState(null);
-  const { store, actions } = useContext(Context);
   const [foeVote, setFoeVote] = useState(null);
+  const { store, actions } = useContext(Context);
 
   const handleFileUpload = (e, setUser) => {
     setUser(URL.createObjectURL(e.target.files[0]));
@@ -15,12 +15,12 @@ export const Start = () => {
 
   const handleHostVote = (vote) => {
     setHostVote(vote);
-    setFoeVote(vote === "winner" ? "loser" : "winner");
+    setFoeVote(vote === "winner" ? "loser" : foeVote);  // Update foeVote only if host claims a win
   };
 
   const handleFoeVote = (vote) => {
     setFoeVote(vote);
-    setHostVote(vote === "winner" ? "loser" : "winner");
+    setHostVote(vote === "winner" ? "loser" : hostVote);  // Update hostVote only if foe claims a win
   };
 
   const handleSubmit = async (e) => {
@@ -29,26 +29,64 @@ export const Start = () => {
       alert("No valid event found for this user");
       return;
     }
-let winner=0
-let loser=0
+
+    let host_winnerId = null;
+    let host_loserId = null;
+    let foe_winnerId = null;
+    let foe_loserId = null;
+
+    // Determine the winner/loser for host
     if (hostVote === "winner") {
-      winner = store.userData.indulgers.host.id;
-      loser = store.userData.indulgers.foe.id;
-    } else {
-      loser = store.userData.indulgers.host.id;
-      winner = store.userData.indulgers.foe.id;
+      host_winnerId = store.userData.indulgers.host.id;
+      host_loserId = store.userData.indulgers.foe.id;
+    } else if (hostVote === "loser") {
+      host_loserId = store.userData.indulgers.host.id;
+      host_winnerId = store.userData.indulgers.foe.id;
     }
-    let result = await actions.updateWinstreak(
-      store.userData.dapaintId,
-      winner,
-      loser,
-      
-    );
-    if (result) {
-      alert("Winstreak has been updated");
-      actions.fetchCurrentUser();
+
+    // Determine the winner/loser for foe
+    if (foeVote === "winner") {
+      foe_winnerId = store.userData.indulgers.foe.id;
+      foe_loserId = store.userData.indulgers.host.id;
+    } else if (foeVote === "loser") {
+      foe_loserId = store.userData.indulgers.foe.id;
+      foe_winnerId = store.userData.indulgers.host.id;
+    }
+
+    // Check for conflict: both claiming winner
+    if (host_winnerId && foe_winnerId) {
+      alert("Both users claimed victory. Sending to dispute resolution.");
+      let reportResult = await actions.createReport(store.userData.dapaintId, {
+        user_id: store.userData.indulgers.host.id,
+        foe_id: store.userData.indulgers.foe.id,
+        img_url: hostUser || foeUser,
+        vid_url: null,
+      });
+
+      if (reportResult) {
+        alert("Report has been submitted for dispute resolution.");
+      } else {
+        alert("Failed to submit report.");
+      }
     } else {
-      alert("Failed to update win streak");
+      // Update win streaks and other fields when no conflict
+      let result = await actions.updateDaPaint(
+        store.userData.dapaintId,
+        {
+          host_winnerId,
+          host_loserId,
+          foe_winnerId,
+          foe_loserId,
+          host_winnerImg: hostUser,
+          foe_winnerImg: foeUser,
+        }
+      );
+      if (result) {
+        alert("Winstreak has been updated");
+        actions.fetchCurrentUser();
+      } else {
+        alert("Failed to update win streak");
+      }
     }
   };
 
@@ -98,7 +136,7 @@ let loser=0
                       <button type="button" className="rounded-lg">
                         Upload KO
                       </button>
-                    </div>                    
+                    </div>
                     {hostUser && (
                       <img
                         src={hostUser}
