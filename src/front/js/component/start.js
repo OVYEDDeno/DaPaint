@@ -30,57 +30,30 @@ export const Start = () => {
       return;
     }
 
-    let host_winnerId = null;
-    let host_loserId = null;
-    let foe_winnerId = null;
-    let foe_loserId = null;
+    let winner_id = null;
+    let loser_id = null;
+
 
     // Determine the winner/loser for host
     if (hostVote === "winner") {
-      host_winnerId = store.userData.indulgers.host.id;
-      host_loserId = store.userData.indulgers.foe.id;
-    } else if (hostVote === "loser") {
-      host_loserId = store.userData.indulgers.host.id;
-      host_winnerId = store.userData.indulgers.foe.id;
-    }
+      winner_id = store.userData.indulgers.host.id;
+      loser_id = store.userData.indulgers.foe.id;
+    } 
 
     // Determine the winner/loser for foe
     if (foeVote === "winner") {
-      foe_winnerId = store.userData.indulgers.foe.id;
-      foe_loserId = store.userData.indulgers.host.id;
-    } else if (foeVote === "loser") {
-      foe_loserId = store.userData.indulgers.foe.id;
-      foe_winnerId = store.userData.indulgers.host.id;
-    }
+      winner_id = store.userData.indulgers.foe.id;
+      loser_id = store.userData.indulgers.host.id;
+    } 
 
     // Check for conflict: both claiming winner
-    if (host_winnerId && foe_winnerId) {
-      alert("Both users claimed victory. Sending to dispute resolution.");
-      let reportResult = await actions.createReport(store.userData.dapaintId, {
-        user_id: store.userData.indulgers.host.id,
-        foe_id: store.userData.indulgers.foe.id,
-        img_url: hostUser || foeUser,
-        vid_url: null,
-      });
 
-      if (reportResult) {
-        alert("Report has been submitted for dispute resolution.");
-      } else {
-        alert("Failed to submit report.");
-      }
-    } else {
       // Update win streaks and other fields when no conflict
-      let result = await actions.updateDaPaint(
+      let result = await actions.updateWinstreak(
         store.userData.dapaintId,
-        {
-          host_winnerId,
-          host_loserId,
-          foe_winnerId,
-          foe_loserId,
-          host_winnerImg: hostUser,
-          foe_winnerImg: foeUser,
-        }
-      );
+        winner_id,
+        loser_id
+      )
       if (result) {
         alert("Winstreak has been updated");
         actions.fetchCurrentUser();
@@ -88,7 +61,7 @@ export const Start = () => {
         alert("Failed to update win streak");
       }
     }
-  };
+
 
   return (
     <>

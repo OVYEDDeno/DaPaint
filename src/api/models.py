@@ -281,6 +281,25 @@ class AdminUser(db.Model):
         # This is just a placeholder example
         total_sports = DaPaint.query.count()
         return (total_sports / self.total_users) * 100 if self.total_users else 0
+# class Ticket(db.Model):
+#     __tablename__ = 'tickets'
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+#     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Connect to DaPaint table
+#     event_name = db.Column(db.String(200), nullable=False)
+#     event_date = db.Column(db.Date, nullable=False)
+#     purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
+#     price = db.Column(db.Float, nullable=False)
+#     ticket_status = db.Column(db.String(50), default='active')  # active, canceled, refunded, etc.
+
+#     user = db.relationship('User', back_populates='tickets')
+#     dapaint_event = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
+
+#     def __repr__(self):
+#         return f'<Ticket {self.event_name} - {self.user_id}>'
+
+# User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
+# DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint_event')
 
 # class Advertiser(db.Model):
 #     __tablename__ = 'advertisers'

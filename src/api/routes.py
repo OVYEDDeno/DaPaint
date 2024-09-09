@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, InviteCode, Notifications, AdminUser, UserDisqualification
+from api.models import db, User, DaPaint, UserImg, InviteCode, Notifications, AdminUser, UserDisqualification, Reports
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
@@ -317,3 +317,88 @@ def create_report():
     db.session.commit()
 
     return jsonify({"msg": "Report successfully created"}), 201
+
+@api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
+@jwt_required()
+def update_win_streak(dapaint_id):
+    user_id = get_jwt_identity()  # Get the ID of the user making the request
+    data = request.get_json()
+    winner_vote = data.get('winner')
+    loser_vote = data.get('loser')
+    img_url = data.get('img_url', None)  # Optional image for report
+
+    print(f"Received winner_vote: {winner_vote}, loser_vote: {loser_vote}")
+    
+    if not winner_vote or not loser_vote:
+        return jsonify({"msg": "Winner and loser votes are required."}), 400
+
+    # Fetch the DaPaint record
+    daPaint = DaPaint.query.get(dapaint_id)
+    if daPaint is None:
+        return jsonify({"msg": "No DaPaint found"}), 404
+
+    # Determine if the user is the host or the foe
+    if daPaint.hostFoeId == user_id:
+        if daPaint.host_winnerId is not None or daPaint.host_loserId is not None:
+            return jsonify({"msg": "Host has already made their choice."}), 400
+
+        daPaint.host_winnerId = winner_vote
+        daPaint.host_loserId = loser_vote
+        print(f"Host's choice: winnerId={winner_vote}, loserId={loser_vote}")
+
+    elif daPaint.foeId == user_id:
+        if daPaint.foe_winnerId is not None or daPaint.foe_loserId is not None:
+            return jsonify({"msg": "Foe has already made their choice."}), 400
+
+        daPaint.foe_winnerId = winner_vote
+        daPaint.foe_loserId = loser_vote
+        print(f"Foe's choice: winnerId={winner_vote}, loserId={loser_vote}")
+    else:
+        return jsonify({"msg": "User is neither the host nor the foe."}), 403
+
+    # Check for conflict
+    if daPaint.host_winnerId and daPaint.foe_winnerId:
+        if daPaint.host_winnerId != daPaint.foe_winnerId:
+            # Conflict found, create a report
+            if not img_url:
+                return jsonify({"msg": "Conflict detected! Please provide an image for the report."}), 400
+
+            conflict_report = Reports(
+                user_id=user_id,
+                dapaint_id=dapaint_id,
+                img_url=img_url
+            )
+            db.session.add(conflict_report)
+            print(f"Conflict report created for DaPaint ID: {dapaint_id}")
+
+    try:
+        db.session.commit()
+        print("Database commit successful.")
+    except Exception as e:
+        print(f"Database commit failed: {e}")
+        return jsonify({"msg": "Database commit failed"}), 500
+
+    # Update the winner and loser stats if no conflict | TODO there is an issue with this, this if is being execute twice when each user submits their vote
+    if not daPaint.host_winnerId or not daPaint.foe_winnerId or daPaint.host_winnerId == daPaint.foe_winnerId:
+        winner = User.query.get(winner_vote)
+        loser = User.query.get(loser_vote)
+        if not winner or not loser:
+            return jsonify({"msg": "Winner or loser not found"}), 404
+
+        # Update win/loss stats
+        winner.wins += 1
+        winner.winstreak += 1
+        loser.losses += 1
+        loser.winstreak = 0
+        
+        daPaint.winnerId = winner.id
+        daPaint.losserId = loser.id
+
+        try:
+            db.session.commit()
+            print("Winner and loser stats updated.")
+        except Exception as e:
+            print(f"Stats update failed: {e}")
+            return jsonify({"msg": "Stats update failed"}), 500
+
+    return jsonify(daPaint.serialize()), 200
