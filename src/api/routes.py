@@ -417,3 +417,27 @@ def update_win_streak(dapaint_id):
             return jsonify({"msg": "Stats update failed"}), 500
 
     return jsonify(daPaint.serialize()), 200
+
+@api.route('/link-request/<string:platform>', methods=['POST'])
+@jwt_required()
+def send_notification(platform):
+    data = request.get_json()
+    participant_id=data.get("participantId")
+    
+    if platform not in ['instagram', 'tiktok', 'twitch', 'kick', 'youtube', 'twitter', 'facebook']:
+        return jsonify({"msg": "Invalid platform specified"}), 400
+
+    participant = User.query.get(participant_id)
+    
+    if not participant:
+        return jsonify({"msg": "Participant not found"}), 404
+
+    # Create a notification to prompt the user to add their social media link
+    message = f"Please update your profile to add a {platform.capitalize()} link."
+
+    notification = Notifications(user_id=participant.id, type="reminder", message=message)
+    db.session.add(notification)
+    db.session.commit()
+
+    return jsonify({"msg": f"Notification sent to update {platform.capitalize()} link."}), 200
+

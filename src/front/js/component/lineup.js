@@ -2,19 +2,83 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
 
+const SocialMediaButton = ({ url, platform, userId }) => {
+  const sendNotification = async () => {
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/link-request/${platform}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ participantId: userId }),
+      });
 
+      if (response.ok) {
+        alert(`Notification sent to add ${platform} link.`);
+      } else {
+        alert('Failed to send notification.');
+      }
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  };
+
+  return (
+    <div>
+      {url ? (
+        <button
+          onClick={() => window.open(url, '_blank')}
+          className={`${platform}-button`}
+        >
+          {platform}
+        </button>
+      ) : (
+        <button
+          onClick={sendNotification}
+          className="notification-button"
+        >
+          Request {platform} Link
+        </button>
+      )}
+    </div>
+  );
+};
+
+const SocialMediaButtons = ({ user, userId }) => {
+  const platforms = [
+    { key: 'instagram', url: user.instagram_url },
+    { key: 'tiktok', url: user.tiktok_url },
+    { key: 'twitch', url: user.twitch_url },
+    { key: 'kick', url: user.kick_url },
+    { key: 'youtube', url: user.youtube_url },
+    { key: 'twitter', url: user.twitter_url },
+    { key: 'facebook', url: user.facebook_url },
+  ];
+
+  return (
+    <div className="social-media-buttons">
+      {platforms.map(platform => (
+        <SocialMediaButton
+          key={platform.key}
+          url={platform.url}
+          platform={platform.key}
+          userId={userId}
+        />
+      ))}
+    </div>
+  );
+};
 
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     async function getDapaintList() {
       try {
         const response = await fetch(
@@ -45,11 +109,10 @@ export const Lineup = () => {
   }, []);
 
   useEffect(() => {
-    // Update component when userData changes
+    actions.fetchCurrentUser();
     console.log("Updated user data:", store.userData);
-  }, [store.userData]);
+  }, []);
 
-  // Helper function to append a cache-busting query parameter
   const getProfileImageUrl = (url) => {
     return url ? `${url}?${new Date().getTime()}` : placeholderImage;
   };
@@ -67,9 +130,9 @@ export const Lineup = () => {
       user2Id: event.foeId.id,
       user1Image: getProfileImageUrl(event.hostFoeId.profileImageUrl),
       user2Image: getProfileImageUrl(event.foeId?.profileImageUrl),
+      hostFoeId: event.hostFoeId,
+      foeId: event.foeId
     }));
-
-  console.log("Matchups: ", matchups);
 
   const filteredMatchups = matchups.filter(
     (matchup) =>
@@ -131,43 +194,52 @@ export const Lineup = () => {
                   <div className="matchup" key={matchup.id}>
                     <div className="user">
                       <img src={matchup.user1Image} alt={matchup.user1name} />
-                      <span>{matchup.user1name}</span>                  
-
-                      {/* <button
-                        onClick={() =>
-                          window.open(
-                            "https://www.twitch.tv/kaicenat",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Live
-                      </button> */}
-                      <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="drop" data-bs-toggle="dropdown" aria-expanded="false" >
-                          Dropdown button
+                      <span>{matchup.user1name}</span>
+                      <p className="d-inline-flex gap-1">
+                        <button
+                          className="btn btn-primary"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapseUser1-${matchup.id}`}
+                          aria-expanded="false"
+                          aria-controls={`collapseUser1-${matchup.id}`}
+                        >
+                          Live
                         </button>
-                        <ul class="dropdown-menu"  aria-labelledby="drop">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                          <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                      </p>
+                      <div className="collapse" id={`collapseUser1-${matchup.id}`}>
+                        <div className="card card-body">
+                          <SocialMediaButtons
+                            user={matchup.hostFoeId}
+                            userId={matchup.user1Id}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="vs">VS</div>
                     <div className="user">
                       <img src={matchup.user2Image} alt={matchup.user2name} />
                       <span>{matchup.user2name}</span>
-                      <button
-                        onClick={() =>
-                          window.open(
-                            "https://www.twitch.tv/kaicenat",
-                            "_blank"
-                          )
-                        }
-                      >
-                        Live
-                      </button>
+                      <p className="d-inline-flex gap-1">
+                        <button
+                          className="btn btn-primary"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapseUser2-${matchup.id}`}
+                          aria-expanded="false"
+                          aria-controls={`collapseUser2-${matchup.id}`}
+                        >
+                          Live
+                        </button>
+                      </p>
+                      <div className="collapse" id={`collapseUser2-${matchup.id}`}>
+                        <div className="card card-body">
+                          <SocialMediaButtons
+                            user={matchup.foeId}
+                            userId={matchup.user2Id}
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div className="details">
                       <span>{matchup.date_time}</span>
@@ -175,8 +247,7 @@ export const Lineup = () => {
                       <span>{matchup.location}</span>
                     </div>
                     <div className="btn-group">
-                      {userId === matchup.user1Id ||
-                      userId === matchup.user2Id ? (
+                      {userId === matchup.user1Id || userId === matchup.user2Id ? (
                         <button
                           className="bg-black text-white p-2 rounded"
                           onClick={() => {

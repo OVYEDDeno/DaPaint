@@ -32,6 +32,7 @@ class User(db.Model):
     youtube_url = db.Column(db.String(200), nullable=True)
     twitter_url = db.Column(db.String(200), nullable=True)
     facebook_url = db.Column(db.String(200), nullable=True)
+    
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
@@ -65,7 +66,14 @@ class User(db.Model):
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
             "notifications": [n.serialize() for n in self.notifications],  # Include notifications in serialization
-            "invite_code": self.invite_code
+            "invite_code": self.invite_code,
+            "instagram_url": self.instagram_url,
+            "tiktok_url": self.tiktok_url,
+            "twitch_url": self.twitch_url,
+            "kick_url": self.kick_url,
+            "youtube_url": self.youtube_url,
+            "twitter_url": self.twitter_url,
+            "facebook_url": self.facebook_url
         }
 
 # class InviteCode(db.Model):

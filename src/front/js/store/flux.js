@@ -39,7 +39,13 @@ const getState = ({ getStore, getActions, setStore }) => {
               city: user.city,
               zipcode: user.zipcode,
               phone: user.phone,
-              birthday: user.birthday,
+              instagram_url: user.instagram_url,
+              tiktok_url: user.tiktok_url,
+              twitch_url: user.twitch_url,
+              kick_url: user.kick_url,
+              youtube_url: user.youtube_url,
+              twitter_url: user.twitter_url,
+              facebook_url: user.facebook_url,
             }),
           }
         );

@@ -76,6 +76,13 @@ export const Profile = () => {
       zipcode,
       birthday,
       phone,
+      instagram_url,
+      tiktok_url,
+      twitch_url,
+      kick_url,
+      youtube_url,
+      twitter_url,
+      facebook_url,
     };
     let result = await actions.editUserbyUser(updatedUser);
     if (result) {
@@ -342,7 +349,7 @@ export const Profile = () => {
                     type="Facebook"
                     value={facebook_url}
                     placeholder="Facebook"
-                    onChange={(e) => setFacebook_url(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value)}
                     // className="bg-white w-full outline-none"
                   />
                 </div>
