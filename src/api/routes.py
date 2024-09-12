@@ -1,12 +1,14 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, InviteCode, Notifications, AdminUser, UserDisqualification, Reports
+from api.models import db, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
 import re, os
 import cloudinary.uploader as uploader
+import random
+import string
 from sendgrid.helpers.mail import Mail
 from api.send_email import send_email
 
@@ -33,6 +35,16 @@ def handle_user_login():
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
     return jsonify(access_token=access_token), 200
 
+def generate_unique_invite_code(length=10):
+    while True:
+        # Generate a random alphanumeric code
+        code = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+        
+        # Check if the code already exists in the User table
+        existing_code = User.query.filter_by(invite_code=code).first()
+        if not existing_code:
+            # If code is unique, return it
+            return code
 
 @api.route('/signup', methods=['POST'])
 def handle_user_signup():
@@ -73,6 +85,8 @@ def handle_user_signup():
     if not re.match("^\d{10}$", phone):
         return jsonify({"errors": {'phone': 'Phone number must contain exactly 10 digits'}}), 409
 
+    invite_code = generate_unique_invite_code()
+
     new_user = User(
         email=email,
         password=generate_password_hash(password),
@@ -80,13 +94,14 @@ def handle_user_signup():
         city=city,
         zipcode=zipcode,
         phone=phone,
-        birthday=birthday
+        birthday=birthday,
+        invite_code=invite_code
     )
 
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'msg': 'User created successfully'}), 201
+    return jsonify({'msg': 'User created successfully', 'invite_code': invite_code}), 201
 
 
 @api.route("/forgot-password", methods=["POST"])

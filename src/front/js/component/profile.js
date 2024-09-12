@@ -10,6 +10,13 @@ export const Profile = () => {
   const [zipcode, setZipcode] = useState("");
   const [birthday, setBirthday] = useState("");
   const [phone, setPhone] = useState("");
+  const [instagram_url, setInstagram_url] = useState("");
+  const [tiktok_url, setTiktok_url] = useState("");
+  const [twitch_url, setTwitch_url] = useState("");
+  const [kick_url, setKick_url] = useState("");
+  const [youtube_url, setYoutube_url] = useState("");
+  const [twitter_url, setTwitter_url] = useState("");
+  const [facebook_url, setFacebook_url] = useState("");
   const [previewURL, setPreviewURL] = useState("");
   const [imageSizeError, setImageSizeError] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -28,6 +35,13 @@ export const Profile = () => {
       setZipcode(store.userData.zipcode || "");
       setBirthday(store.userData.birthday || "");
       setPhone(store.userData.phone || "");
+      setInstagram_url(store.userData.instagram_url || "");
+      setTiktok_url(store.userData.tiktok_url || "");
+      setTwitch_url(store.userData.twitch_url || "");
+      setKick_url(store.userData.kick_url || "");
+      setYoutube_url(store.userData.youtube_url || "");
+      setTwitter_url(store.userData.twitter_url || "");
+      setFacebook_url(store.userData.facebook_url || "");
       setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
     }
   }, []);
@@ -155,13 +169,13 @@ export const Profile = () => {
                       <td className="wins">
                         {store.userData && store.userData.user?.wins}
                       </td>
-                    </tr>                    
+                    </tr>
                     <tr>
                       <td>Losses</td>
                       <td className="losses">
                         {store.userData && store.userData.user?.losses}
                       </td>
-                    </tr>                    
+                    </tr>
                     <tr>
                       <td>Disqualifications</td>
                       <td className="disqualifications">
@@ -268,6 +282,68 @@ export const Profile = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Phone number"
                     className="bg-white w-full outline-none"
+                  />
+                </div>
+                <h3>Social Media</h3>
+                <div>
+                  <input
+                    type="Instagram"
+                    value={instagram_url}
+                    placeholder="Instagram"
+                    onChange={(e) => setInstagram_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="Tiktok"
+                    value={tiktok_url}
+                    placeholder="TikTok"
+                    onChange={(e) => setTiktok_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="Twitch"
+                    value={twitch_url}
+                    placeholder="Twitch"
+                    onChange={(e) => setTwitch_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div><div>
+                  <input
+                    type="Kick"
+                    value={kick_url}
+                    placeholder="Kick"
+                    onChange={(e) => setKick_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div><div>
+                  <input
+                    type="Youtube"
+                    value={youtube_url}
+                    placeholder="Youtube"
+                    onChange={(e) => setYoutube_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="Twitter"
+                    value={twitter_url}
+                    placeholder="Twitter"
+                    onChange={(e) => setTwitter_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="Facebook"
+                    value={facebook_url}
+                    placeholder="Facebook"
+                    onChange={(e) => setFacebook_url(e.target.value)}
+                    // className="bg-white w-full outline-none"
                   />
                 </div>
               </div>

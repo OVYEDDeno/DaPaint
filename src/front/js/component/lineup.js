@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
 
+
+
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
@@ -129,12 +131,43 @@ export const Lineup = () => {
                   <div className="matchup" key={matchup.id}>
                     <div className="user">
                       <img src={matchup.user1Image} alt={matchup.user1name} />
-                      <span>{matchup.user1name}</span>
+                      <span>{matchup.user1name}</span>                  
+
+                      {/* <button
+                        onClick={() =>
+                          window.open(
+                            "https://www.twitch.tv/kaicenat",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Live
+                      </button> */}
+                      <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="drop" data-bs-toggle="dropdown" aria-expanded="false" >
+                          Dropdown button
+                        </button>
+                        <ul class="dropdown-menu"  aria-labelledby="drop">
+                          <li><a class="dropdown-item" href="#">Action</a></li>
+                          <li><a class="dropdown-item" href="#">Another action</a></li>
+                          <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                      </div>
                     </div>
                     <div className="vs">VS</div>
                     <div className="user">
                       <img src={matchup.user2Image} alt={matchup.user2name} />
                       <span>{matchup.user2name}</span>
+                      <button
+                        onClick={() =>
+                          window.open(
+                            "https://www.twitch.tv/kaicenat",
+                            "_blank"
+                          )
+                        }
+                      >
+                        Live
+                      </button>
                     </div>
                     <div className="details">
                       <span>{matchup.date_time}</span>

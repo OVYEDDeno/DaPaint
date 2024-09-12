@@ -106,30 +106,32 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div className="modal-body">
-              <div className="space-y-4">
-                <button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#feedbackModal"
-                  data-bs-toggle="modal"
-                >
-                  FEEDBACK
-                </button>
-                <button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#exampleModalToggle2"
-                  data-bs-toggle="modal"
-                >
-                  {isActive ? "Deactivate" : "Activate"}
-                </button>
+  <div className="flex flex-col space-y-4">
+    <button
+      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+      data-bs-target="#feedbackModal"
+      data-bs-toggle="modal"
+    >
+      FEEDBACK
+    </button>
 
-                <button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  onClick={handleLogout}
-                >
-                  CLOCK OUT
-                </button>
-              </div>
-            </div>
+    <button
+      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+      data-bs-target="#exampleModalToggle2"
+      data-bs-toggle="modal"
+    >
+      {isActive ? "Deactivate" : "Activate"}
+    </button>
+
+    <button
+      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+      onClick={handleLogout}
+    >
+      CLOCK OUT
+    </button>
+  </div>
+</div>
+
           </div>
         </div>
       </div>

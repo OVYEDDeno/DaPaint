@@ -56,7 +56,7 @@ export const Auth = () => {
       if (response.ok) {
         if (isLogin) {
           localStorage.setItem("token", result.access_token);
-          navigate("/landing");
+          navigate("/code");
           console.log("Log in successful!");
           console.log("Token:", result.access_token);
         } else {

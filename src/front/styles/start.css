@@ -1,7 +1,7 @@
 /* start.css */
 
 .modal-body {
-  background-color: #00ff6e;
+  /* background-color: #ff0000; */
   border-radius: 8px;
   padding: 20px;
 }
@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #f70000;
+  background-color: #000000;
   padding: 20px;
   border-radius: 8px;
 }
