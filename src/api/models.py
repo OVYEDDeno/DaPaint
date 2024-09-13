@@ -13,7 +13,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(512), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
-    invite_code = db.Column(db.String(10), unique=True, nullable=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
     zipcode = db.Column(db.Integer, nullable=False)
@@ -23,7 +22,7 @@ class User(db.Model):
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
     disqualifications = db.relationship('UserDisqualification', back_populates='user')
-    
+
     # Social Media Links
     instagram_url = db.Column(db.String(200), nullable=True)
     tiktok_url = db.Column(db.String(200), nullable=True)
@@ -32,11 +31,10 @@ class User(db.Model):
     youtube_url = db.Column(db.String(200), nullable=True)
     twitter_url = db.Column(db.String(200), nullable=True)
     facebook_url = db.Column(db.String(200), nullable=True)
-    
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
-    
+
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
 
@@ -46,7 +44,10 @@ class User(db.Model):
     dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
     dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
     dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user')
-    # invite_codes = db.relationship('InviteCode', back_populates='user', foreign_keys='InviteCode.user_id', cascade='all, delete-orphan')
+
+    # Invite Code relationships
+    invite_code = db.relationship('InviteCode', back_populates='inviter', uselist=False, cascade='all, delete-orphan')
+    invited_by = db.relationship('InviteCode', back_populates='invitees', secondary='invitee_association', uselist=False)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -65,49 +66,46 @@ class User(db.Model):
             "losses": self.losses,
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
-            "notifications": [n.serialize() for n in self.notifications],  # Include notifications in serialization
-            "invite_code": self.invite_code,
+            "notifications": [n.serialize() for n in self.notifications],
             "instagram_url": self.instagram_url,
             "tiktok_url": self.tiktok_url,
             "twitch_url": self.twitch_url,
             "kick_url": self.kick_url,
             "youtube_url": self.youtube_url,
             "twitter_url": self.twitter_url,
-            "facebook_url": self.facebook_url
+            "facebook_url": self.facebook_url,
+            "invite_code": self.invite_code.serialize() if self.invite_code else None,
+            "invited_by": self.invited_by.serialize() if self.invited_by else None,
         }
 
-# class InviteCode(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     code = db.Column(db.String(10), unique=True, nullable=False)
-#     is_used = db.Column(db.Boolean, default=False, nullable=False)
-#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-#     used_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # The user who used the invite code
-#     used_by_user = db.relationship('User', foreign_keys=[used_by_user_id])  # Track which user used this code
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     user = db.relationship('User', back_populates='invite_codes', foreign_keys=[user_id])
+class InviteCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(10), unique=True, nullable=False)
+    inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
 
-#     def __repr__(self):
-#         return f'<InviteCode {self.code}>'
+    # Relationships
+    inviter = db.relationship('User', back_populates='invite_code', uselist=False)
+    invitees = db.relationship('User', secondary='invitee_association', back_populates='invited_by')
 
-#     def serialize(self):
-#         return {
-#             'id': self.id,
-#             'code': self.code,
-#             'is_used': self.is_used,
-#             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-#             'used_by_user': self.used_by_user_id  # Track the user ID who used the code
-#         }
+    # Relationship to track completed DaPaints
+    completed_dapaints = db.relationship('DaPaint', back_populates='invite_code')
 
-    # @staticmethod
-    # def mark_code_as_used(code, used_by_user):
-    #     """Mark the invite code as used."""
-    #     invite_code = InviteCode.query.filter_by(code=code, is_used=False).first()
-    #     if invite_code:
-    #         invite_code.is_used = True
-    #         invite_code.used_by_user_id = used_by_user.id
-    #         db.session.commit()
-    #         return invite_code
-    #     return None
+    def serialize(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'inviter_id': self.inviter_id,
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S"),
+            'invitees': [invitee.id for invitee in self.invitees],
+            'completed_dapaints': [dapaint.id for dapaint in self.completed_dapaints]
+        }
+
+invitee_association = db.Table('invitee_association',
+    db.Column('invite_code_id', db.Integer, db.ForeignKey('invite_code.id'), primary_key=True),
+    db.Column('invitee_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('used_at', db.DateTime, nullable=False, default=db.func.current_timestamp())
+)
     
 
 class DaPaint(db.Model):
@@ -146,6 +144,10 @@ class DaPaint(db.Model):
     dispute_status = db.Column(db.String(50), nullable=True)  # e.g., 'pending', 'resolved'
     dispute_reported = db.Column(db.Boolean, default=False)
 
+    #invite code
+    invite_code_id = db.Column(db.Integer, db.ForeignKey('invite_code.id'), nullable=True)
+    invite_code = db.relationship('InviteCode', back_populates='completed_dapaints')
+
     def serialize(self):
         return {
             "id": self.id,
@@ -162,7 +164,8 @@ class DaPaint(db.Model):
             "foe_loserId": self.foe_loserId,
             "foe_winnerImg": self.foe_winnerImg,
             "dispute_status": self.dispute_status,
-            "dispute_reported": self.dispute_reported
+            "dispute_reported": self.dispute_reported,
+            "invite_code_id": self.invite_code_id,
         }
 
 class UserImg(db.Model):

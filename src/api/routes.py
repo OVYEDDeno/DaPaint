@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports
+from api.models import InviteCode, db, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports, invitee_association
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
@@ -441,3 +441,47 @@ def send_notification(platform):
 
     return jsonify({"msg": f"Notification sent to update {platform.capitalize()} link."}), 200
 
+@api.route('/process-invite-code', methods=['POST'])
+@jwt_required()
+def process_invite_code():
+    current_user_id = get_jwt_identity()
+    current_user = User.query.get(current_user_id)
+
+    # Check if the current user exists
+    if not current_user:
+        return jsonify({"message": "User not found"}), 404
+
+    # Check if the user already has an inviter
+    if current_user.invited_by:
+        return jsonify({"message": "Already invited", "hasInviter": True}), 200
+
+    # Get the invite code from the request data
+    data = request.get_json()
+    invite_code = data.get('invite_code')
+
+    # Check if the invite code was provided
+    if not invite_code:
+        return jsonify({"message": "Invite code is required"}), 400
+
+    # Look for the invite code in the database
+    invite_code_record = InviteCode.query.filter_by(code=invite_code).first()
+
+    # Check if the invite code exists and is not the user's own code
+    if not invite_code_record or invite_code_record.inviter_id == current_user_id:
+        return jsonify({"message": "Invalid invite code"}), 400
+
+    # Create an association between the current user and the invite code
+    db.session.execute(invitee_association.insert().values(
+        invite_code_id=invite_code_record.id,
+        invitee_id=current_user_id,
+        used_at=db.func.current_timestamp()
+    ))
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Return success response
+    return jsonify({
+        "message": "Invite code processed successfully",
+        "hasInviter": True
+    }), 200

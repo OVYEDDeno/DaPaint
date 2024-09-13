@@ -42,54 +42,83 @@ export const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = isLogin
-      ? process.env.BACKEND_URL + "/api/login"
-      : process.env.BACKEND_URL + "/api/signup";
-
+      ? `${process.env.BACKEND_URL}/api/login`
+      : `${process.env.BACKEND_URL}/api/signup`;
+  
+    console.log('Request URL:', url);
+  
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+  
+      if (!response.ok) {
+        const result = await response.json();
+        console.error('Error response:', result);
+        throw new Error(result.message || 'An error occurred.');
+      }
+  
       const result = await response.json();
-
-      if (response.ok) {
-        if (isLogin) {
-          localStorage.setItem("token", result.access_token);
-          navigate("/code");
-          console.log("Log in successful!");
-          console.log("Token:", result.access_token);
-        } else {
-          window.location.reload();
-          localStorage.setItem("username", formData.name);
-        }
+  
+      if (isLogin) {
+        localStorage.setItem("token", result.access_token);
+        console.log("Log in successful!");
+        console.log("Token:", result.access_token);
       } else {
-        setError({
-          name: "",
-          email: "",
-          password: "",
-          city: "",
-          zipcode: "",
-          phone: "",
-          birthday: "",
-          general: result.msg || "An error occurred. Please try again.",
-        });
-
-        if (result.errors) {
-          setError((prevError) => ({
-            ...prevError,
-            ...result.errors,
-          }));
+        console.log("Sign up successful!");
+        localStorage.setItem("username", formData.name);
+  
+        if (formData.inviteCode) {
+          const inviteResponse = await fetch(`${process.env.BACKEND_URL}/api/process-invite-code`, {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${result.access_token}` // Adjust if necessary
+            },
+            body: JSON.stringify({ invite_code: formData.inviteCode }),
+          });
+  
+          if (!inviteResponse.ok) {
+            const inviteResult = await inviteResponse.json();
+            console.error("Error processing invite code:", inviteResult.message);
+            navigate("/code");
+          } else {
+            console.log("Invite code processed successfully");
+            navigate("/landing");
+          }
+        } else {
+          const userResponse = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+            headers: { 
+              "Authorization": `Bearer ${result.access_token}` // Adjust if necessary
+            },
+          });
+  
+          if (!userResponse.ok) {
+            throw new Error('Error fetching user data.');
+          }
+  
+          const userData = await userResponse.json();
+  
+          if (userData.hasInviter) {
+            navigate("/landing");
+          } else {
+            navigate("/code");
+          }
         }
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Fetch error:", error);
       setError((prevError) => ({
         ...prevError,
         general: "System Overload. Please try again another time.",
       }));
     }
   };
+  
+  
+  
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
