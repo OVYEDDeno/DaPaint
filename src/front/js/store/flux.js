@@ -373,11 +373,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
         }
     },
-    
       
-    
-    
-    
       addUserImage: async (imageFile) => {
         let formData = new FormData();
         formData.append("file", imageFile[0]); // Assuming imageFile is an array

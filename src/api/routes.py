@@ -41,7 +41,7 @@ def generate_unique_invite_code(length=10):
         code = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
         
         # Check if the code already exists in the User table
-        existing_code = User.query.filter_by(invite_code=code).first()
+        existing_code = InviteCode.query.filter_by(code=code).first()
         if not existing_code:
             # If code is unique, return it
             return code
@@ -85,7 +85,7 @@ def handle_user_signup():
     if not re.match("^\d{10}$", phone):
         return jsonify({"errors": {'phone': 'Phone number must contain exactly 10 digits'}}), 409
 
-    invite_code = generate_unique_invite_code()
+    
 
     new_user = User(
         email=email,
@@ -94,13 +94,16 @@ def handle_user_signup():
         city=city,
         zipcode=zipcode,
         phone=phone,
-        birthday=birthday,
-        invite_code=invite_code
+        birthday=birthday        
     )
 
     db.session.add(new_user)
     db.session.commit()
-
+    db.session.refresh(new_user)
+    invite_code = generate_unique_invite_code()
+    new_invite_code = InviteCode(code=invite_code, inviter_id=new_user.id)
+    db.session.add(new_invite_code)
+    db.session.commit()
     return jsonify({'msg': 'User created successfully', 'invite_code': invite_code}), 201
 
 
