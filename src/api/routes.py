@@ -397,7 +397,7 @@ def update_win_streak(dapaint_id):
         return jsonify({"msg": "Database commit failed"}), 500
 
     # Update the winner and loser stats if no conflict | TODO there is an issue with this, this if is being execute twice when each user submits their vote
-    if not daPaint.host_winnerId or not daPaint.foe_winnerId or daPaint.host_winnerId == daPaint.foe_winnerId:
+    if daPaint.host_winnerId and daPaint.foe_winnerId and daPaint.host_winnerId == daPaint.foe_winnerId:
         winner = User.query.get(winner_vote)
         loser = User.query.get(loser_vote)
         if not winner or not loser:
@@ -410,7 +410,7 @@ def update_win_streak(dapaint_id):
         loser.winstreak = 0
         
         daPaint.winnerId = winner.id
-        daPaint.losserId = loser.id
+        daPaint.loserId = loser.id
 
         try:
             db.session.commit()
