@@ -86,7 +86,7 @@ export const Profile = () => {
     };
     let result = await actions.editUserbyUser(updatedUser);
     if (result) {
-      alert("User Data has been updated");
+      window.location.reload();
       actions.fetchCurrentUser(); // Refresh user data after update
     } else {
       alert("Failed to update user data");

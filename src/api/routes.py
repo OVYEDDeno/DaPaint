@@ -144,35 +144,59 @@ def changepassword():
     send_email(email, "Your password has been changed successfully.", "Password Change Notification")
     return jsonify({"message": "Password successfully changed."}), 200
 
-
 @api.route('/user/edit', methods=['PUT'])
 @jwt_required()
 def handle_user_edit():
-    email = request.json.get("email")
-    name = request.json.get("name")
-    city = request.json.get("city")
-    zipcode = request.json.get("zipcode")
-    phone = request.json.get("phone")
-    birthday = request.json.get("birthday")
-
-    if email is None or name is None or city is None or zipcode is None or phone is None or birthday is None:
-        return jsonify({"msg": "Some fields are missing in your request"}), 400
-
     user = User.query.filter_by(id=get_jwt_identity()).first()
     if user is None:
         return jsonify({"msg": "No user found"}), 404
 
-    user.email = email
-    user.name = name
-    user.city = city
-    user.zipcode = zipcode
-    user.phone = phone
-    user.birthday = birthday
+    # Get JSON data from the request
+    data = request.get_json()
 
-    db.session.commit()
+    # Update only the fields that are present in the request
+    if "email" in data:
+        user.email = data["email"]
+    if "name" in data:
+        user.name = data["name"]
+    if "city" in data:
+        user.city = data["city"]
+    if "zipcode" in data:
+        user.zipcode = data["zipcode"]
+    if "phone" in data:
+        user.phone = data["phone"]
+    if "birthday" in data:
+        try:
+            from datetime import datetime
+            user.birthday = datetime.strptime(data["birthday"], "%m/%d/%Y").date()
+        except ValueError:
+            return jsonify({"msg": "Invalid birthday format, should be MM/DD/YYYY"}), 400
+    if "instagram_url" in data:
+        user.instagram_url = data["instagram_url"]
+    if "tiktok_url" in data:
+        user.tiktok_url = data["tiktok_url"]
+    if "twitch_url" in data:
+        user.twitch_url = data["twitch_url"]
+    if "kick_url" in data:
+        user.kick_url = data["kick_url"]
+    if "youtube_url" in data:
+        user.youtube_url = data["youtube_url"]
+    if "twitter_url" in data:
+        user.twitter_url = data["twitter_url"]
+    if "facebook_url" in data:
+        user.facebook_url = data["facebook_url"]
+
+    # Commit the changes to the database
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({"msg": "An error occurred while updating the user.", "error": str(e)}), 500
+
+    # Refresh user object to reflect updated data and return a response
     db.session.refresh(user)
+    return jsonify({"msg": "Account successfully edited!", "user": user.serialize()}), 200
 
-    return jsonify({"msg": "Account successfully edited!", "user": user.serialize()}), 201
 
 
 @api.route('/user/get-user/<int:user_id>', methods=['GET'])
@@ -395,8 +419,7 @@ def update_win_streak(dapaint_id):
     except Exception as e:
         print(f"Database commit failed: {e}")
         return jsonify({"msg": "Database commit failed"}), 500
-
-    # Update the winner and loser stats if no conflict | TODO there is an issue with this, this if is being execute twice when each user submits their vote
+    
     if daPaint.host_winnerId and daPaint.foe_winnerId and daPaint.host_winnerId == daPaint.foe_winnerId:
         winner = User.query.get(winner_vote)
         loser = User.query.get(loser_vote)
@@ -421,6 +444,25 @@ def update_win_streak(dapaint_id):
 
     return jsonify(daPaint.serialize()), 200
 
+# Route to get all notifications for the logged-in user
+@api.route('/notifications', methods=['GET'])
+@jwt_required()
+def get_notifications():
+    # Get the user ID from the JWT token
+    user_id = get_jwt_identity()
+
+    if not user_id:
+        return jsonify({'error': 'User is not authenticated'}), 401
+
+    # Query notifications for the current user
+    notifications = Notifications.query.filter_by(user_id=user_id).all()
+
+    # Serialize notifications
+    notifications_list = [n.serialize() for n in notifications]
+
+    return jsonify(notifications_list), 200
+
+
 @api.route('/link-request/<string:platform>', methods=['POST'])
 @jwt_required()
 def send_notification(platform):
@@ -443,6 +485,24 @@ def send_notification(platform):
     db.session.commit()
 
     return jsonify({"msg": f"Notification sent to update {platform.capitalize()} link."}), 200
+
+@api.route('/invitecodes', methods=['GET'])
+@jwt_required()
+def get_invite_codes():
+    # Get the user ID from the JWT token
+    user_id = get_jwt_identity()
+
+    if not user_id:
+        return jsonify({'error': 'User is not authenticated'}), 401
+
+    # Query invite codes for the current user
+    invite_codes = InviteCode.query.filter_by(inviter_id=user_id).all()
+
+    # Serialize invite codes
+    invite_codes_list = [code.serialize() for code in invite_codes]
+
+    return jsonify(invite_codes_list), 200
+
 
 @api.route('/process-invite-code', methods=['POST'])
 @jwt_required()

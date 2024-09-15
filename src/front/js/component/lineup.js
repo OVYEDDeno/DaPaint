@@ -2,74 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
 
-const SocialMediaButton = ({ url, platform, userId }) => {
-  const sendNotification = async () => {
-    try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/link-request/${platform}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ participantId: userId }),
-      });
-
-      if (response.ok) {
-        alert(`Notification sent to add ${platform} link.`);
-      } else {
-        alert('Failed to send notification.');
-      }
-    } catch (error) {
-      console.error('Error sending notification:', error);
-    }
-  };
-
-  return (
-    <div>
-      {url ? (
-        <button
-          onClick={() => window.open(url, '_blank')}
-          className={`${platform}-button`}
-        >
-          {platform}
-        </button>
-      ) : (
-        <button
-          onClick={sendNotification}
-          className="notification-button"
-        >
-          Request {platform} Link
-        </button>
-      )}
-    </div>
-  );
-};
-
-const SocialMediaButtons = ({ user, userId }) => {
-  const platforms = [
-    { key: 'instagram', url: user.instagram_url },
-    { key: 'tiktok', url: user.tiktok_url },
-    { key: 'twitch', url: user.twitch_url },
-    { key: 'kick', url: user.kick_url },
-    { key: 'youtube', url: user.youtube_url },
-    { key: 'twitter', url: user.twitter_url },
-    { key: 'facebook', url: user.facebook_url },
-  ];
-
-  return (
-    <div className="social-media-buttons">
-      {platforms.map(platform => (
-        <SocialMediaButton
-          key={platform.key}
-          url={platform.url}
-          platform={platform.key}
-          userId={userId}
-        />
-      ))}
-    </div>
-  );
-};
-
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
@@ -77,6 +9,7 @@ export const Lineup = () => {
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
+  // Function to fetch the data for the lineup
   useEffect(() => {
     const token = localStorage.getItem("token");
     async function getDapaintList() {
@@ -108,13 +41,77 @@ export const Lineup = () => {
     getDapaintList();
   }, []);
 
+  // Fetch current user data
   useEffect(() => {
     actions.fetchCurrentUser();
     console.log("Updated user data:", store.userData);
   }, []);
 
+  // Function to dynamically return the profile image URL or placeholder
   const getProfileImageUrl = (url) => {
     return url ? `${url}?${new Date().getTime()}` : placeholderImage;
+  };
+
+  // Function for social media buttons
+  const SocialMediaButtons = (user, userId) => {
+    const platforms = [
+      { key: "instagram", url: user.instagram_url },
+      { key: "tiktok", url: user.tiktok_url },
+      { key: "twitch", url: user.twitch_url },
+      { key: "kick", url: user.kick_url },
+      { key: "youtube", url: user.youtube_url },
+      { key: "twitter", url: user.twitter_url },
+      { key: "facebook", url: user.facebook_url },
+    ];
+
+    const sendNotification = async (platform) => {
+      try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/link-request/${platform}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ participantId: userId }),
+        });
+
+        if (response.ok) {
+          alert(`Notification sent to add ${platform} link.`);
+        } else {
+          alert("Failed to send notification.");
+        }
+      } catch (error) {
+        console.error("Error sending notification:", error);
+      }
+    };
+
+    return (
+      <div className="social-media-buttons">
+        {platforms.map((platform) => (
+          <div key={platform.key}>
+            {platform.url ? (
+             <button
+             onClick={() => {
+               // Ensure the URL has the full format
+               let fullUrl = platform.url.startsWith("http") ? platform.url : `https://${platform.url}`;
+               window.open(fullUrl, "_blank");
+             }}
+             className={`${platform.key}-button`}
+           >
+             {platform.key}
+           </button>
+            ) : (
+              <button
+                onClick={() => sendNotification(platform.key)}
+                className="notification-button"
+              >
+                Request {platform.key} Link
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const matchups = events
@@ -131,7 +128,7 @@ export const Lineup = () => {
       user1Image: getProfileImageUrl(event.hostFoeId.profileImageUrl),
       user2Image: getProfileImageUrl(event.foeId?.profileImageUrl),
       hostFoeId: event.hostFoeId,
-      foeId: event.foeId
+      foeId: event.foeId,
     }));
 
   const filteredMatchups = matchups.filter(
@@ -142,6 +139,7 @@ export const Lineup = () => {
 
   const userId = store.userData.user?.id;
 
+  // Verify the match time
   const verifyTime = (timeOfMatch) => {
     let currentTime = new Date();
     let matchTime = new Date(timeOfMatch);
@@ -209,10 +207,7 @@ export const Lineup = () => {
                       </p>
                       <div className="collapse" id={`collapseUser1-${matchup.id}`}>
                         <div className="card card-body">
-                          <SocialMediaButtons
-                            user={matchup.hostFoeId}
-                            userId={matchup.user1Id}
-                          />
+                          {SocialMediaButtons(matchup.hostFoeId, matchup.user1Id)}
                         </div>
                       </div>
                     </div>
@@ -234,10 +229,7 @@ export const Lineup = () => {
                       </p>
                       <div className="collapse" id={`collapseUser2-${matchup.id}`}>
                         <div className="card card-body">
-                          <SocialMediaButtons
-                            user={matchup.foeId}
-                            userId={matchup.user2Id}
-                          />
+                          {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
                         </div>
                       </div>
                     </div>

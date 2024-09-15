@@ -1,5 +1,3 @@
-import DaPaintList from "../component/dapaintlist";
-
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -25,6 +23,25 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       editUserbyUser: async (user) => {
+        const updatedFields = {};
+
+        // Only include the fields that the user has modified
+        if (user.email) updatedFields.email = user.email;
+        if (user.name) updatedFields.name = user.name;
+        if (user.city) updatedFields.city = user.city;
+        if (user.zipcode) updatedFields.zipcode = user.zipcode;
+        if (user.phone) updatedFields.phone = user.phone;
+        if (user.birthday) updatedFields.birthday = user.birthday; // Ensure correct format in the frontend if needed
+        if (user.instagram_url)
+          updatedFields.instagram_url = user.instagram_url;
+        if (user.tiktok_url) updatedFields.tiktok_url = user.tiktok_url;
+        if (user.twitch_url) updatedFields.twitch_url = user.twitch_url;
+        if (user.kick_url) updatedFields.kick_url = user.kick_url;
+        if (user.youtube_url) updatedFields.youtube_url = user.youtube_url;
+        if (user.twitter_url) updatedFields.twitter_url = user.twitter_url;
+        if (user.facebook_url) updatedFields.facebook_url = user.facebook_url;
+
+        // Send only the updated fields
         const response = await fetch(
           process.env.BACKEND_URL + "/api/user/edit",
           {
@@ -33,28 +50,21 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify({
-              email: user.email,
-              name: user.name,
-              city: user.city,
-              zipcode: user.zipcode,
-              phone: user.phone,
-              instagram_url: user.instagram_url,
-              tiktok_url: user.tiktok_url,
-              twitch_url: user.twitch_url,
-              kick_url: user.kick_url,
-              youtube_url: user.youtube_url,
-              twitter_url: user.twitter_url,
-              facebook_url: user.facebook_url,
-            }),
+            body: JSON.stringify(updatedFields),
           }
         );
-        if (response.status !== 201) return false;
+
+        if (response.status !== 200) {
+          console.error("Error updating user");
+          return false;
+        }
+
         const responseBody = await response.json();
         console.log(responseBody);
 
         return true;
       },
+
       forfeitMatch: async (dapaintId) => {
         const response = await fetch(
           process.env.BACKEND_URL + "/api/forfeit/" + dapaintId,
@@ -67,12 +77,13 @@ const getState = ({ getStore, getActions, setStore }) => {
         );
         if (response.status === 200) {
           console.log("Match forfeited successfully!");
-          let data=await response.json()
+          let data = await response.json();
           setStore({
-            notifs:data.notifications
-          })
+            notifs: data.notifications,
+          });
           window.location.reload();
-      }},
+        }
+      },
       cancelMatch: async (dapaintId) => {
         const response = await fetch(
           process.env.BACKEND_URL + "/api/cancel/" + dapaintId,
@@ -85,18 +96,16 @@ const getState = ({ getStore, getActions, setStore }) => {
         );
         if (response.status === 200) {
           console.log("Match canceled successfully!");
-          let data=await response.json()
+          let data = await response.json();
           setStore({
-            notifs:data.notifications
-          })
-
+            notifs: data.notifications,
+          });
         } else {
           console.error("Failed to cancel match:", response.statusText);
         }
       },
 
       fetchCurrentUser: async () => {
-
         try {
           const response = await fetch(
             process.env.BACKEND_URL + "/api/current-user",
@@ -109,11 +118,13 @@ const getState = ({ getStore, getActions, setStore }) => {
           const data = await response.json();
           // console.log(data);
           setStore({
-            userData: {...data,
+            userData: {
+              ...data,
               wins: data.user?.wins,
-              losses: data.user?.losses,}
+              losses: data.user?.losses,
+            },
           });
-          console.log("Current User DATA has been set", data)
+          console.log("Current User DATA has been set", data);
         } catch (error) {
           console.error("Error fetching current user:", error);
         }
@@ -130,7 +141,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
           const data = await response.json();
           console.log("FLUX:actions.fetchAndSetUser: ", data);
-          setStore({userData: {
+          setStore({
+            userData: {
               ...data,
               wins: data.user?.wins,
               losses: data.user?.losses,
@@ -166,11 +178,18 @@ const getState = ({ getStore, getActions, setStore }) => {
         console.log("Created event:", responseBody);
         return true;
       },
+      // In your actions.js or wherever your context actions are defined
       getNotifs: async () => {
+        const store = getStore();
         const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("User is not logged in.");
+          return { success: false, error: "Not logged in" };
+        }
+
         try {
           const response = await fetch(
-            `${process.env.BACKEND_URL}/api/notifs`,
+            `${process.env.BACKEND_URL}/api/notifications`,
             {
               method: "GET",
               headers: {
@@ -179,19 +198,27 @@ const getState = ({ getStore, getActions, setStore }) => {
               },
             }
           );
-          if (response.status != 200) {
-            const error = await response.json();
-            console.error("Failed to retrieve notifications:", error);
-            return false;
-          } else {
-            const data = await response.json();
-            setStore(
-              {notifs:data.notifications}
-            );
-            return true;
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
+
+          const data = await response.json();
+          let notifications;
+
+          if (Array.isArray(data)) {
+            notifications = data;
+          } else if (data.notifications && Array.isArray(data.notifications)) {
+            notifications = data.notifications;
+          } else {
+            throw new Error("Unexpected data format");
+          }
+
+          setStore({ notifs: notifications });
+          return { success: true, data: notifications };
         } catch (error) {
           console.error("Error fetching notifications:", error);
+          return { success: false, error: error.message };
         }
       },
 
@@ -249,81 +276,83 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       updateWinstreak: async (daPaint_id, winner_id, loser_id) => {
         const token = localStorage.getItem("token");
-    
+
         // Validate daPaint_id
-        if (typeof daPaint_id !== 'number' && typeof daPaint_id !== 'string') {
-            console.error("Invalid daPaint_id");
-            return;
+        if (typeof daPaint_id !== "number" && typeof daPaint_id !== "string") {
+          console.error("Invalid daPaint_id");
+          return;
         }
-    
+
         if (!token) {
-            console.error("No token found");
-            return;
+          console.error("No token found");
+          return;
         }
-    
+
         try {
-            const response = await fetch(
-                `${process.env.BACKEND_URL}/api/update-win-streak/${daPaint_id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ "winner": winner_id, "loser": loser_id }),
-                }
-            );
-    
-            if (response.status !== 200) {
-                const errorData = await response.json();
-                console.error("Failed to update win streak:", errorData);
-                return false;
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/update-win-streak/${daPaint_id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ winner: winner_id, loser: loser_id }),
             }
-    
-            const data = await response.json();
-            console.log("Win streak updated:", data);
-            return true;
+          );
+
+          if (response.status !== 200) {
+            const errorData = await response.json();
+            console.error("Failed to update win streak:", errorData);
+            return false;
+          }
+
+          const data = await response.json();
+          console.log("Win streak updated:", data);
+          return true;
         } catch (error) {
-            console.error("Error updating win streak:", error);
+          console.error("Error updating win streak:", error);
         }
-    },
+      },
 
-    fetchCurrentUser: async () => {
-      try {
-        const response = await fetch(
-          process.env.BACKEND_URL + "/api/current-user",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+      fetchCurrentUser: async () => {
+        try {
+          const response = await fetch(
+            process.env.BACKEND_URL + "/api/current-user",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          const data = await response.json();
+
+          // Debugging log
+          console.log("Fetched current user data:", data);
+
+          if (!data.dapaintId) {
+            console.error("dapaintId is missing from fetched data.");
+          }
+
+          setStore({
+            userData: {
+              ...data,
+              wins: data.wins,
+              losses: data.losses,
             },
-          }
-        );
-        const data = await response.json();
-        
-        // Debugging log
-        console.log("Fetched current user data:", data);
+          });
 
-        if (!data.dapaintId) {
-          console.error("dapaintId is missing from fetched data.");
+          console.log("Current User DATA has been set", getStore().userData);
+        } catch (error) {
+          console.error("Error fetching current user:", error);
         }
+      },
 
-        setStore({
-          userData: {
-            ...data,
-            wins: data.wins,
-            losses: data.losses,
-          }
-        });
-        
-        console.log("Current User DATA has been set", getStore().userData);
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-      }
-    },
-
-    
-    
-      fetchMaxWinStreak: async (setMaxWinStreak, setGoalWinStreak, setMaxWinStreakUser) => {
+      fetchMaxWinStreak: async (
+        setMaxWinStreak,
+        setGoalWinStreak,
+        setMaxWinStreakUser
+      ) => {
         let store = getStore();
         try {
           const response = await fetch(
@@ -334,8 +363,11 @@ const getState = ({ getStore, getActions, setStore }) => {
               },
             }
           );
-          if (response.status!== 200) {
-            console.error("Failed to retrieve max win streak:", response.statusText);
+          if (response.status !== 200) {
+            console.error(
+              "Failed to retrieve max win streak:",
+              response.statusText
+            );
             return;
           }
           const data = await response.json();
@@ -353,27 +385,26 @@ const getState = ({ getStore, getActions, setStore }) => {
         let store = getStore();
         console.log("FLUX: actions.RESETWINSTREAK DATA RESULTS: ", store);
         if (store.WinStreakGoal <= store.userData.winstreak) {
-            try {
-                const response = await fetch(
-                    process.env.BACKEND_URL + "/api/reset-win-streak",
-                    {
-                        method: "PUT",
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        },
-                    }
-                );
-                const data = await response.json();
-                
-                getStore().userData.winstreak = 0;
-                setStore({ userData: userData });
-    
-            } catch (error) {
-                console.error("Error fetching current user:", error);
-            }
+          try {
+            const response = await fetch(
+              process.env.BACKEND_URL + "/api/reset-win-streak",
+              {
+                method: "PUT",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            const data = await response.json();
+
+            getStore().userData.winstreak = 0;
+            setStore({ userData: userData });
+          } catch (error) {
+            console.error("Error fetching current user:", error);
+          }
         }
-    },
-      
+      },
+
       addUserImage: async (imageFile) => {
         let formData = new FormData();
         formData.append("file", imageFile[0]); // Assuming imageFile is an array

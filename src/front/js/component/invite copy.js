@@ -4,78 +4,34 @@ import { Context } from "../store/appContext";
 export const Invite = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const [notifs, setNotifs] = useState([]);
-  const [inviteCodes, setInviteCodes] = useState([]);
-  const [loadingNotifs, setLoadingNotifs] = useState(true);
-  const [loadingCodes, setLoadingCodes] = useState(true);
-  const [errorNotifs, setErrorNotifs] = useState(null);
-  const [errorCodes, setErrorCodes] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch notifications
   useEffect(() => {
     const fetchNotifs = async () => {
-      setLoadingNotifs(true);
+      setLoading(true);
       try {
         const result = await actions.getNotifs();
         if (result.success) {
           setNotifs(result.data);
         } else {
-          setErrorNotifs(result.error || "Failed to fetch notifications.");
+          setError(result.error || "Failed to fetch notifications.");
         }
       } catch (err) {
-        setErrorNotifs("An unexpected error occurred.");
+        setError("An unexpected error occurred.");
       } finally {
-        setLoadingNotifs(false);
+        setLoading(false);
       }
     };
     fetchNotifs();
   }, []);
 
-  // Fetch invite codes
   useEffect(() => {
-    const fetchInviteCodes = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("User is not logged in.");
-        return { success: false, error: "Not logged in" };
-      }
+    setNotifs(store.notifs);
+  }, []);
 
-      setLoadingCodes(true);
-      try {
-        const response = await fetch(
-          `${process.env.BACKEND_URL}/api/invitecodes`, // Adjust the endpoint as needed
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        let inviteCodes;
-
-        if (Array.isArray(data)) {
-          inviteCodes = data;
-        } else if (data.inviteCodes && Array.isArray(data.inviteCodes)) {
-          inviteCodes = data.inviteCodes;
-        } else {
-          throw new Error("Unexpected data format");
-        }
-
-        setInviteCodes(inviteCodes);
-      } catch (error) {
-        console.error("Error fetching invite codes:", error);
-        setErrorCodes(error.message);
-      } finally {
-        setLoadingCodes(false);
-      }
-    };
-    fetchInviteCodes();
+  useEffect(() => {
+    setInvite(store.invite);
   }, []);
 
   return (
@@ -118,31 +74,17 @@ export const Invite = ({ onClose }) => {
                 Invite the most people by the end of this winstreak and win
                 500K!
               </p>
-
               <div>
                 <h3 className="font-bold mb-2">Your Invite Codes</h3>
-                {loadingCodes ? (
-                  <p>Loading invite codes...</p>
-                ) : errorCodes ? (
-                  <p>Error: {errorCodes}</p>
-                ) : inviteCodes.length > 0 ? (
-                  inviteCodes.map((code, index) => (
-                    <div key={index}>
-                      <h4>{code.code}</h4>
-                    </div>
-                  ))
-                ) : (
-                  <p>No invite codes</p>
-                )}
               </div>
 
               {/* Notifications Section */}
               <div>
                 <h3>Notifications</h3>
-                {loadingNotifs ? (
+                {loading ? (
                   <p>Loading notifications...</p>
-                ) : errorNotifs ? (
-                  <p>Error: {errorNotifs}</p>
+                ) : error ? (
+                  <p>Error: {error}</p>
                 ) : notifs.length > 0 ? (
                   notifs.map((notif, index) => (
                     <div key={index}>
