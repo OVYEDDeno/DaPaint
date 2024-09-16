@@ -4,6 +4,7 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import ProtectedRoute from "./component/ProtectedRoute";
 import {ForgotPassword} from "./component/forgotpassword";
+import {Profile} from "./component/profile";
 
 
 import { Home } from "./pages/home";
@@ -35,6 +36,9 @@ const Layout = () => {
                         <Route element={<ProtectedRoute>
                             <Landing />
                         </ProtectedRoute>} path="/landing" />
+                        <Route element={<ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>} path="/profile" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

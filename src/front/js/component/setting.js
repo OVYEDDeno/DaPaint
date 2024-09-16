@@ -58,9 +58,9 @@ export const Setting = ({ onClose }) => {
   return (
     <>
       <button
-        className="btn rounded-lg"
+        className="setting btn"
         data-bs-target="#setting"
-        data-bs-toggle="modal"
+        data-bs-toggle="setting modal"
       >
         <img
           src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
@@ -70,16 +70,16 @@ export const Setting = ({ onClose }) => {
       </button>
 
       <div
-        className="modal fade"
+        className="setting fade"
         id="setting"
         aria-labelledby="setting"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
+          <div className="setting-content">
             <div className="setting-header" style={{ position: "justify" }}>
               <img
-                data-bs-dismiss="modal"
+                data-bs-dismiss="setting modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Cross-Mark-3d-icon.png"
                 alt="Close"
                 style={{
@@ -110,8 +110,8 @@ export const Setting = ({ onClose }) => {
 
                 <div><button
                   className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#feedbackModal"
-                  data-bs-toggle="modal"
+                  data-bs-target="#DIDDYModal"
+                  data-bs-toggle="DIDDY modal"
                 >
                   HOW TO DIDDY
                 </button></div>
@@ -119,15 +119,15 @@ export const Setting = ({ onClose }) => {
                 <div><button
                   className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
                   data-bs-target="#feedbackModal"
-                  data-bs-toggle="modal"
+                  data-bs-toggle="FEEDBACK modal"
                 >
                   FEEDBACK
                 </button></div>
 
                 <div><button
                   className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#feedbackModal"
-                  data-bs-toggle="modal"
+                  data-bs-target="#TICKETSModal"
+                  data-bs-toggle="TICKETS modal"
                 >
                   TICKETS
                 </button></div>

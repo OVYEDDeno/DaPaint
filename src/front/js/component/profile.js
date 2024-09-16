@@ -122,25 +122,41 @@ export const Profile = () => {
 
       {/* Profile Modal */}
       <div
-        className="modal fade"
+        // className="modal fade" this is super important
         id="profileModal"
-        aria-hidden="true"
-        aria-labelledby="profileModalLabel"
-        tabIndex="-1"
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="profileModalLabel">
-                Profile
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
+          <div className="profile-header" style={{ position: "justify" }}>
+              <img
                 data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                alt="Close"
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  width: "auto",
+                  height: "38px",
+                  cursor: "pointer",
+                }}
+              />
+              <h1
+                className="text-3x5 text-black"
+                style={{
+                  margin: "0 auto",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textAlign: "center",
+                  fontStyle: "normal",
+                  // position: "absolute",
+                  // width: "0%",
+                }}
+              >
+                PROFILE
+              </h1>
             </div>
+
             <div className="modal-body">
               <div className="profile-container">
                 <div className="profile-header">
@@ -194,7 +210,7 @@ export const Profile = () => {
                 </table>
               </div>
             </div>
-            <div className="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 className="btn btn-primary"
                 data-bs-target="#editProfileModal"
@@ -202,7 +218,7 @@ export const Profile = () => {
               >
                 Edit Profile
               </button>
-            </div>
+             </div> */}
           </div>
         </div>
       </div>
