@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports, invitee_association
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
@@ -32,7 +32,7 @@ def handle_user_login():
     if not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad password"}), 401
 
-    access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+    access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=10))
     return jsonify(access_token=access_token), 200
 
 def generate_unique_invite_code(length=10):

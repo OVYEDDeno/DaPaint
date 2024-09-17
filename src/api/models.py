@@ -14,7 +14,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
-    zipcode = db.Column(db.Integer, nullable=False)
+    zipcode = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     birthday = db.Column(db.Date, nullable=False)
     winstreak = db.Column(db.Integer, default=0)
@@ -31,7 +31,9 @@ class User(db.Model):
     twitter_url = db.Column(db.String(200), nullable=True)
     facebook_url = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(512), nullable=False)
-    usertype= db.Column(db.String(200), nullable=False, default="user")
+    # User Type as Enum
+    user_type = db.Column(db.String(50), nullable=False, default='user')
+    # user_type = db.Column(db.String(50))
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
@@ -56,7 +58,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f'<User {self.email} - Type {self.usertype}>'
+        return f'<User {self.email}'
 
     def serialize(self):
         return {
@@ -82,7 +84,7 @@ class User(db.Model):
             "facebook_url": self.facebook_url,
             "invite_code": self.invite_code.serialize() if self.invite_code else None,
             "invited_by": self.invited_by.serialize() if self.invited_by else None,
-            "usertype": self.usertype,
+            "user_type": self.user_type,
             "admin_profile": self.admin_profile.serialize() if self.admin_profile else None,
             "advertiser_profile": self.advertiser_profile.serialize() if self.advertiser_profile else None,
         }
@@ -122,19 +124,19 @@ class DaPaint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Host user
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Foe user
-    
+
     fitnessStyle = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime(timezone=False), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    
+
     # Host user results
     host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     host_winnerImg = db.Column(db.String(250), nullable=True)
-    
+
     # Foe user results
     foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -145,18 +147,21 @@ class DaPaint(db.Model):
     foe_user = db.relationship('User', foreign_keys=[foeId], back_populates='dapaint_foe')
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
-    
+
     # Reports and dispute handling
     reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')
     lastmodify = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
-    
+
     # Dispute tracking
     dispute_status = db.Column(db.String(50), nullable=True)  # e.g., 'pending', 'resolved'
     dispute_reported = db.Column(db.Boolean, default=False)
 
-    #invite code
+    # Invite code
     invite_code_id = db.Column(db.Integer, db.ForeignKey('invite_code.id'), nullable=True)
     invite_code = db.relationship('InviteCode', back_populates='completed_dapaints')
+
+    # Relationship with tickets (single relationship definition)
+    tickets = db.relationship('Ticket', back_populates='da_paint', cascade='all, delete-orphan')
 
     def serialize(self):
         return {
@@ -177,6 +182,7 @@ class DaPaint(db.Model):
             "dispute_reported": self.dispute_reported,
             "invite_code_id": self.invite_code_id,
         }
+
 
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -276,7 +282,9 @@ class UserDisqualification(db.Model):
 class Insight(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    permissions = db.Column(db.String(200), nullable=False)  # Custom permissions for admins
+    
+    # Use Enum for permissions
+    permissions = db.Column(db.Enum('Full Access', 'Can Edit', 'Can View/Comment', name='permissions_enum'), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -291,7 +299,7 @@ class Insight(db.Model):
     number_of_winners = db.Column(db.Integer, default=0)
     number_of_losers = db.Column(db.Integer, default=0)
     inactive_users = db.Column(db.Integer, default=0)
-    
+
     def __repr__(self):
         return f'<Insight {self.user.name}>'
     
@@ -332,44 +340,49 @@ class Insight(db.Model):
     
     def calculate_sports_market_percentage(self):
         # Implement your logic to calculate the sports market percentage
-        # This is just a placeholder example
         total_sports = DaPaint.query.count()
         return (total_sports / self.total_users) * 100 if self.total_users else 0
 
 class Ticket(db.Model):
-    __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Connect to DaPaint table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('da_paint.id'), nullable=False)  # Connect to DaPaint table
     event_name = db.Column(db.String(200), nullable=False)
     event_date = db.Column(db.Date, nullable=False)
-    purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    ticket_status = db.Column(db.String(50), default='active')  # active, canceled, refunded, etc.
+    purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
+    
+    # Use Enum for ticket status
+    ticket_status = db.Column(db.Enum('active', 'canceled', 'refunded', 'already scanned', name='ticket_status_enum'), default='active')
 
     user = db.relationship('User', back_populates='tickets')
-    dapaint_event = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
+    dapaint = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
 
     def __repr__(self):
         return f'<Ticket {self.event_name} - {self.user_id}>'
 
 User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
-DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint_event')
+DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint')
 
 class Advertiser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    company_name = db.Column(db.String(200), nullable=False)  # Example field for advertisers
+    company_name = db.Column(db.String(200), nullable=False)
     contact_email = db.Column(db.String(100), nullable=False, unique=True)
-    ad_budget = db.Column(db.Float, default=0.0)  # Budget for ads
-    targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
+    
+    # Moved ad_budget to AdCampaign
+    ad_budget = db.Column(db.Float, default=0.0)
+    targeting_criteria = db.Column(db.JSON, nullable=True)  # To target users based on location data
 
     # Relationship back to User
     user = db.relationship('User', back_populates='advertiser_profile')
 
-    def __repr__(self):
-        return f'<Advertiser {self.user.name} - {self.company_name}>'
+    # Ad campaigns relationship
+    ad_campaigns = db.relationship('AdCampaign', back_populates='advertiser', cascade='all, delete-orphan')
 
+    def __repr__(self):
+        return f'<Advertiser {self.company_name}>'
+    
     def serialize(self):
         return {
             "id": self.id,
@@ -377,22 +390,38 @@ class Advertiser(db.Model):
             "company_name": self.company_name,
             "contact_email": self.contact_email,
             "ad_budget": self.ad_budget,
-            "targeting_criteria": self.targeting_criteria
+            "targeting_criteria": self.targeting_criteria,
+            "ad_campaigns": [ac.serialize() for ac in self.ad_campaigns]
         }
 
 class AdCampaign(db.Model):
-    __tablename__ = 'ad_campaigns'
     id = db.Column(db.Integer, primary_key=True)
-    advertiser_id = db.Column(db.Integer, db.ForeignKey('advertisers.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    advertiser_id = db.Column(db.Integer, db.ForeignKey('advertiser.id'), nullable=False)
+    campaign_name = db.Column(db.String(200), nullable=False)
+    budget = db.Column(db.Float, nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
-    budget = db.Column(db.Float, nullable=False)
-    ad_content = db.Column(db.Text, nullable=False)
     
+    # Metrics for performance tracking
+    views = db.Column(db.Integer, default=0)
+    clicks = db.Column(db.Integer, default=0)
+    
+    # Relationship back to Advertiser
     advertiser = db.relationship('Advertiser', back_populates='ad_campaigns')
-    
+
     def __repr__(self):
-        return f'<AdCampaign {self.name}>'
+        return f'<AdCampaign {self.campaign_name}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "advertiser_id": self.advertiser_id,
+            "campaign_name": self.campaign_name,
+            "budget": self.budget,
+            "start_date": self.start_date.strftime("%Y-%m-%d"),
+            "end_date": self.end_date.strftime("%Y-%m-%d"),
+            "views": self.views,
+            "clicks": self.clicks
+        }
 
 Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')
