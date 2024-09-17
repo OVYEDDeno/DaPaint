@@ -336,30 +336,33 @@ class Insight(db.Model):
         total_sports = DaPaint.query.count()
         return (total_sports / self.total_users) * 100 if self.total_users else 0
 
-# class Ticket(db.Model):
-#     __tablename__ = 'tickets'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-#     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Connect to DaPaint table
-#     event_name = db.Column(db.String(200), nullable=False)
-#     event_date = db.Column(db.Date, nullable=False)
-#     purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-#     price = db.Column(db.Float, nullable=False)
-#     ticket_status = db.Column(db.String(50), default='active')  # active, canceled, refunded, etc.
+class Ticket(db.Model):
+    __tablename__ = 'tickets'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Connect to DaPaint table
+    event_name = db.Column(db.String(200), nullable=False)
+    event_date = db.Column(db.Date, nullable=False)
+    purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    ticket_status = db.Column(db.String(50), default='active')  # active, canceled, refunded, etc.
 
-#     user = db.relationship('User', back_populates='tickets')
-#     dapaint_event = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
+    user = db.relationship('User', back_populates='tickets')
+    dapaint_event = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
 
-#     def __repr__(self):
-#         return f'<Ticket {self.event_name} - {self.user_id}>'
+    def __repr__(self):
+        return f'<Ticket {self.event_name} - {self.user_id}>'
 
-# User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
-# DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint_event')
+User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
+DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint_event')
+
 class Advertiser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     company_name = db.Column(db.String(200), nullable=False)  # Example field for advertisers
+    contact_email = db.Column(db.String(100), nullable=False, unique=True)
     ad_budget = db.Column(db.Float, default=0.0)  # Budget for ads
+    targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
 
     # Relationship back to User
     user = db.relationship('User', back_populates='advertiser_profile')
@@ -372,26 +375,24 @@ class Advertiser(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "company_name": self.company_name,
-            "ad_budget": self.ad_budget
+            "contact_email": self.contact_email,
+            "ad_budget": self.ad_budget,
+            "targeting_criteria": self.targeting_criteria
         }
+
+class AdCampaign(db.Model):
+    __tablename__ = 'ad_campaigns'
+    id = db.Column(db.Integer, primary_key=True)
+    advertiser_id = db.Column(db.Integer, db.ForeignKey('advertisers.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    contact_email = db.Column(db.String(100), nullable=False, unique=True)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
     budget = db.Column(db.Float, nullable=False)
-    targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
-
-# class AdCampaign(db.Model):
-#     __tablename__ = 'ad_campaigns'
-#     id = db.Column(db.Integer, primary_key=True)
-#     advertiser_id = db.Column(db.Integer, db.ForeignKey('advertisers.id'), nullable=False)
-#     name = db.Column(db.String(100), nullable=False)
-#     start_date = db.Column(db.Date, nullable=False)
-#     end_date = db.Column(db.Date, nullable=False)
-#     budget = db.Column(db.Float, nullable=False)
-#     ad_content = db.Column(db.Text, nullable=False)
+    ad_content = db.Column(db.Text, nullable=False)
     
-#     advertiser = db.relationship('Advertiser', back_populates='ad_campaigns')
+    advertiser = db.relationship('Advertiser', back_populates='ad_campaigns')
     
-#     def __repr__(self):
-#         return f'<AdCampaign {self.name}>'
+    def __repr__(self):
+        return f'<AdCampaign {self.name}>'
 
-# Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')
+Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')
