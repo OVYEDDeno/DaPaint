@@ -122,11 +122,11 @@ export const Profile = () => {
 
       {/* Profile Modal */}
       <div
-        // className="modal fade" this is super important
+        className="modal fade" this is super important
         id="profileModal"
       >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
+          <div className="profile-content">
           <div className="profile-header" style={{ position: "justify" }}>
               <img
                 data-bs-dismiss="modal"

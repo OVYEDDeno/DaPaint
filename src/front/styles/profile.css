@@ -2,15 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ff060600;
+  background-color: #131313;
+  color: #E3E3E3;
   width: 100%;
   max-width: 500px;
-  padding: 5px;
   margin: auto;
 }
 
-.profile-modal {
-  background-color: rgb(251, 0, 0);
+.profile-content {
+  background-color: rgb(0, 0, 0);
+
 }
 /* .profile-header {
   display: flex;
@@ -39,7 +40,7 @@
 
 
 .stats-table td {
-  padding: 34px;
+  padding: 21px;
   text-align: left;
 }
 
