@@ -16,7 +16,7 @@ import { Wallet } from "../component/wallet.js";
 export const Landing = () => {
   const { store, actions } = useContext(Context);
   const [currentWinStreak, setCurrentWinStreak] = useState(0);
-  const [GoalWinStreak, setGoalWinStreak] = useState(0);
+  const [GoalWinStreak, setGoalWinStreak] = useState(30);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [maxWinStreak, setMaxWinStreak] = useState(0);
   const nextWinStreak = maxWinStreak + 1;

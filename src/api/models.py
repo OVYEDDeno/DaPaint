@@ -11,7 +11,6 @@ db = SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(512), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
@@ -31,6 +30,8 @@ class User(db.Model):
     youtube_url = db.Column(db.String(200), nullable=True)
     twitter_url = db.Column(db.String(200), nullable=True)
     facebook_url = db.Column(db.String(200), nullable=True)
+    password = db.Column(db.String(512), nullable=False)
+    usertype= db.Column(db.String(200), nullable=False, default="user")
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
@@ -49,8 +50,13 @@ class User(db.Model):
     invite_code = db.relationship('InviteCode', back_populates='inviter', uselist=False, cascade='all, delete-orphan')
     invited_by = db.relationship('InviteCode', back_populates='invitees', secondary='invitee_association', uselist=False)
 
+    # Relationships for Admin and Advertiser
+    admin_profile = db.relationship('Insight', back_populates='user', uselist=False)
+    advertiser_profile = db.relationship('Advertiser', back_populates='user', uselist=False)
+
+
     def __repr__(self):
-        return f'<User {self.email}>'
+        return f'<User {self.email} - Type {self.usertype}>'
 
     def serialize(self):
         return {
@@ -76,7 +82,11 @@ class User(db.Model):
             "facebook_url": self.facebook_url,
             "invite_code": self.invite_code.serialize() if self.invite_code else None,
             "invited_by": self.invited_by.serialize() if self.invited_by else None,
+            "usertype": self.usertype,
+            "admin_profile": self.admin_profile.serialize() if self.admin_profile else None,
+            "advertiser_profile": self.advertiser_profile.serialize() if self.advertiser_profile else None,
         }
+        
 
 class InviteCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -263,13 +273,16 @@ class UserDisqualification(db.Model):
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
 
-class AdminUser(db.Model):
+class Insight(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(512), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    permissions = db.Column(db.String(200), nullable=False)  # Custom permissions for admins
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
+    # Relationship back to User
+    user = db.relationship('User', back_populates='admin_profile')
+
     # Admin statistics fields
     total_users = db.Column(db.Integer, default=0)
     daily_active_users = db.Column(db.Integer, default=0)
@@ -280,12 +293,13 @@ class AdminUser(db.Model):
     inactive_users = db.Column(db.Integer, default=0)
     
     def __repr__(self):
-        return f'<AdminUser {self.username}>'
+        return f'<Insight {self.user.name}>'
     
     def serialize(self):
         return {
             "id": self.id,
-            "username": self.username,
+            "user_id": self.user_id,
+            "permissions": self.permissions,
             "is_active": self.is_active,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "total_users": self.total_users,
@@ -321,6 +335,7 @@ class AdminUser(db.Model):
         # This is just a placeholder example
         total_sports = DaPaint.query.count()
         return (total_sports / self.total_users) * 100 if self.total_users else 0
+
 # class Ticket(db.Model):
 #     __tablename__ = 'tickets'
 #     id = db.Column(db.Integer, primary_key=True)
@@ -340,17 +355,29 @@ class AdminUser(db.Model):
 
 # User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
 # DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint_event')
+class Advertiser(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    company_name = db.Column(db.String(200), nullable=False)  # Example field for advertisers
+    ad_budget = db.Column(db.Float, default=0.0)  # Budget for ads
 
-# class Advertiser(db.Model):
-#     __tablename__ = 'advertisers'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(100), nullable=False)
-#     contact_email = db.Column(db.String(100), nullable=False, unique=True)
-#     budget = db.Column(db.Float, nullable=False)
-#     targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
-    
-#     def __repr__(self):
-#         return f'<Advertiser {self.name}>'
+    # Relationship back to User
+    user = db.relationship('User', back_populates='advertiser_profile')
+
+    def __repr__(self):
+        return f'<Advertiser {self.user.name} - {self.company_name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "company_name": self.company_name,
+            "ad_budget": self.ad_budget
+        }
+    name = db.Column(db.String(100), nullable=False)
+    contact_email = db.Column(db.String(100), nullable=False, unique=True)
+    budget = db.Column(db.Float, nullable=False)
+    targeting_criteria = db.Column(db.JSON, nullable=True)  # JSON field to store targeting criteria
 
 # class AdCampaign(db.Model):
 #     __tablename__ = 'ad_campaigns'

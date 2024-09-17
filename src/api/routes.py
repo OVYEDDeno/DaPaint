@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import InviteCode, db, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports, invitee_association
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, AdminUser, UserDisqualification, Reports, invitee_association
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_

@@ -8,7 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       notifs: [],
       userId: undefined,
       userData: {},
-      WinStreakGoal: undefined,
+      WinStreakGoal: 30,
       dapaintId: undefined,
       token: localStorage.getItem("token"),
     },
@@ -373,9 +373,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           const data = await response.json();
           console.log("FLUX:ACTIONS.FETCHMAXWINSTREAK.DATA", data);
           setStore({ WinStreakGoal: data.WinStreakGoal });
-          setMaxWinStreak(data.maxWinStreak);
-          setGoalWinStreak(data.WinStreakGoal);
-          setMaxWinStreakUser(data.maxWinStreakUser.name);
+          setMaxWinStreak(data.user?.maxWinStreak);
+          setGoalWinStreak(data.user?.WinStreakGoal);
+          setMaxWinStreakUser(data.user?.maxWinStreakUser.name);
         } catch (error) {
           console.error("Error fetching max win streak:", error);
         }
