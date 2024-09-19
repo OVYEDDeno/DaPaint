@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta, timezone
-from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-import random
-import string
-from datetime import datetime
 from sqlalchemy.orm import backref
+from flask import current_app
+import random, string
 
 db = SQLAlchemy()
 
@@ -20,6 +18,7 @@ class User(db.Model):
     winstreak = db.Column(db.Integer, default=0)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
+    disqualifications = db.Column(db.Integer, default=0)
     disqualifications = db.relationship('UserDisqualification', back_populates='user')
 
     # Social Media Links
@@ -31,30 +30,30 @@ class User(db.Model):
     twitter_url = db.Column(db.String(200), nullable=True)
     facebook_url = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(512), nullable=False)
-    # User Type as Enum
+    
+    # User Type
     user_type = db.Column(db.String(50), nullable=False, default='user')
-    # user_type = db.Column(db.String(50))
+    # Relationships for Admin and Advertiser
+    admin_profile = db.relationship('Insight', back_populates='user', uselist=False, cascade='all, delete-orphan')
+    advertiser_profile = db.relationship('Advertiser', back_populates='user', uselist=False, cascade='all, delete-orphan')
 
     # Profile pic relationship
-    profile_pic = db.relationship("UserImg", back_populates="user", uselist=False)
+    profile_pic = db.relationship("UserImg", back_populates="user", uselist=False, cascade='all, delete-orphan')
 
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
 
     # Other relationships
-    reports = db.relationship('Reports', back_populates='user', cascade='all, delete-orphan')
-    dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user')
-    dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user')
-    dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user')
-    dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user')
+    reports = db.relationship('Reports', back_populates='user', uselist=False, cascade='all, delete-orphan')
+    dapaint_host = db.relationship('DaPaint', foreign_keys='DaPaint.hostFoeId', back_populates='host_user', cascade='all, delete-orphan')
+    dapaint_foe = db.relationship('DaPaint', foreign_keys='DaPaint.foeId', back_populates='foe_user', cascade='all, delete-orphan')
+    dapaint_winner = db.relationship('DaPaint', foreign_keys='DaPaint.winnerId', back_populates='winner_user', cascade='all, delete-orphan')
+    dapaint_loser = db.relationship('DaPaint', foreign_keys='DaPaint.loserId', back_populates='loser_user', cascade='all, delete-orphan')
 
     # Invite Code relationships
     invite_code = db.relationship('InviteCode', back_populates='inviter', uselist=False, cascade='all, delete-orphan')
     invited_by = db.relationship('InviteCode', back_populates='invitees', secondary='invitee_association', uselist=False)
 
-    # Relationships for Admin and Advertiser
-    admin_profile = db.relationship('Insight', back_populates='user', uselist=False)
-    advertiser_profile = db.relationship('Advertiser', back_populates='user', uselist=False)
 
 
     def __repr__(self):
@@ -72,6 +71,7 @@ class User(db.Model):
             "winstreak": self.winstreak,
             "wins": self.wins,
             "losses": self.losses,
+            "disqualifications": self.disqualifications,
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
             "notifications": [n.serialize() for n in self.notifications],
@@ -132,14 +132,14 @@ class DaPaint(db.Model):
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
-    # Host user results
-    host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    # # Host user results
+    # host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    # host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     host_winnerImg = db.Column(db.String(250), nullable=True)
 
-    # Foe user results
-    foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    # # Foe user results
+    # foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    # foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     foe_winnerImg = db.Column(db.String(250), nullable=True)
 
     # Relationships for host and foe
@@ -148,7 +148,7 @@ class DaPaint(db.Model):
     winner_user = db.relationship('User', foreign_keys=[winnerId], back_populates='dapaint_winner')
     loser_user = db.relationship('User', foreign_keys=[loserId], back_populates='dapaint_loser')
 
-    # Reports and dispute handling
+    # Reports handling
     reports = db.relationship('Reports', back_populates='dapaint', cascade='all, delete-orphan')
     lastmodify = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=True)
 
@@ -161,7 +161,7 @@ class DaPaint(db.Model):
     invite_code = db.relationship('InviteCode', back_populates='completed_dapaints')
 
     # Relationship with tickets (single relationship definition)
-    tickets = db.relationship('Ticket', back_populates='da_paint', cascade='all, delete-orphan')
+    # user_tickets = db.relationship('Ticket', back_populates='dapaint', cascade='all, delete-orphan')
 
     def serialize(self):
         return {
@@ -205,12 +205,17 @@ class UserImg(db.Model):
 
 class Notifications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type = db.Column(db.String(50), nullable=False)
-    message = db.Column(db.String(2000), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    
+    message = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+
     user = db.relationship('User', back_populates='notifications')
+
+    def delete_expired(self):
+        expiry_date = datetime.now(timezone.utc) - timedelta(hours=24)
+        if self.created_at < expiry_date:
+            db.session.delete(self)
 
     def serialize(self):
         return {
@@ -218,29 +223,8 @@ class Notifications(db.Model):
             'user_id': self.user_id,
             'type': self.type,
             'message': self.message,
-            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S")
         }
-
-    @property
-    def is_expired(self):
-        # Check if notification is older than 24 hours
-        return datetime.now(timezone.utc) - self.created_at > timedelta(hours=24)
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    # Utility function to delete expired notifications
-    def delete_expired_notifications():
-        expired_notifications = Notifications.query.filter(
-            Notifications.created_at < datetime.now(timezone.utc) - timedelta(hours=24)
-        ).all()
-        for notification in expired_notifications:
-            db.session.delete(notification)
-        db.session.commit()
-
-    # You can run this function periodically using a background task    
-
 
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -249,6 +233,9 @@ class Reports(db.Model):
     img_url = db.Column(db.String(250), nullable=False)
     vid_url = db.Column(db.String(250), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    issue_description = db.Column(db.String(500), nullable=False)
+    resolved = db.Column(db.Boolean, default=False)
+    resolved_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship('User', back_populates='reports')
     dapaint = db.relationship('DaPaint', back_populates='reports')
@@ -260,7 +247,10 @@ class Reports(db.Model):
             'dapaint_id': self.dapaint_id,
             'img_url': self.img_url,
             'vid_url': self.vid_url,
-            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            'issue_description': self.issue_description,
+            'resolved': self.resolved,
+            'resolved_at': self.resolved_at.strftime("%Y-%m-%d %H:%M:%S") if self.resolved else None
         }
 
 class UserDisqualification(db.Model):
@@ -284,8 +274,8 @@ class Insight(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
     # Use Enum for permissions
-    permissions = db.Column(db.Enum('Full Access', 'Can Edit', 'Can View/Comment', name='permissions_enum'), nullable=False)
-    is_active = db.Column(db.Boolean(), nullable=False, default=True)
+    # permissions = db.Column(db.Enum('Full Access', 'Can Edit', 'Can View/Comment', name='permissions_enum'), nullable=False)
+    is_active = db.Column(db.Boolean(), nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationship back to User
@@ -294,10 +284,10 @@ class Insight(db.Model):
     # Admin statistics fields
     total_users = db.Column(db.Integer, default=0)
     daily_active_users = db.Column(db.Integer, default=0)
+    winstreak_winners = db.Column(db.Integer, default=0)
+    most_popular_sport = db.Column(db.String(50), nullable=True)
     sports_market_percentage = db.Column(db.Float, default=0.0)
     matches_per_day = db.Column(db.Integer, default=0)
-    number_of_winners = db.Column(db.Integer, default=0)
-    number_of_losers = db.Column(db.Integer, default=0)
     inactive_users = db.Column(db.Integer, default=0)
 
     def __repr__(self):
@@ -312,57 +302,60 @@ class Insight(db.Model):
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "total_users": self.total_users,
             "daily_active_users": self.daily_active_users,
+            "winstreak_winners": self.winstreak_winners,
+            "most_popular_sport": self.most_popular_sport,
             "sports_market_percentage": self.sports_market_percentage,
             "matches_per_day": self.matches_per_day,
-            "number_of_winners": self.number_of_winners,
-            "number_of_losers": self.number_of_losers,
             "inactive_users": self.inactive_users
         }
     
-    def update_statistics(self):
-        # Example method to update admin statistics
-        self.total_users = User.query.count()
-        self.daily_active_users = User.query.filter(
-            User.last_login >= datetime.utcnow() - timedelta(days=1)
-        ).count()
-        self.sports_market_percentage = self.calculate_sports_market_percentage()
-        self.matches_per_day = DaPaint.query.filter(
-            DaPaint.date_time >= datetime.utcnow() - timedelta(days=1)
-        ).count()
-        self.number_of_winners = DaPaint.query.filter(
-            DaPaint.winnerId.isnot(None)
-        ).count()
-        self.number_of_losers = DaPaint.query.filter(
-            DaPaint.loserId.isnot(None)
-        ).count()
-        self.inactive_users = self.total_users - self.daily_active_users
-        db.session.commit()
+    # def update_statistics(self):
+    #     # Example method to update admin statistics
+    #     self.total_users = User.query.count()
+    #     self.daily_active_users = User.query.filter(
+    #         User.last_login >= datetime.utcnow() - timedelta(days=1)
+    #     ).count()
+    #     self.sports_market_percentage = self.calculate_sports_market_percentage()
+    #     self.matches_per_day = DaPaint.query.filter(
+    #         DaPaint.date_time >= datetime.utcnow() - timedelta(days=1)
+    #     ).count()
+    #     self.number_of_winners = DaPaint.query.filter(
+    #         DaPaint.winnerId.isnot(None)
+    #     ).count()
+    #     self.number_of_losers = DaPaint.query.filter(
+    #         DaPaint.loserId.isnot(None)
+    #     ).count()
+    #     self.inactive_users = self.total_users - self.daily_active_users
+    #     db.session.commit()
     
-    def calculate_sports_market_percentage(self):
-        # Implement your logic to calculate the sports market percentage
-        total_sports = DaPaint.query.count()
-        return (total_sports / self.total_users) * 100 if self.total_users else 0
+    # def calculate_sports_market_percentage(self):
+    #     # Implement your logic to calculate the sports market percentage
+    #     total_sports = DaPaint.query.count()
+    #     return (total_sports / self.total_users) * 100 if self.total_users else 0
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey('da_paint.id'), nullable=False)  # Connect to DaPaint table
-    event_name = db.Column(db.String(200), nullable=False)
-    event_date = db.Column(db.Date, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    purchase_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-    
-    # Use Enum for ticket status
-    ticket_status = db.Column(db.Enum('active', 'canceled', 'refunded', 'already scanned', name='ticket_status_enum'), default='active')
+    price = db.Column(db.Integer, db.ForeignKey('dapaint.price'), nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='active')
+    already_scanned = db.Column(db.Boolean, default=False)
 
-    user = db.relationship('User', back_populates='tickets')
-    dapaint = db.relationship('DaPaint', back_populates='tickets')  # Relating to DaPaint events
+    user = db.relationship('User', backref='tickets', lazy=True)
+    # dapaint = db.relationship('DaPaint', back_populates='tickets')
 
-    def __repr__(self):
-        return f'<Ticket {self.event_name} - {self.user_id}>'
+    def serialize(self):
+        return {
+            'id': self.id,
+            'dapaint_id': self.dapaint_id,
+            'user_id': self.user_id,
+            'price': self.price,
+            'status': self.status,
+            'already_scanned': self.already_scanned
+        }
 
-User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
-DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint')
+# User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
+# DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint')
 
 class Advertiser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
