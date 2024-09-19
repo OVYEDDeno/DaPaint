@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/profile.css"; // Assuming you will create this CSS file
+import "../../styles/profile.css";
 
 export const Profile = () => {
   const { store, actions } = useContext(Context);
@@ -104,121 +104,82 @@ export const Profile = () => {
       </button> */}
       <button
         type="button"
-        className="btn"
+        className="btn btn-profile"
         data-bs-toggle="modal"
         data-bs-target="#profileModal"
       >
-        <div className="profile-container">
-          <div className="profile-header">
-            <div className="profile-picture-section">
-              <img src={previewURL} alt="Profile" className="profile-picture" />
-              <div className="profile-name">
-                <h3>{store.userData && store.userData.user?.name}</h3>
-              </div>
+        <div className="profile-header">
+          <div className="profile-picture-section">
+            <img src={previewURL} alt="Profile" className="profile-picture" />
+            <div className="profile-name">
+              <h3>{store.userData && store.userData.user?.name}</h3>
             </div>
           </div>
         </div>
       </button>
 
       {/* Profile Modal */}
-      <div
-        className="modal fade" this is super important
-        id="profileModal"
-      >
+      <div className="modal fade" /*this is super important*/ id="profileModal">
         <div className="modal-dialog modal-dialog-centered">
           <div className="profile-content">
-          <div className="profile-header" style={{ position: "justify" }}>
+            <div className="profile-header">
+              <h1 className="profile-title">PROFILE</h1>
               <img
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                 alt="Close"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  width: "auto",
-                  height: "38px",
-                  cursor: "pointer",
-                }}
+                className="close-icon"
               />
-              <h1
-                className="text-3x5 text-black"
-                style={{
-                  margin: "0 auto",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textAlign: "center",
-                  fontStyle: "normal",
-                  // position: "absolute",
-                  // width: "0%",
-                }}
-              >
-                PROFILE
-              </h1>
             </div>
-
-            <div className="modal-body">
-              <div className="profile-container">
-                <div className="profile-header">
-                  <div className="profile-picture-section">
-                    <div
-                      className="d-flex"
-                      data-bs-target="#editProfileModal"
-                      data-bs-toggle="modal"
-                    >
-                      <img
-                        src={profileImageUrl}
-                        alt="Profile"
-                        className="profile-picture"
-                      />
-                      <div className="profile-name">
-                        {store.userData && store.userData.user?.name}
-                      </div>
+            <div className="profile-container">
+              <div className="profile-header">
+                <div className="profile-picture-section">
+                  <div
+                    className="d-flex"
+                    data-bs-target="#editProfileModal"
+                    data-bs-toggle="modal"
+                  >
+                    <img
+                      src={profileImageUrl}
+                      alt="Profile"
+                      className="profile-picture"
+                    />
+                    <div className="profile-name">
+                      {store.userData && store.userData.user?.name}
                     </div>
                   </div>
                 </div>
-                <table className="stats-table">
-                  <tbody>
-                    <tr>
-                      <td>Total</td>
-                      <td className="total">
-                        {store.userData &&
-                          store.userData.user?.wins +
-                            store.userData.user?.losses}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Wins</td>
-                      <td className="wins">
-                        {store.userData && store.userData.user?.wins}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Losses</td>
-                      <td className="losses">
-                        {store.userData && store.userData.user?.losses}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Disqualifications</td>
-                      <td className="disqualifications">
-                        {store.userData &&
-                          store.userData.user?.disqualifications}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
+              <table className="stats-table">
+                <tbody>
+                  <tr>
+                    <td>Total</td>
+                    <td className="total">
+                      {store.userData &&
+                        store.userData.user?.wins + store.userData.user?.losses}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Wins</td>
+                    <td className="wins">
+                      {store.userData && store.userData.user?.wins}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Losses</td>
+                    <td className="losses">
+                      {store.userData && store.userData.user?.losses}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Disqualifications</td>
+                    <td className="disqualifications">
+                      {store.userData && store.userData.user?.disqualifications}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            {/* <div className="modal-footer">
-              <button
-                className="btn btn-primary"
-                data-bs-target="#editProfileModal"
-                data-bs-toggle="modal"
-              >
-                Edit Profile
-              </button>
-             </div> */}
           </div>
         </div>
       </div>
@@ -334,7 +295,8 @@ export const Profile = () => {
                     onChange={(e) => setTwitch_url(e.target.value)}
                     // className="bg-white w-full outline-none"
                   />
-                </div><div>
+                </div>
+                <div>
                   <input
                     type="Kick"
                     value={kick_url}
@@ -342,7 +304,8 @@ export const Profile = () => {
                     onChange={(e) => setKick_url(e.target.value)}
                     // className="bg-white w-full outline-none"
                   />
-                </div><div>
+                </div>
+                <div>
                   <input
                     type="Youtube"
                     value={youtube_url}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/landing.css";
-import { X, ChevronLeft } from "lucide-react";
 
 export const Wallet = ({ onClose }) => {
   const [cardNumber, setCardNumber] = useState("");
