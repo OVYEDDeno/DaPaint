@@ -32,7 +32,7 @@ class User(db.Model):
     password = db.Column(db.String(512), nullable=False)
     
     # User Type
-    user_type = db.Column(db.String(50), nullable=False, default='user')
+    # user_type = db.Column(db.String(50), nullable=False, default='user')
     # Relationships for Admin and Advertiser
     admin_profile = db.relationship('Insight', back_populates='user', uselist=False, cascade='all, delete-orphan')
     advertiser_profile = db.relationship('Advertiser', back_populates='user', uselist=False, cascade='all, delete-orphan')
@@ -233,7 +233,7 @@ class Reports(db.Model):
     img_url = db.Column(db.String(250), nullable=False)
     vid_url = db.Column(db.String(250), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    issue_description = db.Column(db.String(500), nullable=False)
+    # issue_description = db.Column(db.String(500), nullable=True)
     resolved = db.Column(db.Boolean, default=False)
     resolved_at = db.Column(db.DateTime, nullable=True)
 
@@ -248,7 +248,7 @@ class Reports(db.Model):
             'img_url': self.img_url,
             'vid_url': self.vid_url,
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            'issue_description': self.issue_description,
+            # 'issue_description': self.issue_description,
             'resolved': self.resolved,
             'resolved_at': self.resolved_at.strftime("%Y-%m-%d %H:%M:%S") if self.resolved else None
         }
@@ -270,6 +270,7 @@ class UserDisqualification(db.Model):
         }
 
 class Insight(db.Model):
+    __tablename__ = 'insight' 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
@@ -290,8 +291,6 @@ class Insight(db.Model):
     matches_per_day = db.Column(db.Integer, default=0)
     inactive_users = db.Column(db.Integer, default=0)
 
-    def __repr__(self):
-        return f'<Insight {self.user.name}>'
     
     def serialize(self):
         return {
