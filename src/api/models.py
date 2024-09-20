@@ -121,6 +121,7 @@ invitee_association = db.Table('invitee_association',
     
 
 class DaPaint(db.Model):
+    __tablename__ = 'dapaint'
     id = db.Column(db.Integer, primary_key=True)
     hostFoeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Host user
     foeId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Foe user
@@ -231,7 +232,7 @@ class Notifications(db.Model):
 class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey('da_paint.id'), nullable=False)  # Corrected foreign key reference
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Corrected foreign key reference
     img_url = db.Column(db.String(250), nullable=False)
     vid_url = db.Column(db.String(250), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
@@ -309,40 +310,15 @@ class Insight(db.Model):
             "matches_per_day": self.matches_per_day,
             "inactive_users": self.inactive_users
         }
-    
-    # def update_statistics(self):
-    #     # Example method to update admin statistics
-    #     self.total_users = User.query.count()
-    #     self.daily_active_users = User.query.filter(
-    #         User.last_login >= datetime.utcnow() - timedelta(days=1)
-    #     ).count()
-    #     self.sports_market_percentage = self.calculate_sports_market_percentage()
-    #     self.matches_per_day = DaPaint.query.filter(
-    #         DaPaint.date_time >= datetime.utcnow() - timedelta(days=1)
-    #     ).count()
-    #     self.number_of_winners = DaPaint.query.filter(
-    #         DaPaint.winnerId.isnot(None)
-    #     ).count()
-    #     self.number_of_losers = DaPaint.query.filter(
-    #         DaPaint.loserId.isnot(None)
-    #     ).count()
-    #     self.inactive_users = self.total_users - self.daily_active_users
-    #     db.session.commit()
-    
-    # def calculate_sports_market_percentage(self):
-    #     # Implement your logic to calculate the sports market percentage
-    #     total_sports = DaPaint.query.count()
-    #     return (total_sports / self.total_users) * 100 if self.total_users else 0
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
-    price = db.Column(db.Integer, db.ForeignKey('dapaint.price'), nullable=False)
     status = db.Column(db.String(50), nullable=False, default='active')
     already_scanned = db.Column(db.Boolean, default=False)
 
-    user = db.relationship('User', backref='tickets', lazy=True)
+    # user = db.relationship('User', backref='tickets', lazy=True)
     # dapaint = db.relationship('DaPaint', back_populates='tickets')
 
     def serialize(self):
@@ -350,13 +326,11 @@ class Ticket(db.Model):
             'id': self.id,
             'dapaint_id': self.dapaint_id,
             'user_id': self.user_id,
-            'price': self.price,
             'status': self.status,
             'already_scanned': self.already_scanned
         }
 
 # User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
-# DaPaint.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='dapaint')
 
 class Advertiser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
