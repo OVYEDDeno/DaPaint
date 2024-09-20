@@ -32,8 +32,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         if (user.zipcode) updatedFields.zipcode = user.zipcode;
         if (user.phone) updatedFields.phone = user.phone;
         if (user.birthday) updatedFields.birthday = user.birthday; // Ensure correct format in the frontend if needed
-        if (user.instagram_url)
-          updatedFields.instagram_url = user.instagram_url;
+        if (user.instagram_url) updatedFields.instagram_url = user.instagram_url;
         if (user.tiktok_url) updatedFields.tiktok_url = user.tiktok_url;
         if (user.twitch_url) updatedFields.twitch_url = user.twitch_url;
         if (user.kick_url) updatedFields.kick_url = user.kick_url;

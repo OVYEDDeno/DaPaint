@@ -1,0 +1,46 @@
+.invite-picture {
+  /* margin-left: 10px; */
+  width: 68px;
+  height: 68px;
+  float: left;
+}
+
+.invite-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0 20px 0;
+}
+
+.invite-title {
+  flex: 1;
+  text-align: center;
+  font-style: normal;
+  color: white;
+  margin: 0;
+}
+
+.invite-close {
+  width: auto;
+  height: 38px;
+  cursor: pointer;
+  float: right;
+}
+
+.invite-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #e3e3e3;
+  color: #131313;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  border-radius: 34px;
+}
+
+.invite-content {
+  background-color: rgb(0, 0, 0);
+  padding: 20px;
+  box-shadow: 0px 0px 68px #333333;
+  border-radius: 34px;
+}

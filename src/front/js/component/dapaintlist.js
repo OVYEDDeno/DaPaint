@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import "../../styles/dapaintlist.css";
 import { DaPaintCreate } from "./dapaintcreate.js";
 
-const DaPaintList = ({ onClose }) => {
+export const DaPaintList = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [showDaPaintCreate, setShowDaPaintCreate] = useState(false);
@@ -188,12 +188,12 @@ const DaPaintList = ({ onClose }) => {
               >
                 DA PAINT
               </h1>
-              <button
-                type="button"
-                className="btn-close ms-auto"
+              <img
                 data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                alt="Close"
+                className="profile-close"
+              />
             </div>
             <div className="modal-body">
               <div className="form-control">
@@ -276,13 +276,13 @@ const DaPaintList = ({ onClose }) => {
                 <h5 className="modal-title" id="DaPaintCreateLabel">
                   DAPAINT
                 </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={handleCloseDaPaintCreate}
-                ></button>
+                <img
+                data-bs-dismiss="modal"
+                onClick={handleCloseDaPaintCreate}
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                alt="Close"
+                className="profile-close"
+              />              
               </div>
               <div className="modal-body">
                 <DaPaintCreate
@@ -299,5 +299,3 @@ const DaPaintList = ({ onClose }) => {
     </>
   );
 };
-
-export default DaPaintList;

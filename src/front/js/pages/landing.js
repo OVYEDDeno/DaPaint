@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
-import DaPaintList from "../component/dapaintlist.js";
+import {DaPaintList} from "../component/dapaintlist.js";
 import { DaPaintCreate } from "../component/dapaintcreate.js";
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
@@ -51,11 +51,10 @@ export const Landing = () => {
           <h1>
             {/* <EditProfile /> */}
             <Profile />
-            <Help />
           </h1>
           <div className="actions-section">
             <Invite />
-            <Setting />
+            <Setting />      
           </div>
         </header>
         <div className="custom-win-streak">
@@ -106,6 +105,7 @@ export const Landing = () => {
         <Lineup />
         <p></p>
         <p></p>
+            {/* <Help /> */}
         <div className="find-foe-section">
           {(store.userData.dapaintId && <Start />) || <DaPaintList />}
 

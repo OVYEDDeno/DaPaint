@@ -60,7 +60,7 @@ export const Setting = ({ onClose }) => {
       <button
         className="setting btn"
         data-bs-target="#setting"
-        data-bs-toggle="setting modal"
+        data-bs-toggle="modal"
       >
         <img
           src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
@@ -70,7 +70,7 @@ export const Setting = ({ onClose }) => {
       </button>
 
       <div
-        className="setting fade"
+        className="modal fade"
         id="setting"
         aria-labelledby="setting"
         aria-hidden="true"
@@ -78,74 +78,69 @@ export const Setting = ({ onClose }) => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="setting-content">
             <div className="setting-header" style={{ position: "justify" }}>
-              <img
-                data-bs-dismiss="setting modal"
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Cross-Mark-3d-icon.png"
+            <img
+                data-bs-dismiss="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                 alt="Close"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  width: "20px",
-                  height: "20px",
-                  cursor: "pointer",
-                }}
+                className="profile-close"
               />
               <h1
-                className="text-3x5 text-black"
-                style={{
-                  margin: "0 auto",
-                  textAlign: "center",
-                  fontStyle: "normal",
-                  // position: "absolute",
-                  // width: "0%",
-                }}
+                className="text-3x5 text-white"                
               >
                 SETTING
               </h1>
             </div>
 
-            <div className="setting-body">
+            <div id="modalBody" className="setting-body">
               <div className="flex flex-col space-y-4">
+                <div>
+                  <button
+                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                    data-bs-target="#DIDDYModal"
+                    data-bs-toggle="DIDDY modal"
+                  >
+                    HOW TO DIDDY
+                  </button>
+                </div>
 
-                <div><button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#DIDDYModal"
-                  data-bs-toggle="DIDDY modal"
-                >
-                  HOW TO DIDDY
-                </button></div>
+                <div>
+                  <button
+                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                    data-bs-target="#feedbackModal"
+                    data-bs-toggle="FEEDBACK modal"
+                  >
+                    FEEDBACK
+                  </button>
+                </div>
 
-                <div><button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#feedbackModal"
-                  data-bs-toggle="FEEDBACK modal"
-                >
-                  FEEDBACK
-                </button></div>
+                <div>
+                  <button
+                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                    data-bs-target="#TICKETSModal"
+                    data-bs-toggle="TICKETS modal"
+                  >
+                    TICKETS
+                  </button>
+                </div>
 
-                <div><button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#TICKETSModal"
-                  data-bs-toggle="TICKETS modal"
-                >
-                  TICKETS
-                </button></div>
+                <div>
+                  <button
+                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                    data-bs-target="#exampleModalToggle2"
+                    data-bs-toggle="modal"
+                  >
+                    {isActive ? "Deactivate" : "Activate"}
+                  </button>
+                </div>
 
-                <div><button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  data-bs-target="#exampleModalToggle2"
-                  data-bs-toggle="modal"
-                >
-                  {isActive ? "Deactivate" : "Activate"}
-                </button></div>
-
-                <div><button
-                  className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                  onClick={handleLogout}
-                >
-                  CLOCK OUT
-                </button></div>
+                <div>
+                  <button
+                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                    onClick={handleLogout}
+                  >
+                    CLOCK OUT
+                  </button>
+                </div>
               </div>
             </div>
           </div>

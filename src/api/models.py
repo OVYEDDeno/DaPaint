@@ -131,6 +131,7 @@ class DaPaint(db.Model):
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    # isBoosted = db.Column(db.Boolean, nullable=True)
 
     # # Host user results
     # host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -172,6 +173,7 @@ class DaPaint(db.Model):
             "location": self.location,
             "date_time": self.date_time.strftime("%m/%d/%Y %H:%M:%S"),
             "price": self.price,
+            # "isBoosted" : self.isBoosted,
             "host_winnerId": self.host_winnerId,
             "host_loserId": self.host_loserId,
             "host_winnerImg": self.host_winnerImg,
@@ -334,8 +336,8 @@ class Insight(db.Model):
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
     price = db.Column(db.Integer, db.ForeignKey('dapaint.price'), nullable=False)
     status = db.Column(db.String(50), nullable=False, default='active')
     already_scanned = db.Column(db.Boolean, default=False)

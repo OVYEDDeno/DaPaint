@@ -121,7 +121,7 @@ export const Profile = () => {
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                 alt="Close"
-                className="close-icon"
+                className="profile-close"
               />
             </div>
             <div className="profile-container">

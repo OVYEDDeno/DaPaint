@@ -91,17 +91,11 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   };
 
   return (
-    <>
-      <div className="modal-header">
-        <h1 className="modal-title text-2xl font-bold" id="DaPaintLabel">
-          DA PAINT
-        </h1>
-        {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseDaPaintCreate}></button> */}
-      </div>
+    <>      
       <div className="user-profile">
         <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
-          {/* <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
-          {/* <span>{username}</span> */}
+          <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" /> */}
+          <span>{username}</span>
           <span>
             {store.userData && store.userData.user?.profile_pic?.image_url}
           </span>

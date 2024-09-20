@@ -13,12 +13,31 @@
   color: white;
 } */
 
+.setting-content {
+  background-color: rgb(0, 0, 0);
+  padding: 20px;
+  box-shadow: 0px 0px 68px #333333;
+  border-radius: 34px;
+}
+
+#modalBody {
+  display: flex;
+  flex-direction: column;
+  background-color: #e3e3e3;
+  color: #131313;
+  width: 350px;
+  margin: 10px auto;
+  border-radius: 34px;
+}
+
 h2 {
   text-align: center;
   margin-bottom: 20px;
+  color: white;
 }
 
-.user-section, .details-section {
+.user-section,
+.details-section {
   margin-bottom: 20px;
   text-align: center;
 }
@@ -79,6 +98,6 @@ button[type="submit"] {
   width: 100%;
   border-radius: 5px;
 }
-.closeIcon{
-color: #fff;
+.closeIcon {
+  color: #fff;
 }
