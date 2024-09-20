@@ -94,17 +94,10 @@ export const Profile = () => {
   };
 
   return (
-    <>
-      {/* <button
-        className="btn btn-primary"
-        data-bs-target="#profileModal"
-        data-bs-toggle="modal"
-      >
-        Open Profile
-      </button> */}
+    <>    
       <button
         type="button"
-        className="btn btn-profile"
+        className="btn"
         data-bs-toggle="modal"
         data-bs-target="#profileModal"
       >
@@ -132,10 +125,8 @@ export const Profile = () => {
               />
             </div>
             <div className="profile-container">
-              <div className="profile-header">
                 <div className="profile-picture-section">
                   <div
-                    className="d-flex"
                     data-bs-target="#editProfileModal"
                     data-bs-toggle="modal"
                   >
@@ -149,7 +140,6 @@ export const Profile = () => {
                     </div>
                   </div>
                 </div>
-              </div>
               <table className="stats-table">
                 <tbody>
                   <tr>
