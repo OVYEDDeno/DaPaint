@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
-import {DaPaintList} from "../component/dapaintlist.js";
+import { DaPaintList } from "../component/dapaintlist.js";
 import { DaPaintCreate } from "../component/dapaintcreate.js";
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
@@ -43,7 +43,10 @@ export const Landing = () => {
       100
   );
   console.log("max Win Streak", maxWinStreak);
-
+  {
+    /* <div>
+    {userData && store.userData.user?.name ? */
+  }
   return (
     <div className={`home-container`}>
       <main className="main-body">
@@ -54,7 +57,7 @@ export const Landing = () => {
           </h1>
           <div className="actions-section">
             <Invite />
-            <Setting />      
+            <Setting />
           </div>
         </header>
         <div className="custom-win-streak">
@@ -105,7 +108,7 @@ export const Landing = () => {
         <Lineup />
         <p></p>
         <p></p>
-            {/* <Help /> */}
+        {/* <Help /> */}
         <div className="find-foe-section">
           {(store.userData.dapaintId && <Start />) || <DaPaintList />}
 
@@ -116,3 +119,7 @@ export const Landing = () => {
     </div>
   );
 };
+{
+  /* : <p>Can't get the current user</p>}
+     </div>*/
+}

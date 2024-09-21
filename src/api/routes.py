@@ -12,6 +12,7 @@ import string
 from sendgrid.helpers.mail import Mail
 from api.send_email import send_email
 
+
 api = Blueprint('api', __name__)
 WINSTREAK_GOAL = os.getenv("WINSTREAK_GOAL") or 30
 CORS(api)
@@ -279,6 +280,39 @@ def create_dapaint():
 
     return jsonify(new_dapaint.serialize()), 201
 
+@api.route('/lineup/<int:id>', methods=['PATCH'])
+@jwt_required()
+def update_lineup(id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    # Fetch the event by its ID
+    event = DaPaint.query.get(id)
+
+    if not event:
+        return jsonify({"error": "Event not found"}), 404
+
+    # Only update if the user is not the host (similar to your frontend logic)
+    if event.hostFoeId == user_id:
+        return jsonify({"error": "You cannot clock into your own event"}), 403
+
+    # Check if foeId is in the request body
+    foe_id = data.get('foeId')
+    if foe_id:
+        event.foeId = foe_id
+    else:
+        return jsonify({"error": "foeId is required"}), 400
+
+    # Commit the changes to the database
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    # Return the updated event
+    return jsonify(event.serialize()), 200
+
 
 @api.route('/lineup', methods=['GET'])
 @jwt_required()
@@ -467,20 +501,20 @@ def get_notifications():
 @jwt_required()
 def send_notification(platform):
     data = request.get_json()
-    participant_id=data.get("participantId")
+    indulger_id=data.get("indulgerId")
     
     if platform not in ['instagram', 'tiktok', 'twitch', 'kick', 'youtube', 'twitter', 'facebook']:
         return jsonify({"msg": "Invalid platform specified"}), 400
 
-    participant = User.query.get(participant_id)
+    indulger = User.query.get(indulger_id)
     
-    if not participant:
-        return jsonify({"msg": "Participant not found"}), 404
+    if not indulger:
+        return jsonify({"msg": "Indulger not found"}), 404
 
     # Create a notification to prompt the user to add their social media link
     message = f"Please update your profile to add a {platform.capitalize()} link."
 
-    notification = Notifications(user_id=participant.id, type="reminder", message=message)
+    notification = Notifications(user_id=indulger.id, type="reminder", message=message)
     db.session.add(notification)
     db.session.commit()
 
@@ -533,6 +567,13 @@ def process_invite_code():
     if not invite_code_record or invite_code_record.inviter_id == current_user_id:
         return jsonify({"message": "Invalid invite code"}), 400
 
+    # Check if the count field is initialized; if not, set it to 0
+    if invite_code_record.count is None:
+        invite_code_record.count = 0
+
+    # Increment the count by 1
+    invite_code_record.count += 1
+
     # Create an association between the current user and the invite code
     db.session.execute(invitee_association.insert().values(
         invite_code_id=invite_code_record.id,
@@ -546,5 +587,6 @@ def process_invite_code():
     # Return success response
     return jsonify({
         "message": "Invite code processed successfully",
-        "hasInviter": True
+        "hasInviter": True,
+        "new_count": invite_code_record.count  # Return the updated count
     }), 200

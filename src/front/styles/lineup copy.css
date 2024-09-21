@@ -3,7 +3,7 @@
   max-width: 400px;
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
-  border-radius: 17px;
+  border-radius: 21px;
   box-shadow: 0px 0px 51px #333333;
   position: relative;
   justify-content: center;
@@ -47,7 +47,7 @@
 .user img {
   width: 100px; /* Adjust this to control the size of the profile image */
   height: 100px;
-  border-radius: 50%; /* Makes the image circular */
+  border-radius: 21px; /* Makes the image circular */
   margin-bottom: 5px; /* Adds space between the image and the name */
 }
 
@@ -58,7 +58,7 @@
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 21px;
 }
 
 .user button:hover {

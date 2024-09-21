@@ -43,6 +43,58 @@ export const DaPaintList = ({ onClose }) => {
     );
   }, [store.userData]);
 
+  // const handleClockIn = async (event) => {
+  //   const token = localStorage.getItem("token");
+  //   const userId = store.userData.user?.id;
+  //   console.log("userId: ", userId);
+
+  //   if (event.hostFoeId !== userId) {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.BACKEND_URL}/api/lineup/${event.id}`,
+  //         {
+  //           method: "PATCH",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //           body: JSON.stringify({ foeId: userId }),
+  //         }
+  //       );
+
+  //       if (response.ok) {
+  //         const updatedEvent = await response.json();
+  //         console.log("Updated event:", updatedEvent);
+
+  //         setEvents((prevEvents) =>
+  //           prevEvents.map((evt) =>
+  //             evt.id === updatedEvent.id ? updatedEvent : evt
+  //           )
+  //         );
+
+  //         const eventsToDelete = events.filter(
+  //           (event) => event.hostFoeId.id === userId
+  //         );
+  //         for (const event of eventsToDelete) {
+  //           await handleDelete(event.id);
+  //         }
+
+  //         closeCurrentModal("DaPaint");
+
+  //         const lineupModal = new bootstrap.Modal(document.getElementById('lineUp'));
+  //         lineupModal.show();
+
+  //         window.location.reload();
+  //       } else {
+  //         const error = await response.json();
+  //         console.error("Failed to clock in for event:", error);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   }
+  // };
+
   const addNewEvent = (newEvent) => {
     setEvents((prevEvents) => [...prevEvents, newEvent]);
     setShowDaPaintCreate(false);
@@ -96,29 +148,6 @@ export const DaPaintList = ({ onClose }) => {
     const modal = bootstrap.Modal.getInstance(currentModal);
     if (modal) {
       modal.hide();
-    }
-  };
-  
-  
-  const handleClockIn = async (event) => {
-    try {
-      const updatedDapaint = await actions.handleClockIn(event);
-      if (updatedDapaint) {
-        setEvents(prevEvents => prevEvents.map(e => e.id === updatedDapaint.id ? updatedDapaint : e));
-        console.log("Successfully clocked in!");
-        
-        // Close the current modal
-        closeCurrentModal("DaPaint");
-
-        // Open the lineUp modal
-        const lineUpModal = document.getElementById("lineUp");
-        if (lineUpModal) {
-          const modal = new bootstrap.Modal(lineUpModal);
-          modal.show();
-        }
-      }
-    } catch (error) {
-      console.error('Error clocking in:', error);
     }
   };
 

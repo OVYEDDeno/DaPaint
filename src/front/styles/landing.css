@@ -70,7 +70,7 @@ body {
   background-color: #000000;
   color: #ffffff;
   border: none;
-  border-radius: 5px;
+  border-radius: 21px;
   cursor: pointer;
   font-weight: bold;
 }
@@ -112,7 +112,7 @@ body {
 
 .custom-progress-bar {
   background-color: rgb(0, 0, 0);
-  border-radius: 5px;
+  border-radius: 21px;
   height: 30px;
   flex: 1;
   position: relative;
@@ -126,7 +126,7 @@ body {
 .custom-progress {
   background-color: #f5c116;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 21px;
   position: relative;
   transition: width 0.3s;
 }
@@ -135,7 +135,7 @@ body {
   width: 30px;
   height: 30px;
   background-color: #f5c116;
-  border-radius: 50%;
+  border-radius: 21px;
   display: flex;
   align-items: center;
   justify-content: center;

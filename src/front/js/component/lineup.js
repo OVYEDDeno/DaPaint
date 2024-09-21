@@ -72,7 +72,7 @@ export const Lineup = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ participantId: userId }),
+          body: JSON.stringify({ indulgerId: userId }),
         });
 
         if (response.ok) {

@@ -32,7 +32,7 @@ class User(db.Model):
     password = db.Column(db.String(512), nullable=False)
     
     # User Type
-    # user_type = db.Column(db.String(50), nullable=False, default='user')
+    # user_type = db.Column(db.String(50), default='user')
     # Relationships for Admin and Advertiser
     admin_profile = db.relationship('Insight', back_populates='user', uselist=False, cascade='all, delete-orphan')
     advertiser_profile = db.relationship('Advertiser', back_populates='user', uselist=False, cascade='all, delete-orphan')
@@ -84,7 +84,7 @@ class User(db.Model):
             "facebook_url": self.facebook_url,
             "invite_code": self.invite_code.serialize() if self.invite_code else None,
             "invited_by": self.invited_by.serialize() if self.invited_by else None,
-            "user_type": self.user_type,
+            # "user_type": self.user_type,
             "admin_profile": self.admin_profile.serialize() if self.admin_profile else None,
             "advertiser_profile": self.advertiser_profile.serialize() if self.advertiser_profile else None,
         }
@@ -94,6 +94,7 @@ class InviteCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(10), unique=True, nullable=False)
     inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    count= db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
 
     # Relationships
@@ -108,6 +109,7 @@ class InviteCode(db.Model):
             'id': self.id,
             'code': self.code,
             'inviter_id': self.inviter_id,
+            'count': self.count,
             'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S"),
             'invitees': [invitee.id for invitee in self.invitees],
             'completed_dapaints': [dapaint.id for dapaint in self.completed_dapaints]
@@ -132,16 +134,16 @@ class DaPaint(db.Model):
     price = db.Column(db.Integer, nullable=False)
     winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    # isBoosted = db.Column(db.Boolean, nullable=True)
+    isBoosted = db.Column(db.Boolean, nullable=True)
 
     # # Host user results
-    # host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    # host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    host_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    host_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     host_winnerImg = db.Column(db.String(250), nullable=True)
 
     # # Foe user results
-    # foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    # foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    foe_winnerId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    foe_loserId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     foe_winnerImg = db.Column(db.String(250), nullable=True)
 
     # Relationships for host and foe

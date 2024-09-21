@@ -154,6 +154,33 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
+      handleClockIn: async (dapaint) => {
+        const store = getStore();
+        const token = localStorage.getItem("token");
+        const userId = store.userData.user.id; // Make sure this is the correct path to the user ID
+      
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/lineup/${dapaint.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ foeId: userId })
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to clock in');
+          }
+          const updatedDapaint = await response.json();
+          return updatedDapaint;
+        } catch (error) {
+          console.error('Error clocking in:', error);
+          throw error; // Re-throw the error so it can be caught in the component
+        }
+      },
+      
+
       createDaPaint: async (newDaPaint) => {
         let response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
           method: "POST",
