@@ -94,29 +94,36 @@ export const Profile = () => {
   };
 
   return (
-    <>    
+    <>
+      {/* Profile Button that opens the Profile Modal */}
       <button
         type="button"
         className="btn"
         data-bs-toggle="modal"
         data-bs-target="#profileModal"
       >
-        <div className="profile-header">
-          <div className="profile-picture-section">
-            <img src={previewURL} alt="Profile" className="profile-picture" />
-            <div className="profile-name">
-              <h3>{store.userData && store.userData.user?.name}</h3>
-            </div>
-          </div>
+        <div className="profile-picture-section">
+          <img src={previewURL} alt="Profile" className="profile-picture" />
+          <h3 className="userName">
+            {store.userData && store.userData.user?.name}
+          </h3>
         </div>
       </button>
 
       {/* Profile Modal */}
-      <div className="modal fade" /*this is super important*/ id="profileModal">
+      <div
+        className="modal fade"
+        id="profileModal"
+        aria-hidden="true"
+        aria-labelledby="profileModalLabel"
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="profile-content">
+          <div className="modal-content">
             <div className="profile-header">
-              <h1 className="profile-title">PROFILE</h1>
+              <h1 className="profile-title" id="profileModalLabel">
+                PROFILE
+              </h1>
               <img
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -124,51 +131,56 @@ export const Profile = () => {
                 className="profile-close"
               />
             </div>
-            <div className="profile-container">
-                <div className="profile-picture-section">
-                  <div
-                    data-bs-target="#editProfileModal"
-                    data-bs-toggle="modal"
-                  >
+
+            <div className="modal-body">
+              <div className="profile-container">
+                <button
+                  type="button"
+                  className="btn"
+                  data-bs-dismiss="modal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editProfileModal"
+                >
+                  <div className="profile-picture-section">
                     <img
-                      src={profileImageUrl}
+                      src={previewURL}
                       alt="Profile"
                       className="profile-picture"
                     />
-                    <div className="profile-name">
+                    <h3 className="userName">
                       {store.userData && store.userData.user?.name}
-                    </div>
+                    </h3>
                   </div>
-                </div>
-              <table className="stats-table">
-                <tbody>
-                  <tr>
-                    <td>Total</td>
-                    <td className="total">
-                      {store.userData &&
-                        store.userData.user?.wins + store.userData.user?.losses}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Wins</td>
-                    <td className="wins">
-                      {store.userData && store.userData.user?.wins}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Losses</td>
-                    <td className="losses">
-                      {store.userData && store.userData.user?.losses}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Disqualifications</td>
-                    <td className="disqualifications">
-                      {store.userData && store.userData.user?.disqualifications}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </button>
+
+                {/* Profile stats table */}
+                <table className="stats-table">
+                  <tbody>
+                    <tr>
+                      <td>Total</td>
+                      <td className="total">
+                        {store.userData &&
+                          store.userData.user?.wins +
+                            store.userData.user?.losses}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Wins</td>
+                      <td className="wins">{store.userData?.user?.wins}</td>
+                    </tr>
+                    <tr>
+                      <td>Losses</td>
+                      <td className="losses">{store.userData?.user?.losses}</td>
+                    </tr>
+                    <tr>
+                      <td>Disqualifications</td>
+                      <td className="disqualifications">
+                        {store.userData?.user?.disqualifications}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -184,146 +196,128 @@ export const Profile = () => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="editProfileModalLabel">
-                Edit Profile
+            <div className="profile-header">
+              <h1 className="profile-title" id="profileModalLabel">
+                EDIT PROFILE
               </h1>
-              <button
-                type="button"
-                className="btn-close"
+              <img
                 data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                alt="Close"
+                className="profile-close"
+              />
             </div>
-            <div className="modal-body">
-              <div className="flex items-center mb-6">
-                <div className="text-center">
-                  <img
-                    src={profileImageUrl}
-                    alt="Profile Picture"
-                    className="rounded-circle img-fluid"
-                    style={{ width: "30px", height: "30px" }}
-                  />
-                  <input
-                    type="file"
-                    id="profile-picture"
-                    className="form-control-file"
-                    onChange={handleImageUpload}
-                  />
-                  <button className="btn btn-primary" onClick={handleNewImage}>
-                    Upload Photo
-                  </button>
-                  {imageSizeError && (
-                    <div className="text-danger">
-                      Image size exceeds the limit.
-                    </div>
-                  )}
-                </div>
+
+            <div className="profile-container">
+              {/* Profile picture and upload logic */}
+              <div className="text-center mb-6">
+                <img
+                  src={profileImageUrl}
+                  alt="Profile Picture"
+                  className="rounded-circle img-fluid"
+                  style={{ width: "30px", height: "30px" }}
+                />
+                <input
+                  type="file"
+                  id="profile-picture"
+                  className="form-control-file"
+                  onChange={handleImageUpload}
+                />
+                <button className="btn btn-primary" onClick={handleNewImage}>
+                  Upload Photo
+                </button>
+                {imageSizeError && (
+                  <div className="text-danger">
+                    Image size exceeds the limit.
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-2 flex-1">
-                <div className="bg-white p-2 rounded-full">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Name"
-                    className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div className="bg-white p-2 rounded-full">
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="City"
-                    className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div className="bg-white p-2 rounded-full">
-                  <input
-                    type="text"
-                    value={zipcode}
-                    onChange={(e) => setZipcode(e.target.value)}
-                    placeholder="Zipcode"
-                    className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div className="bg-white p-2 rounded-full">
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Phone number"
-                    className="bg-white w-full outline-none"
-                  />
-                </div>
+              {/* Input fields for user details */}
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Name"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="City"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                  placeholder="Zipcode"
+                  className="form-control"
+                />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone number"
+                  className="form-control"
+                />
+
+                {/* Social Media Input Fields */}
                 <h3>Social Media</h3>
-                <div>
-                  <input
-                    type="Instagram"
-                    value={instagram_url}
-                    placeholder="Instagram"
-                    onChange={(e) => setInstagram_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Tiktok"
-                    value={tiktok_url}
-                    placeholder="TikTok"
-                    onChange={(e) => setTiktok_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Twitch"
-                    value={twitch_url}
-                    placeholder="Twitch"
-                    onChange={(e) => setTwitch_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Kick"
-                    value={kick_url}
-                    placeholder="Kick"
-                    onChange={(e) => setKick_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Youtube"
-                    value={youtube_url}
-                    placeholder="Youtube"
-                    onChange={(e) => setYoutube_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Twitter"
-                    value={twitter_url}
-                    placeholder="Twitter"
-                    onChange={(e) => setTwitter_url(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="Facebook"
-                    value={facebook_url}
-                    placeholder="Facebook"
-                    onChange={(e) => setPhone(e.target.value)}
-                    // className="bg-white w-full outline-none"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={instagram_url}
+                  onChange={(e) => setInstagram_url(e.target.value)}
+                  placeholder="Instagram"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={tiktok_url}
+                  onChange={(e) => setTiktok_url(e.target.value)}
+                  placeholder="TikTok"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={twitch_url}
+                  onChange={(e) => setTwitch_url(e.target.value)}
+                  placeholder="Twitch"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={kick_url}
+                  onChange={(e) => setKick_url(e.target.value)}
+                  placeholder="Kick"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={youtube_url}
+                  onChange={(e) => setYoutube_url(e.target.value)}
+                  placeholder="Youtube"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={twitter_url}
+                  onChange={(e) => setTwitter_url(e.target.value)}
+                  placeholder="Twitter"
+                  className="form-control"
+                />
+                <input
+                  type="text"
+                  value={facebook_url}
+                  onChange={(e) => setFacebook_url(e.target.value)}
+                  placeholder="Facebook"
+                  className="form-control"
+                />
               </div>
             </div>
+
             <div className="modal-footer">
               <button className="btn btn-secondary" data-bs-dismiss="modal">
                 Close
@@ -337,8 +331,9 @@ export const Profile = () => {
               </button>
               <button
                 className="btn btn-primary"
-                data-bs-target="#profileModal"
+                data-bs-dismiss="modal"
                 data-bs-toggle="modal"
+                data-bs-target="#profileModal"
               >
                 Back to Profile
               </button>

@@ -77,69 +77,63 @@ export const Setting = ({ onClose }) => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="setting-content">
-            <div className="setting-header" style={{ position: "justify" }}>
-            <img
+            <div className="setting-header">
+              <h1 className="text-3x5 text-white">SETTING</h1>
+              <img
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                 alt="Close"
                 className="profile-close"
               />
-              <h1
-                className="text-3x5 text-white"                
-              >
-                SETTING
-              </h1>
             </div>
 
             <div id="modalBody" className="setting-body">
               <div className="flex flex-col space-y-4">
-                <div>
-                  <button
-                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                    data-bs-target="#DIDDYModal"
-                    data-bs-toggle="DIDDY modal"
-                  >
-                    HOW TO DIDDY
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                    data-bs-target="#feedbackModal"
-                    data-bs-toggle="FEEDBACK modal"
-                  >
-                    FEEDBACK
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                    data-bs-target="#TICKETSModal"
-                    data-bs-toggle="TICKETS modal"
-                  >
-                    TICKETS
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                    data-bs-target="#exampleModalToggle2"
-                    data-bs-toggle="modal"
-                  >
-                    {isActive ? "Deactivate" : "Activate"}
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                    onClick={handleLogout}
-                  >
-                    CLOCK OUT
-                  </button>
+                <div className="allButtons">
+                  <div>
+                    <button
+                      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                      data-bs-target="#DIDDYModal"
+                      data-bs-toggle="DIDDY modal"
+                    >
+                      HOW TO DIDDY
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                      data-bs-target="#feedbackModal"
+                      data-bs-toggle="FEEDBACK modal"
+                    >
+                      FEEDBACK
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                      data-bs-target="#TICKETSModal"
+                      data-bs-toggle="TICKETS modal"
+                    >
+                      TICKETS
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                      data-bs-target="#exampleModalToggle2"
+                      data-bs-toggle="modal"
+                    >
+                      {isActive ? "Deactivate" : "Activate"}
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
+                      onClick={handleLogout}
+                    >
+                      CLOCK OUT
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
