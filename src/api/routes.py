@@ -325,10 +325,38 @@ def get_all_dapaint():
     if is_accepted == '1':
         dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None), DaPaint.winnerId == None).all()
     else:
-        dapaint = db.session.query(DaPaint).join(User, DaPaint.hostFoeId == User.id).filter(DaPaint.foeId.is_(None), User.winstreak == winstreak).all()
+        subquery = db.session.query(DaPaint.hostFoeId).filter(DaPaint.foeId.isnot(None)).subquery()
 
+        # Main query to exclude users who have matches with a foe
+        dapaint = db.session.query(DaPaint).join(User, DaPaint.hostFoeId == User.id)\
+            .filter(DaPaint.foeId.is_(None), User.winstreak == winstreak)\
+            .filter(~DaPaint.hostFoeId.in_(subquery)).all()
     return jsonify([paint.serialize() for paint in dapaint]), 200
 
+@api.route('/checktime', methods=['GET'])
+def check_time():
+    # Get current time
+    current_time = datetime.now()
+
+    # Query to find all DaPaint records where date_time is in the past
+    past_records = db.session.query(DaPaint).filter(DaPaint.date_time < current_time, or_(DaPaint.foeId.is_(None), and_(DaPaint.loserId.isnot(None), DaPaint.winnerId.isnot(None))))
+
+
+    time_threshold = datetime.now() - timedelta(hours=24)
+    # Query to find all Notifications created more than 24 hours ago
+    past_notif = db.session.query(Notifications).filter(Notifications.created_at < time_threshold)
+
+    for match in past_records:
+        message = f"Your Expired DaPaint on {match.date_time} has been deleted."
+
+        notification = Notifications(user_id=match.hostFoeId, type="Past Due", message=message)
+        db.session.add(notification)
+    
+    past_records.delete(synchronize_session=False)
+    past_notif.delete(synchronize_session=False)
+    db.session.commit()
+
+    return jsonify(message="Expired Records Deleted")
 
 @api.route('/dapaint/report/<int:id>', methods=['PUT'])
 @jwt_required()
