@@ -112,7 +112,7 @@ export const Landing = () => {
         <div className="find-foe-section">
           {(store.userData.dapaintId && <Start />) || <DaPaintList />}
 
-          {/* <Wallet/> */}
+          <Wallet/>
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

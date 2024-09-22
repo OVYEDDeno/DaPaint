@@ -101,13 +101,16 @@ body {
 .find-foe-section {
   margin: 10px;
 }
-
+h4 {
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
 .custom-progress-container {
   position: relative;
   display: flex;
   align-items: center;
   width: 60%;
-  /* height: 20px; */
 }
 
 .custom-progress-bar {
@@ -132,32 +135,28 @@ body {
 }
 
 .custom-circle {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   background-color: #f5c116;
-  border-radius: 21px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
 }
 
-h4 {
-  line-height: 1.2;
-  margin: 0;
-  padding: 0;
-}
-
 .custom-circle.custom-start {
-  left: 10px;
-  top: 1%;
+  left: -17px; /* Center the circle at the left end */
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 999;
   color: rgb(255, 255, 255);
 }
 
 .custom-circle.custom-end {
-  right: -15px;
-  top: 1%;
+  right: -17px; /* Center the circle at the right end */
+  top: 50%;
+  transform: translateY(-50%);
   color: rgb(255, 255, 255);
   background-color: #000000;
 }
@@ -169,7 +168,7 @@ h4 {
   width: 100%;
   position: absolute;
   z-index: 999;
-  top: 53%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgb(255, 255, 255);
