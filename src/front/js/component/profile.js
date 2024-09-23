@@ -210,12 +210,12 @@ export const Profile = () => {
 
             <div className="profile-container">
               {/* Profile picture and upload logic */}
-              <div className="text-center mb-6">
+              <div className="text-center m-6">
                 <img
                   src={profileImageUrl}
                   alt="Profile Picture"
                   className="rounded-circle img-fluid"
-                  style={{ width: "30px", height: "30px" }}
+                  style={{ width: "68px", height: "68px" }}
                 />
                 <input
                   type="file"
@@ -223,7 +223,7 @@ export const Profile = () => {
                   className="form-control-file"
                   onChange={handleImageUpload}
                 />
-                <button className="btn btn-primary" onClick={handleNewImage}>
+                <button className="btn btn-secondary" onClick={handleNewImage}>
                   Upload Photo
                 </button>
                 {imageSizeError && (
@@ -318,19 +318,19 @@ export const Profile = () => {
               </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="profile-footer">
               <button className="btn btn-secondary" data-bs-dismiss="modal">
                 Close
               </button>
               <button
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 onClick={handleEditSubmit}
                 data-bs-dismiss="modal"
               >
                 Save
               </button>
               <button
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
                 data-bs-toggle="modal"
                 data-bs-target="#profileModal"

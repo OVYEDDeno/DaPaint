@@ -401,7 +401,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({ WinStreakGoal: data.WinStreakGoal });
           setMaxWinStreak(data.user?.maxWinStreak);
           setGoalWinStreak(data.user?.WinStreakGoal);
-          setMaxWinStreakUser(data.user?.maxWinStreakUser.name);
+          setMaxWinStreakUser(data.user?.maxWinStreakUser.user?.name);
         } catch (error) {
           console.error("Error fetching max win streak:", error);
         }

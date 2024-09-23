@@ -422,6 +422,41 @@ def create_report():
 
     return jsonify({"msg": "Report successfully created"}), 201
 
+@api.route('/api/max-win-streak', methods=['GET'])
+@jwt_required()
+def get_max_win_streak():
+    # Get the current user ID from the JWT token
+    user_id = get_jwt_identity()
+
+    # Fetch the user from the database
+    user = User.query.filter_by(id=user_id).first()
+
+    # Check if the user exists
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    # Find the user with the max win streak
+    max_winstreak_user = User.query.order_by(User.winstreak.desc()).first()
+
+    try:
+        # Prepare the response data
+        response = {
+            "user": {
+                "maxWinStreak": user.winstreak,
+                "WinStreakGoal": None,  # Do not return here; it's already in the store
+                "maxWinStreakUser": {
+                    "user": {
+                        "name": max_winstreak_user.name,
+                        "winstreak": max_winstreak_user.winstreak
+                    }
+                }
+            }
+        }
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"msg": "Error fetching max win streak", "error": str(e)}), 500
+
+
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
 def update_win_streak(dapaint_id):

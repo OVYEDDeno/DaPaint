@@ -1,7 +1,6 @@
 /* start.css */
 
 .modal-body {
-  /* background-color: #ff0000; */
   border-radius: 8px;
   padding: 20px;
 }
@@ -42,12 +41,21 @@ form {
   margin-bottom: 10px;
 }
 
-.user-section .user-vote {
+.user-vote {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr; /* Three columns: name, winner button, loser button */
+  align-items: center; /* Align items vertically in the center */
+  margin-top: 10px; /* Space between user sections */
+}
+
+.user-name {
+  color: #ffffff;
+  margin-right: 10px; /* Space between name and buttons */
+}
+
+.vote-buttons {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 10px;
+  flex-direction: row; /* Keep buttons in a row */
 }
 
 .user-vote span {

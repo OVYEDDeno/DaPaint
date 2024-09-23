@@ -68,7 +68,7 @@ export const Help = () => {
       <div
         className="modal fade"
         id="WLSubmodal"
-        data-bs-backdrop="static"
+        // data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
         aria-labelledby="staticBackdropLabel"
@@ -78,12 +78,12 @@ export const Help = () => {
           <div className="modal-body">
             <div className="wlsub-container">
               <div className="d-flex justify-content-center align-items-center">
-                <h1
+                {/* <h1
                   className="modal-title text-white text-2xl font-bold"
                   id="WLSubLabel"
                 >
                   HOW TO DIDDY
-                </h1>
+                </h1> */}
                 <button
                   type="button"
                   className="btn btn-secondary ms-3"

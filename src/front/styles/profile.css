@@ -7,10 +7,6 @@
   color: white;
 }
 
-.userName:hover {
-  color: #f5c116;
-}
-
 .profile-header {
   display: flex;
   align-items: center;
@@ -82,4 +78,41 @@
 
 .stats-table td.disqualifications {
   color: orange;
+}
+.form-control-file{
+  padding-left: 15%;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  width: 90%;
+  height: auto;
+  font-size: 21px;
+  color: #131313;
+  border: 1px solid #cccccc;
+  border-radius: 21px;
+}
+
+.profile-footer{
+  margin: 20px;
+  text-align: center;
+  color: #ffffff;
+}
+.btn{
+  background-color: transparent; /* Original button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 21px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); Adds a subtle shadow effect */
+}
+.btn:hover {
+  margin: 10px;
+  background-color: #1a1a1a; /* Slightly lighter background on hover */
+  border-radius: 21px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
 }
