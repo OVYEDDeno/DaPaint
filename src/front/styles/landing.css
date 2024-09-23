@@ -135,8 +135,8 @@ h4 {
 }
 
 .custom-circle {
-  width: 34px;
-  height: 34px;
+  width: 51px;
+  height: 51px;
   background-color: #f5c116;
   border-radius: 50%;
   display: flex;
@@ -146,7 +146,7 @@ h4 {
 }
 
 .custom-circle.custom-start {
-  left: -17px; /* Center the circle at the left end */
+  left: 17px; /* Center the circle at the left end */
   top: 50%;
   transform: translateY(-50%);
   z-index: 999;
