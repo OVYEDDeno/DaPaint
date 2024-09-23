@@ -169,17 +169,17 @@ export const Lineup = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
-              <div className="modal-header">
-                <h5 className="modal-title" id="lineUpLabel">
-                  LINEUP
-                </h5>
-                <img
+            <div className="profile-header">
+              <h1 className="profile-title" id="lineUpLabel">
+              LINEUP
+              </h1>
+              <img
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                 alt="Close"
                 className="profile-close"
               />
-              </div>
+            </div>              
               <input
                 type="text"
                 value={searchTerm}

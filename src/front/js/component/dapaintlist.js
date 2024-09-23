@@ -98,15 +98,18 @@ export const DaPaintList = ({ onClose }) => {
       modal.hide();
     }
   };
-  
-  
+
   const handleClockIn = async (event) => {
     try {
       const updatedDapaint = await actions.handleClockIn(event);
       if (updatedDapaint) {
-        setEvents(prevEvents => prevEvents.map(e => e.id === updatedDapaint.id ? updatedDapaint : e));
+        setEvents((prevEvents) =>
+          prevEvents.map((e) =>
+            e.id === updatedDapaint.id ? updatedDapaint : e
+          )
+        );
         console.log("Successfully clocked in!");
-        
+
         // Close the current modal
         closeCurrentModal("DaPaint");
 
@@ -118,7 +121,7 @@ export const DaPaintList = ({ onClose }) => {
         }
       }
     } catch (error) {
-      console.error('Error clocking in:', error);
+      console.error("Error clocking in:", error);
     }
   };
 
@@ -152,12 +155,9 @@ export const DaPaintList = ({ onClose }) => {
       >
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
-            <div className="modal-header d-flex justify-content-between align-items-center">
-              <h1
-                className="modal-title text-2xl font-bold mx-auto"
-                id="DaPaintLabel"
-              >
-                DA PAINT
+            <div className="profile-header">
+              <h1 className="profile-title" id="DAPAINTLabel">
+                DAPAINT
               </h1>
               <img
                 data-bs-dismiss="modal"
@@ -166,6 +166,7 @@ export const DaPaintList = ({ onClose }) => {
                 className="profile-close"
               />
             </div>
+
             <div className="modal-body">
               <div className="form-control">
                 <input
@@ -220,13 +221,13 @@ export const DaPaintList = ({ onClose }) => {
                 ))}
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="dapaint-footer">
               <button
                 type="button"
-                className="mt-6 w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition"
                 onClick={handleAddEventClick}
+                className="btn btn-danger"
               >
-                +Add
+                <h1>+ADD</h1>
               </button>
             </div>
           </div>
@@ -248,12 +249,12 @@ export const DaPaintList = ({ onClose }) => {
                   DAPAINT
                 </h5>
                 <img
-                data-bs-dismiss="modal"
-                onClick={handleCloseDaPaintCreate}
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
-                alt="Close"
-                className="profile-close"
-              />              
+                  data-bs-dismiss="modal"
+                  onClick={handleCloseDaPaintCreate}
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="profile-close"
+                />
               </div>
               <div className="modal-body">
                 <DaPaintCreate
