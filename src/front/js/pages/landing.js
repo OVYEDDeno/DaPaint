@@ -24,12 +24,12 @@ export const Landing = () => {
   const [maxWinStreakUser, setMaxWinStreakUser] = useState();
   const navigate = useNavigate();
   useEffect(() => {
+    actions.fetchAndSetUser(setUser, setCurrentWinStreak);
     actions.fetchMaxWinStreak(
       setMaxWinStreak,
       setGoalWinStreak,
       setMaxWinStreakUser
     );
-    actions.fetchAndSetUser(setUser, setCurrentWinStreak);
   }, []);
 
   console.log(

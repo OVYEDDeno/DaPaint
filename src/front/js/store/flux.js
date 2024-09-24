@@ -32,7 +32,8 @@ const getState = ({ getStore, getActions, setStore }) => {
         if (user.zipcode) updatedFields.zipcode = user.zipcode;
         if (user.phone) updatedFields.phone = user.phone;
         if (user.birthday) updatedFields.birthday = user.birthday; // Ensure correct format in the frontend if needed
-        if (user.instagram_url) updatedFields.instagram_url = user.instagram_url;
+        if (user.instagram_url)
+          updatedFields.instagram_url = user.instagram_url;
         if (user.tiktok_url) updatedFields.tiktok_url = user.tiktok_url;
         if (user.twitch_url) updatedFields.twitch_url = user.twitch_url;
         if (user.kick_url) updatedFields.kick_url = user.kick_url;
@@ -158,28 +159,30 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         const token = localStorage.getItem("token");
         const userId = store.userData.user.id; // Make sure this is the correct path to the user ID
-      
+
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/lineup/${dapaint.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ foeId: userId })
-          });
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/lineup/${dapaint.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ foeId: userId }),
+            }
+          );
           if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to clock in');
+            throw new Error(errorData.error || "Failed to clock in");
           }
           const updatedDapaint = await response.json();
           return updatedDapaint;
         } catch (error) {
-          console.error('Error clocking in:', error);
+          console.error("Error clocking in:", error);
           throw error; // Re-throw the error so it can be caught in the component
         }
       },
-      
 
       createDaPaint: async (newDaPaint) => {
         let response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
@@ -394,16 +397,17 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Failed to retrieve max win streak:",
               response.statusText
             );
-            return;
+            return null;
           }
           const data = await response.json();
           console.log("FLUX:ACTIONS.FETCHMAXWINSTREAK.DATA", data);
           setStore({ WinStreakGoal: data.WinStreakGoal });
           setMaxWinStreak(data.user?.maxWinStreak);
           setGoalWinStreak(data.user?.WinStreakGoal);
-          setMaxWinStreakUser(data.user?.maxWinStreakUser.user?.name);
+          setMaxWinStreakUser(data.user?.maxWinStreakUser.user.name);
         } catch (error) {
           console.error("Error fetching max win streak:", error);
+          return null;
         }
       },
 
