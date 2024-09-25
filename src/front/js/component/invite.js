@@ -109,7 +109,7 @@ export const Invite = ({ onClose }) => {
                 <p className="text-center m-3">
                   Invite the most people by the end of this winstreak and win
                   500K!
-                </p><h5 className="font-bold mb-2">Your Invite Code</h5>
+                </p><p>ExampleUser1 has invited 2 of Indulgers</p><h5 className="font-bold mb-2">Your Invite Code</h5>
                 
                 {loadingCodes ? (
                   <p>Loading invite codes...</p>

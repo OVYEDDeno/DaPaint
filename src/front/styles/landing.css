@@ -14,8 +14,8 @@ body {
 }
 
 .landing-container {
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
   background-color: #c8afaf;
   color: #000000;
   text-align: center;

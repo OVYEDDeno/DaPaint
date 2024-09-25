@@ -43,16 +43,12 @@ export const Landing = () => {
       100
   );
   console.log("max Win Streak", maxWinStreak);
-  {
-    /* <div>
-    {userData && store.userData.user?.name ? */
-  }
+  
   return (
     <div className={`home-container`}>
       <main className="main-body">
         <header className="top-header">
           <h1>
-            {/* <EditProfile /> */}
             <Profile />
           </h1>
           <div className="actions-section">
@@ -108,7 +104,6 @@ export const Landing = () => {
         <Lineup />
         <p></p>
         <p></p>
-        <Help />
         <div className="find-foe-section">
           {(store.userData.dapaintId && <Start />) || <DaPaintList /> }
           {/* <Start/> */}

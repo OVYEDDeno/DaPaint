@@ -101,6 +101,7 @@ export const Setting = ({ onClose }) => {
                       HOW TO DaPaint
                     </button>
                   </div>
+                  <button>Switch</button>
                   <div>
                     <button
                       className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"

@@ -66,14 +66,17 @@ export const Lineup = () => {
 
     const sendNotification = async (platform) => {
       try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/link-request/${platform}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ indulgerId: userId }),
-        });
+        const response = await fetch(
+          `${process.env.BACKEND_URL}/api/link-request/${platform}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ indulgerId: userId }),
+          }
+        );
 
         if (response.ok) {
           alert(`Notification sent to add ${platform} link.`);
@@ -90,16 +93,18 @@ export const Lineup = () => {
         {platforms.map((platform) => (
           <div key={platform.key}>
             {platform.url ? (
-             <button
-             onClick={() => {
-               // Ensure the URL has the full format
-               let fullUrl = platform.url.startsWith("http") ? platform.url : `https://${platform.url}`;
-               window.open(fullUrl, "_blank");
-             }}
-             className={`${platform.key}-button`}
-           >
-             {platform.key}
-           </button>
+              <button
+                onClick={() => {
+                  // Ensure the URL has the full format
+                  let fullUrl = platform.url.startsWith("http")
+                    ? platform.url
+                    : `https://${platform.url}`;
+                  window.open(fullUrl, "_blank");
+                }}
+                className={`${platform.key}-button`}
+              >
+                {platform.key}
+              </button>
             ) : (
               <button
                 onClick={() => sendNotification(platform.key)}
@@ -168,10 +173,9 @@ export const Lineup = () => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-body">
-            <div className="profile-header">
+            <div className="profile-header ">
               <h1 className="profile-title" id="lineUpLabel">
-              LINEUP
+                LINEUP
               </h1>
               <img
                 data-bs-dismiss="modal"
@@ -179,7 +183,8 @@ export const Lineup = () => {
                 alt="Close"
                 className="profile-close"
               />
-            </div>              
+            </div>
+            <div className="profile-container">
               <input
                 type="text"
                 value={searchTerm}
@@ -205,9 +210,15 @@ export const Lineup = () => {
                           Live
                         </button>
                       </p>
-                      <div className="collapse" id={`collapseUser1-${matchup.id}`}>
+                      <div
+                        className="collapse"
+                        id={`collapseUser1-${matchup.id}`}
+                      >
                         <div className="card card-body">
-                          {SocialMediaButtons(matchup.hostFoeId, matchup.user1Id)}
+                          {SocialMediaButtons(
+                            matchup.hostFoeId,
+                            matchup.user1Id
+                          )}
                         </div>
                       </div>
                     </div>
@@ -227,7 +238,10 @@ export const Lineup = () => {
                           Live
                         </button>
                       </p>
-                      <div className="collapse" id={`collapseUser2-${matchup.id}`}>
+                      <div
+                        className="collapse"
+                        id={`collapseUser2-${matchup.id}`}
+                      >
                         <div className="card card-body">
                           {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
                         </div>
@@ -239,7 +253,8 @@ export const Lineup = () => {
                       <span>{matchup.location}</span>
                     </div>
                     <div className="btn-group">
-                      {userId === matchup.user1Id || userId === matchup.user2Id ? (
+                      {userId === matchup.user1Id ||
+                      userId === matchup.user2Id ? (
                         <button
                           className="bg-black text-white p-2 rounded"
                           onClick={() => {
