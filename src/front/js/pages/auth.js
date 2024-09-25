@@ -93,19 +93,19 @@ export const Auth = () => {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    const url= process.env.BACKEND_URL + "/api/forgot-password"
+    const url = process.env.BACKEND_URL + "/api/forgot-password";
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({email:formData.email}),
+      body: JSON.stringify({ email: formData.email }),
     });
     const result = await response.json();
 
     if (response.ok) {
-      alert("email has been sent")
+      alert("email has been sent");
+    } else {
+      alert("failed to send email", result.message);
     }
-    else
-    {alert("failed to send email", result.message)}
     console.log("Forgot password submission for:", formData.email);
   };
 
@@ -116,7 +116,7 @@ export const Auth = () => {
           <img
             src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
             alt="Logo"
-            className="DIDDYlogo"
+            className="DaPaintlogo"
           />
         </a>
       </div>

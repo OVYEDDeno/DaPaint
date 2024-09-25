@@ -41,27 +41,50 @@ form {
   margin-bottom: 10px;
 }
 
+
 .user-vote {
-  display: grid;
-  grid-template-columns: auto 1fr 1fr; /* Three columns: name, winner button, loser button */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   align-items: center; /* Align items vertically in the center */
   margin-top: 10px; /* Space between user sections */
 }
-
+/* .user-vote {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr; Three columns: name, winner button, loser button
+  align-items: center; Align items vertically in the center
+  margin-top: 10px; Space between user sections
+} */
 .user-name {
-  color: #ffffff;
-  margin-right: 10px; /* Space between name and buttons */
+  color: #131313;
+  margin-right: auto;
+  /* margin-right: 10px; */
 }
 
 .vote-buttons {
   display: flex;
   flex-direction: row; /* Keep buttons in a row */
+  margin-left: auto;
 }
 
 .user-vote span {
   font-size: 1.2rem;
   color: #ffffff;
   margin-right: 20px;
+}
+
+.start-container {
+  /* display: flex;
+  flex-direction: column; */
+  background-color: #e3e3e3;
+  color: #131313;
+  /* width: 100%;
+  max-width: 500px; */
+  /* margin: auto; */
+  border-radius: 21px;
+  padding: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .user-vote button {

@@ -24,71 +24,39 @@ export const Wallet = ({ onClose }) => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="DaPaintLockLabel">
-                DaPaint
+            <div className="profile-header">
+              <h1 className="profile-title" id="lineUpLabel">
+                DAPAINT
               </h1>
-              <button
-                type="button"
-                className="btn-close"
+              <img
                 data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                alt="Close"
+                className="profile-close"
+              />
             </div>
-            <div className="modal-body">
-              OR
+            <div className="profile-container">
               <button
-                className="btn btn-primary"
+                className="btn-danger"
                 data-bs-target="#DaPaintAds"
                 data-bs-toggle="modal"
               >
                 WATCH AN AD
               </button>
+              <h1 style={{color: "black"}}>OR</h1>
               <form
+                className="p-0"
                 action="https://www.paypal.com/ncp/payment/SFZCFW7AB3F8Y"
                 method="post"
-                target="_top"
-                style={{
-                  display: "inline-grid",
-                  justifyItems: "center",
-                  alignContent: "start",
-                  gap: "0.5rem",
-                }}
-              >
+                target="_top"                
+              >              
                 <input
-                  className="pp-SFZCFW7AB3F8Y"
+                  className="btn-danger w-100 pp-SFZCFW7AB3F8Y"
                   type="submit"
-                  value="Pay Now"
-                  style={{
-                    textAlign: "center",
-                    border: "none",
-                    borderRadius: "1.5rem",
-                    minWidth: "11.625rem",
-                    padding: "0 2rem",
-                    height: "2.625rem",
-                    fontWeight: "bold",
-                    backgroundColor: "#000000",
-                    color: "#ffffff",
-                    fontFamily: '"Helvetica Neue", Arial, sans-serif',
-                    fontSize: "1rem",
-                    lineHeight: "1.25rem",
-                    cursor: "pointer",
-                  }}
+                  value="PAY $1"                  
                 />
-                <img
-                  src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg"
-                  alt="cards"
-                />
-                <section>
-                  Powered by{" "}
-                  <img
-                    src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
-                    alt="paypal"
-                    style={{ height: "0.875rem", verticalAlign: "middle" }}
-                  />
-                </section>
+                <h1 style={{color: "black"}}>TO UNLOCK</h1>
               </form>
-              TO UNLOCK
             </div>
           </div>
         </div>

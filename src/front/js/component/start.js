@@ -83,7 +83,7 @@ export const Start = () => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="invite-header">
+            <div className="profile-header">
               <img
                 data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Prohibited-3d-icon.png"

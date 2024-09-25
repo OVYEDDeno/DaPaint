@@ -95,10 +95,10 @@ export const Setting = ({ onClose }) => {
                   <div>
                     <button
                       className="w-full py-2 bg-black text-white rounded-lg font-bold hover:bg-gray-800"
-                      data-bs-target="#diddyModal"
+                      data-bs-target="#DaPaintModal"
                       data-bs-toggle="modal"
                     >
-                      HOW TO DIDDY
+                      HOW TO DaPaint
                     </button>
                   </div>
                   <div>
@@ -143,12 +143,12 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
 
-      {/* DIDDY Modal */}
+      {/* DaPaint Modal */}
       <div
         className="modal fade"
-        id="diddyModal"
+        id="DaPaintModal"
         aria-hidden="true"
-        aria-labelledby="diddyModalLabel"
+        aria-labelledby="DaPaintModalLabel"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -156,8 +156,8 @@ export const Setting = ({ onClose }) => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="diddyModalLabel">
-                How to DIDDY
+              <h5 className="modal-title" id="DaPaintModalLabel">
+                How to DaPaint
               </h5>
               <button
                 type="button"
@@ -167,7 +167,7 @@ export const Setting = ({ onClose }) => {
               ></button>
             </div>
             <div className="modal-body">
-              {/* Add content for How to DIDDY modal here */}
+              {/* Add content for How to DaPaint modal here */}
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" data-bs-dismiss="modal">

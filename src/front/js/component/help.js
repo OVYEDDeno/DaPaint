@@ -82,7 +82,7 @@ export const Help = () => {
                   className="modal-title text-white text-2xl font-bold"
                   id="WLSubLabel"
                 >
-                  HOW TO DIDDY
+                  HOW TO DaPaint
                 </h1> */}
                 <button
                   type="button"

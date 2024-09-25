@@ -9,7 +9,7 @@ export const Home = () => {
       {/* <header className="top-header">   
         <nav className="nav-links">
           <ul>
-            <li><a href="/about">About DIDDY</a></li>
+            <li><a href="/about">About DaPaint</a></li>
             <li><a href="#">Jobs</a></li>
           </ul>
         </nav>
@@ -21,12 +21,12 @@ export const Home = () => {
         <a href="" onclick="location.reload();">
           <img
             src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-            alt="DIDDYLogo"
-            className="DIDDYLogo"
+            alt="DaPaintLogo"
+            className="DaPaintLogo"
           />
         </a>
         {/* <h1 className="tagline">Defy Your Limits</h1> */}
-        <h1 className="tagline">Welcome To DIDDY</h1>
+        <h1 className="tagline">Welcome To DaPaint</h1>
         <p></p>
         <h5>
           Hey, we're still launching, but you can jump in with an exclusive
@@ -34,7 +34,7 @@ export const Home = () => {
         </h5>
         <p></p>
         <p>
-          Sign up to see if you have friends on Diddy who can let you in. We
+          Sign up to see if you have friends on DaPaint who can let you in. We
           can't wait for you to join!
         </p>
         <Link to="/auth">
@@ -68,7 +68,7 @@ export const Home = () => {
           </ul>
         </div>
         <div className="footer-column social-media-logos">
-        <a href="https://discord.gg/xFHEHkB8ag" target="_blank">
+          <a href="https://discord.gg/xFHEHkB8ag" target="_blank">
             <img
               src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png"
               alt="Discord"
