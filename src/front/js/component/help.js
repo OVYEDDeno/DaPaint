@@ -4,6 +4,16 @@ import { Context } from "../store/appContext";
 import { DaPaintList } from "./dapaintlist.js";
 
 export const Help = () => {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.text = `aclib.runAutoTag({zoneId: '3jdazwaval'});`;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script); // Clean up the script on component unmount
+    };
+  }, []);
   return (
     <>
       <div
@@ -286,7 +296,7 @@ export const Help = () => {
             </div> */}
             <div class="profile-container">
               Long Long Man2
-              <iframe
+              {/* <iframe
                 width="auto"
                 height="249"
                 src="https://www.youtube.com/embed/6-1Ue0FFrHY?si=5-DCnlmIGzQW6KKp&amp;controls=0"
@@ -295,7 +305,8 @@ export const Help = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
-              ></iframe>
+              ></iframe> */}
+              {/* <script type="text/javascript">aclib.runAutoTag({zoneId: '3jdazwaval',});</script> */}
               <button
                 className="btn-danger"
                 // data-bs-target="#DaPaint"

@@ -142,6 +142,14 @@ form {
 }
 
 @media only screen and (max-width: 600px) {
+  .w-50 {
+    width: 100% !important; /* Override Bootstrap's w-50 class for mobile */
+  }
+
+  form {
+    width: 100% !important; /* Ensure form takes up full width */
+  }
+
   .container {
     padding: 1rem;
     border-radius: 15px;
@@ -151,12 +159,6 @@ form {
   h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
-  }
-
-  form {
-    padding: 1.5rem;
-    border-radius: 15px;
-    width: 100%;
   }
 
   .form-control {
@@ -174,6 +176,7 @@ form {
     margin-top: 6rem;
     width: 120px;
   }
+
   .alert-danger {
     padding: 0.5rem;
     margin-top: 0.25rem;
