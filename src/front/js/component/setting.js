@@ -91,45 +91,42 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-              Show the second modal and hide this one with the button below.
-              LIST ALL THE BUTTON HERE
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle2"
                 data-bs-toggle="modal"
               >
-                Open second modal
+                <h5>FEEDBACK</h5>
               </button>
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle3"
                 data-bs-toggle="modal"
               >
-                Open third modal
+                <h5>HOW TO PLAY</h5>
               </button>
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle4"
                 data-bs-toggle="modal"
               >
-                Open fourth modal
+                <h5>TICKETS</h5>
               </button>
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle5"
                 data-bs-toggle="modal"
               >
-                Open fifth modal
+                <h5>Open fifth modal</h5>
               </button>
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle6"
                 data-bs-toggle="modal"
               >
-                Open sixth modal
+                <h5>CLOCK OUT</h5>
               </button>
             </div>
-            
           </div>
         </div>
       </div>
@@ -156,7 +153,7 @@ export const Setting = ({ onClose }) => {
 
             <div className="invite-header">
               <h1 className="invite-title">
-                SETTING
+                FEEDBACK
                 <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -167,9 +164,16 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-              Hide this modal and show the third with the button below.
+              Hide this modal and show the third with the button below. Add a
+              form on here
             </div>
-            
+            <button
+              class="btn btn-secondary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first modal
+            </button>
           </div>
         </div>
       </div>
@@ -196,7 +200,7 @@ export const Setting = ({ onClose }) => {
 
             <div className="invite-header">
               <h1 className="invite-title">
-                SETTING
+                HOW TO PLAY
                 <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -209,7 +213,13 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the fourth with the button below.
             </div>
-            
+            <button
+              class="btn btn-secondary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first modal
+            </button>
           </div>
         </div>
       </div>
@@ -236,7 +246,7 @@ export const Setting = ({ onClose }) => {
 
             <div className="invite-header">
               <h1 className="invite-title">
-                SETTING
+                TICKETS
                 <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -249,7 +259,13 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the fifth with the button below.
             </div>
-            
+            <button
+              class="btn btn-secondary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first modal
+            </button>
           </div>
         </div>
       </div>
@@ -289,7 +305,13 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the sixth with the button below.
             </div>
-            
+            <button
+              class="btn btn-secondary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first modal
+            </button>
           </div>
         </div>
       </div>
@@ -315,8 +337,15 @@ export const Setting = ({ onClose }) => {
       </div> */}
 
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
-                SETTING
+                CLOCK OUT
                 <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -327,20 +356,20 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-              Hide this modal and go back to the first with the button below.
+              Are you sure you want to clock out?
+              <button>YES</button>
+              <button>NO</button>
             </div>
-            <div class="modal-footer">
-              <button
-                class="btn btn-secondary"
-                data-bs-target="#exampleModalToggle"
-                data-bs-toggle="modal"
-              >
-                Back to first modal
-              </button>
-            </div>
+            <button
+              class="btn btn-secondary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first modal
+            </button>
           </div>
         </div>
-      </div>      
+      </div>
       <button
         class="btn setting"
         data-bs-target="#exampleModalToggle"

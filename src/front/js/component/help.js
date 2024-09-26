@@ -85,7 +85,7 @@ export const Help = () => {
           <div class="modal-content">
             <div className="invite-header">
               <h1 className="invite-title">
-                DAPAINT
+              Long Long Man
                 {/* <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -106,7 +106,7 @@ export const Help = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              Hide this modal and show the third with the button below.
+              Long Long Man
               <iframe
                 width="auto"
                 height="249"
@@ -122,7 +122,7 @@ export const Help = () => {
                 // data-bs-target="#DaPaint"
                 // data-bs-toggle="modal"
               >
-                <h3>AD CTA</h3>
+                <h3>Buy Now</h3>
               </button>
               <button
                 class="btn-primary"
@@ -240,7 +240,7 @@ export const Help = () => {
         <h1>⚔️FIND FOE⚔️</h1>
       </button> */}
       <button
-        className="btn-danger"
+        className="btn-danger btn-lg"
         data-bs-target="#DaPaint"
         data-bs-toggle="modal"
       >
