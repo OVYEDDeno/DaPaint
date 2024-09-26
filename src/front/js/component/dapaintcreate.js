@@ -92,7 +92,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
 
   return (
     <>      
-      <div className="user-profile">
+      <div className="profile-container">
         <div className="bg-white text-black rounded-full p-2 flex items-center mb-2">
           <img src={profilePicture} alt={username} className="w-8 h-8 rounded-full mr-2" />
           <span>{username}</span>
@@ -110,7 +110,7 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
           name="fitness"
           value={fitnessStyle}
           onChange={(e) => setFitnessStyle(e.target.value)} // Ensure this is correct
-          className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
+          // className="w-full p-2 mb-4 border-b border-gray-300 focus:outline-none"
         >
           <option value="">Select Fitness Style</option> // Default option
           <option value="boxing">Boxing</option>
@@ -176,9 +176,9 @@ export const DaPaintCreate = ({ onClose, username, profilePicture, onAdd }) => {
   );
 };
 
-DaPaintCreate.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  profilePicture: PropTypes.string.isRequired,
-  onAdd: PropTypes.func.isRequired,
-};
+// DaPaintCreate.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+//   username: PropTypes.string.isRequired,
+//   profilePicture: PropTypes.string.isRequired,
+//   onAdd: PropTypes.func.isRequired,
+// };

@@ -126,7 +126,7 @@ export const Auth = () => {
             <h2 className="text-center">{isLogin ? "Login" : "Sign Up"}</h2>
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="btn btn-secondary w-50 mx-auto mt-4 mb-4 d-block"
+              className="btn-secondary w-50 mx-auto mt-4 mb-4 d-block"
             >
               Switch to {isLogin ? "Sign Up" : "Login"}
             </button>
@@ -290,7 +290,7 @@ export const Auth = () => {
                   </div>
                 </>
               )}
-              <button type="submit" className="btn btn-primary w-100">
+              <button type="submit" className="btn-primary w-100">
                 {isLogin ? "Login" : "Sign Up"}
               </button>
             </form>
@@ -298,7 +298,7 @@ export const Auth = () => {
             {isLogin && (
               <div className="text-center mt-3">
                 <button
-                  className="btn forgot-button w-50"
+                  className="forgot-button w-50"
                   onClick={() => setIsForgotPassword(true)}
                 >
                   Forgot Username/Password?
@@ -324,13 +324,13 @@ export const Auth = () => {
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100">
+              <button type="submit" className="btn-primary w-100">
                 Submit
               </button>
             </form>
             <button
               onClick={() => setIsForgotPassword(false)}
-              className="btn btn-secondary w-100 mt-3"
+              className="btn-secondary w-100 mt-3"
             >
               Back to Login
             </button>

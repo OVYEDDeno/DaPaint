@@ -22,7 +22,7 @@ export const Home = () => {
           <img
             src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
             alt="DaPaintLogo"
-            className="DaPaintLogo"
+            className="DaPaintLogo1"
           />
         </a>
         {/* <h1 className="tagline">Defy Your Limits</h1> */}
@@ -37,9 +37,11 @@ export const Home = () => {
           Sign up to see if you have friends on DaPaint who can let you in. We
           can't wait for you to join!
         </p>
+        <div className="d-flex cta-button-container">
         <Link to="/auth">
-          <button className="cta-button">Join Now!</button>
+          <button className="cta-button btn-lg p-3">Join Now!</button>
         </Link>
+        </div>
       </main>
 
       <footer className="footer">

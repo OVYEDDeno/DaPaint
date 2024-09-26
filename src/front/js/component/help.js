@@ -1,197 +1,251 @@
 import React, { useState, useContext, useEffect } from "react";
 import "../../styles/start.css";
 import { Context } from "../store/appContext";
+import { DaPaintList } from "./dapaintlist.js";
 
 export const Help = () => {
-  const [hostUser, setHostUser] = useState(null);
-  const [foeUser, setFoeUser] = useState(null);
-  const [hostVote, setHostVote] = useState(null);
-  const [winType, setWinType] = useState("KO"); // State for the radio selection
-  const { store, actions } = useContext(Context);
-  const [foeVote, setFoeVote] = useState(null);
-
-  // ...other state and useEffect hooks...
-
-  const handleFileUpload = (e, setUser) => {
-    setUser(URL.createObjectURL(e.target.files[0]));
-  };
-
-  const handleHostVote = (vote) => {
-    setHostVote(vote);
-    if (vote === "winner") {
-      setFoeVote("loser");
-    } else {
-      setFoeVote("winner");
-    }
-  };
-
-  const handleFoeVote = (vote) => {
-    setFoeVote(vote);
-    if (vote === "winner") {
-      setHostVote("loser");
-    } else {
-      setHostVote("winner");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!dapaintId) {
-      alert("No valid event found for this user");
-      return;
-    }
-
-    let result = await actions.updateWinstreak(dapaintId, hostVote, winType); // Pass the winType in the API call
-    if (result) {
-      alert("Winstreak has been updated");
-      actions.fetchCurrentUser();
-    } else {
-      alert("Failed to update win streak");
-    }
-  };
-
   return (
     <>
-      <button
-        type="button"
-        className="btn"
-        data-bs-toggle="modal"
-        data-bs-target="#WLSubmodal"
-      >
-        <img
-          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Exclamation-Question-Mark-3d-icon.png"
-          alt="Who Won?"
-          style={{ width: "68px", height: "68px" }}
-        />
-      </button>
-
       <div
-        className="modal fade"
-        id="WLSubmodal"
-        // data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
+        class="modal fade"
+        id="DaPaint"
         aria-hidden="true"
+        aria-labelledby="DaPaintLabel"
+        tabindex="-1"
       >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-body">
-            <div className="wlsub-container">
-              <div className="d-flex justify-content-center align-items-center">
-                {/* <h1
-                  className="modal-title text-white text-2xl font-bold"
-                  id="WLSubLabel"
-                >
-                  HOW TO DaPaint
-                </h1> */}
-                <button
-                  type="button"
-                  className="btn btn-secondary ms-3"
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div className="invite-header">
+              <h1 className="invite-title">
+                DAPAINT
+                <img
                   data-bs-dismiss="modal"
-                >
-                  Forfeit
-                </button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="user-section">
-                  <div className="upload-ko">
-                    <input
-                      type="file"
-                      accept="image/*,video/*"
-                      onChange={(e) => handleFileUpload(e, setHostUser)}
-                    />
-                    <button type="button" className="rounded-lg">
-                      Upload KO
-                    </button>
-                  </div>
-                  <div className="win-type-radio">
-                    <label style={{ marginRight: "10px" }}>
-                      <input
-                        type="radio"
-                        name="winType"
-                        value="KO"
-                        checked={winType === "KO"}
-                        onChange={() => setWinType("KO")}
-                        style={{ marginRight: "5px" }}
-                      />
-                      Win By KO
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="winType"
-                        value="Sub"
-                        checked={winType === "Sub"}
-                        onChange={() => setWinType("Sub")}
-                        style={{ marginRight: "5px" }}
-                      />
-                      Win By Sub
-                    </label>
-                  </div>
-                  {hostUser && (
-                    <img src={hostUser} alt="Host User" className="user-img" />
-                  )}
-                  <div className="user-vote">
-                    <span>hostUsername</span>
-                    <button
-                      type="button"
-                      className="rounded-lg"
-                      style={{
-                        backgroundColor:
-                          hostVote === "winner" ? "green" : "black",
-                      }}
-                      onClick={() => handleHostVote("winner")}
-                    >
-                      Winner
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-lg"
-                      style={{
-                        backgroundColor: hostVote === "loser" ? "red" : "black",
-                      }}
-                      onClick={() => handleHostVote("loser")}
-                    >
-                      Loser
-                    </button>
-                  </div>
-                </div>
-                <div className="user-section">
-                  {foeUser && (
-                    <img src={foeUser} alt="Foe User" className="user-img" />
-                  )}
-                  <div className="user-vote">
-                    <span>foeUsername</span>
-                    <button
-                      type="button"
-                      className="rounded-lg"
-                      style={{
-                        backgroundColor:
-                          foeVote === "winner" ? "#f5c116" : "black",
-                        color: foeVote === "winner" ? "black" : "#f5c116",
-                      }}
-                      onClick={() => handleFoeVote("winner")}
-                    >
-                      Winner
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-lg"
-                      style={{
-                        backgroundColor: foeVote === "loser" ? "red" : "black",
-                      }}
-                      onClick={() => handleFoeVote("loser")}
-                    >
-                      Loser
-                    </button>
-                  </div>
-                </div>
-                <button type="submit">Submit</button>
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="invite-close"
+                />
+              </h1>
+            </div>
+
+            {/* <div class="modal-header">
+              <h1 class="modal-title" id="DaPaintLabel">
+                Watch or pay $1 modal
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div> */}
+            <div className="profile-container">
+              <button
+                className="btn-danger"
+                data-bs-target="#DaPaint2"
+                data-bs-toggle="modal"
+              >
+                WATCH AN AD
+              </button>
+              <h1 style={{ color: "black" }}>OR</h1>
+              <form
+                className="p-0"
+                action="https://www.paypal.com/ncp/payment/SFZCFW7AB3F8Y"
+                method="post"
+                target="_top"
+              >
+                <input
+                  className="btn-danger w-100 pp-SFZCFW7AB3F8Y"
+                  type="submit"
+                  value="PAY $1"
+                />
+                <h1 style={{ color: "black" }}>TO UNLOCK</h1>
               </form>
+            </div>
+            {/* <div class="modal-footer">
+              <button
+                class="btn btn-primary"
+                data-bs-target="#DaPaint2"
+                data-bs-toggle="modal"
+              >
+                Open second modal
+              </button>
+            </div> */}
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="DaPaint2"
+        aria-hidden="true"
+        aria-labelledby="DaPaintLabel2"
+        tabindex="-1"
+        data-bs-backdrop="static"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div className="invite-header">
+              <h1 className="invite-title">
+                DAPAINT
+                {/* <img
+                  data-bs-dismiss="modal"
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="invite-close"
+                /> */}
+              </h1>
+            </div>
+            {/* <div class="modal-header">
+              <h1 class="modal-title fs-5" id="DaPaintLabel2">
+                AD Title from advertiser
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div> */}
+            <div class="profile-container">
+              Hide this modal and show the third with the button below.
+              <iframe
+                width="auto"
+                height="249"
+                src="https://www.youtube.com/embed/6-1Ue0FFrHY?si=5-DCnlmIGzQW6KKp&amp;controls=0"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+              <button
+                className="btn-danger"
+                // data-bs-target="#DaPaint"
+                // data-bs-toggle="modal"
+              >
+                <h3>AD CTA</h3>
+              </button>
+              <button
+                class="btn-primary"
+                data-bs-target="#DaPaint3"
+                data-bs-toggle="modal"
+              >
+                Clock In
+              </button>
+            </div>
+            {/* <div class="modal-footer">
+              
+            </div> */}
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="DaPaint3"
+        aria-hidden="true"
+        aria-labelledby="DaPaintLabel3"
+        tabindex="-1"
+        data-bs-backdrop="static"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div className="invite-header">
+              <h1 className="invite-title">
+                DAPAINT
+                <img
+                  data-bs-dismiss="modal"
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="invite-close"
+                />
+              </h1>
+            </div>
+            {/* <div class="modal-header">
+              <h1 class="modal-title fs-5" id="DaPaintLabel3">
+                Dapaint list
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div> */}
+            <div class="profile-container">
+              Hide this modal and show the fourth with the button below.
+              <button
+                class="btn-danger"
+                data-bs-target="#DaPaint4"
+                data-bs-toggle="modal"
+              >
+                +Add
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <div
+        class="modal fade"
+        id="DaPaint4"
+        aria-hidden="true"
+        aria-labelledby="DaPaintLabel4"
+        tabindex="-1"
+        data-bs-backdrop="static"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div className="invite-header">
+              <h1 className="invite-title">
+                DAPAINT
+                <img
+                  data-bs-dismiss="modal"
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="invite-close"
+                />
+              </h1>
+            </div>
+            {/* <div class="modal-header">
+              <h1 class="modal-title fs-5" id="DaPaintLabel4">
+                Dapaint create
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div> */}
+            <div class="profile-container">
+              Hide this modal and go back to the first with the button below.
+            </div>
+            <div class="modal-footer">
+              <button
+                class="btn btn-primary"
+                data-bs-target="#DaPaint"
+                data-bs-toggle="modal"
+              >
+                Back to first modal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <button
+        type="button"
+        onClick={handleResetWinStreak}
+        className="btn btn-danger btn-lg"
+        data-bs-toggle="modal"
+        data-bs-target="#DaPaint"
+      >
+        <h1>⚔️FIND FOE⚔️</h1>
+      </button> */}
+      <button
+        className="btn-danger"
+        data-bs-target="#DaPaint"
+        data-bs-toggle="modal"
+      >
+        <h1>⚔️FIND FOE⚔️</h1>
+      </button>
     </>
   );
 };

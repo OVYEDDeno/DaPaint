@@ -158,7 +158,7 @@ export const Lineup = () => {
     <>
       <button
         type="button"
-        className="btn btn-secondary btn-lg"
+        className="btn-secondary btn-lg"
         data-bs-toggle="modal"
         data-bs-target="#lineUp"
       >

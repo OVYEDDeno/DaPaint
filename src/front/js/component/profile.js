@@ -319,7 +319,9 @@ export const Profile = () => {
             </div>
 
             <div className="profile-footer">
-              <button className="btn btn-secondary" data-bs-dismiss="modal">
+              <button
+              className="btn btn-secondary"
+              data-bs-dismiss="modal">
                 Close
               </button>
               <button

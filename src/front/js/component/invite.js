@@ -43,7 +43,7 @@ export const Invite = ({ onClose }) => {
       setLoadingCodes(true);
       try {
         const response = await fetch(
-          `${process.env.BACKEND_URL}/api/invitecodes`, // Adjust the endpoint as needed
+          `${process.env.BACKEND_URL}/api/invitecodes`,
           {
             method: "GET",
             headers: {
@@ -81,36 +81,46 @@ export const Invite = ({ onClose }) => {
 
   return (
     <>
-      <button
-        className="btn"
-        data-bs-target="#inviteModal"
-        data-bs-toggle="modal"
-      >
-        <img className="invite-picture"
-          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/People-Hugging-3d-icon.png"
-          alt="Invite"
-        />
-      </button>
+      <div style={{ position: "relative" }}>
+        <button
+          className="btn"
+          data-bs-target="#inviteModal"
+          data-bs-toggle="modal"
+        >
+          <img
+            className="invite-picture"
+            src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/People-Hugging-3d-icon.png"
+            alt="Invite"
+          />
+        </button>
+
+        {/* Notification circle - Always visible */}
+        <div className="notification-circle">{notifs.length || 0}</div>
+      </div>
 
       <div className="modal fade" id="inviteModal">
         <div className="modal-dialog modal-dialog-centered">
           <div className="invite-content">
             <div className="invite-header">
-              <h1 className="invite-title">INVITE
-              <img
-                data-bs-dismiss="modal"
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
-                alt="Close"
-                className="invite-close"
-              /></h1>
+              <h1 className="invite-title">
+                INVITE
+                <img
+                  data-bs-dismiss="modal"
+                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
+                  alt="Close"
+                  className="invite-close"
+                />
+              </h1>
             </div>
             <div className="invite-container">
               <div>
                 <p className="text-center m-3">
                   Invite the most people by the end of this winstreak and win
                   500K!
-                </p><p>ExampleUser1 has invited 2 of Indulgers</p><h5 className="font-bold mb-2">Your Invite Code</h5>
-                
+                </p>
+                <p>ExampleUser1 has invited 2 of Indulgers</p>
+                <h5 className="font-bold mb-2">Your Invite Code</h5>
+
                 {loadingCodes ? (
                   <p>Loading invite codes...</p>
                 ) : errorCodes ? (

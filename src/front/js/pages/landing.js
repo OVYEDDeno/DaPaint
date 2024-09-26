@@ -8,10 +8,8 @@ import { DaPaintCreate } from "../component/dapaintcreate.js";
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-// import { EditProfile } from "../component/editprofile.js";
 import { Start, Wlsub } from "../component/start.js";
 import { Help } from "../component/help.js";
-import { Wallet } from "../component/wallet.js";
 
 export const Landing = () => {
   const { store, actions } = useContext(Context);
@@ -43,7 +41,7 @@ export const Landing = () => {
       100
   );
   console.log("max Win Streak", maxWinStreak);
-  
+
   return (
     <div className={`home-container`}>
       <main className="main-body">
@@ -104,19 +102,13 @@ export const Landing = () => {
         <Lineup />
         <p></p>
         <p></p>
+        <Help />
         <div className="find-foe-section">
-          {(store.userData.dapaintId && <Start />) || <DaPaintList /> }
+          {(store.userData.dapaintId && <Start />) || <DaPaintList />}
           {/* <Start/> */}
-          
-
-          <Wallet/>
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>
     </div>
   );
 };
-{
-  /* : <p>Can't get the current user</p>}
-     </div>*/
-}

@@ -1,8 +1,23 @@
 .invite-picture {
-  /* margin-left: 10px; */
   width: 68px;
   height: 68px;
   float: left;
+}
+
+.notification-circle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+  z-index: 1;
 }
 
 .invite-header {
