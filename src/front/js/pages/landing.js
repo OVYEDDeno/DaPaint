@@ -43,8 +43,8 @@ export const Landing = () => {
   console.log("max Win Streak", maxWinStreak);
 
   return (
-    <div className={`home-container`}>
-      <main className="main-body">
+    <div className="home-container text-center">
+      <main className="main-content">
         <header className="top-header">
           <h1>
             <Profile />

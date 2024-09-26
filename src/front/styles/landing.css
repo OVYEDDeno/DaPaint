@@ -1,9 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 body {
   font-family: "Anton";
   font-weight: 40;
   font-style: normal;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 .home-container {
   /* background-image: url('https://blogs.loc.gov/folklife/files/2018/02/Kumbaya.jpg'); */
@@ -27,6 +35,7 @@ body {
   display: flex;
   justify-content: flex-end;
   padding: 20px;
+  margin-top: 0;
   background-color: transparent;
 }
 
@@ -45,6 +54,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
+  margin-top: 0;
+  padding-top: 0;
   background-color: transparent;
   width: 100%;
 }
@@ -197,3 +208,38 @@ h4 {
 .logout-button:hover {
   background-color: #ddd;
 }
+
+@media (max-width: 768px) {
+  .top-header {
+    display: flex;
+    justify-content: center; /* Center all elements horizontally */
+    align-items: center; /* Align elements vertically in the center */
+    flex-direction: row; /* Make sure items are in a row */
+    padding: 10px;
+    flex-wrap: wrap; /* Allow wrapping if needed */
+    gap: 20px; /* Add some space between items */
+  }
+
+  .top-header h1 {
+    margin: 0;
+  }
+
+  .actions-section {
+    display: flex;
+    justify-content: center; /* Center the action buttons */
+    align-items: center; /* Vertically align the buttons */
+    gap: 10px; /* Space between buttons */
+    flex-wrap: nowrap; /* Prevent buttons from wrapping */
+  }
+
+  .cta-button {
+    width: auto; /* Allow buttons to size themselves */
+    padding: 10px 15px; /* Keep button padding for better tap targets */
+    margin: 5px; /* Space between buttons */
+  }
+
+  h1 {
+    font-size: 1.2em; /* Adjust font size if needed */
+  }
+}
+

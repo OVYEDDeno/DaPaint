@@ -68,8 +68,8 @@ form {
 
 .btn-secondary:hover {
   background-color: #131313;
-  color: #e3e3e3;  
-  border: 4px;  
+  color: #e3e3e3;
+  border: 4px;
   box-shadow: 0px 0px 51px #333333;
 }
 
@@ -99,9 +99,9 @@ form {
   padding: 2rem;
 }
 
-.w-50 {
+/* .w-50 {
   width: 50%;
-}
+} */
 
 .w-100 {
   width: 100%;
@@ -120,7 +120,7 @@ form {
   align-items: center;
   height: 15vh;
 }
-.DaPaintlogo{
+.DaPaintlogo {
   margin-top: 9em;
   width: 152px;
 }
@@ -130,10 +130,52 @@ form {
   color: #131313;
   cursor: pointer;
   font-size: 17px;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .forgot-button:hover {
   background-color: #131313;
-  color: #e3e3e3;  
+  color: #e3e3e3;
   box-shadow: 0px 0px 51px #333333;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0px 0px 25px #333333;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  form {
+    padding: 1.5rem;
+    border-radius: 15px;
+    width: 100%;
+  }
+
+  .form-control {
+    padding: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .DaPaintlogo {
+    margin-top: 6rem;
+    width: 120px;
+  }
+  .alert-danger {
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+  }
 }
