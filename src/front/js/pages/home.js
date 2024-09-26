@@ -18,7 +18,7 @@ export const Home = () => {
         </Link>
       </header> */}
       <main className="main-body">
-        <a href="" onclick="location.reload();">
+        <a href="" onClick={() => location.reload()}>
           <img
             src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
             alt="DaPaintLogo"

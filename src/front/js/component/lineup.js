@@ -154,6 +154,31 @@ export const Lineup = () => {
     return hoursDifference >= 48;
   };
 
+  function convertTo12Hr(timeStr) {
+    // Create a Date object from the input string
+    const date = new Date(timeStr);
+  
+    // Extract hours, minutes, and seconds
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+  
+    // Determine AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle midnight (0 should be 12)
+  
+    // Format the date part (MM/DD/YYYY)
+    const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                          date.getDate().toString().padStart(2, '0') + '/' + 
+                          date.getFullYear();
+  
+    // Return formatted time in 12-hour format
+    return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
+  }
+
   return (
     <>
       <button
@@ -248,10 +273,10 @@ export const Lineup = () => {
                       </div>
                     </div>
                     <div className="details">
-                      <span>{matchup.date_time}</span>
+                      <span>{convertTo12Hr(matchup.date_time)}</span>
                       <span>{matchup.fitnessStyle}</span>
                       <span>{matchup.location}</span>
-                    </div>
+                    
                     <div className="btn-group">
                       {userId === matchup.user1Id ||
                       userId === matchup.user2Id ? (
@@ -272,7 +297,7 @@ export const Lineup = () => {
                           BUY TICKETS
                         </button>
                       )}
-                    </div>
+                    </div></div>
                   </div>
                 ))}
               </div>
