@@ -119,14 +119,14 @@ export const Invite = ({ onClose }) => {
                 />
               </h1>
             </div>
-            <div className="invite-container">
+            <div className="invite-container text-center">
               <div>
-                <p className="text-center m-3">
+                <p className=" m-3">
                   Invite the most people by the end of this winstreak and win
                   500K!
                 </p>
                 <p>ExampleUser1 has invited 2 Indulgers</p>
-                <p>copy & paste code to send</p>
+                <p>You have invited 0 Indulgers</p>
                 <h5 className="font-bold mb-2">Your Invite Code</h5>
 
                 {loadingCodes ? (
@@ -140,6 +140,8 @@ export const Invite = ({ onClose }) => {
                 ) : (
                   <p>No invite codes</p>
                 )}
+                <p>^copy your code to easily send^</p>
+                
               </div>
 
               <div>
