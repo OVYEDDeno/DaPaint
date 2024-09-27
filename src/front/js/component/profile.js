@@ -126,7 +126,7 @@ export const Profile = () => {
         data-bs-target="#profileModal"
       >
         <div className="profile-picture-section">
-          <img src={getDisplayImage()} alt="Profile" className="profile-picture" />
+          <img src={getDisplayImage()} alt="Profile" className="profile-picture rounded-circle img-fluid pe-1" />
           <h3 className="userName">{store.userData?.user?.name}</h3>
         </div>
       </button>
@@ -160,7 +160,7 @@ export const Profile = () => {
                   data-bs-target="#editProfileModal"
                 >
                   <div className="profile-picture-section">
-                    <img src={getDisplayImage()} alt="Profile" className="profile-picture" />
+                    <img src={getDisplayImage()} alt="Profile" className="profile-picture rounded-circle img-fluid pe-1" />
                     <h3 className="userName">{store.userData?.user?.name}</h3>
                   </div>
                 </button>

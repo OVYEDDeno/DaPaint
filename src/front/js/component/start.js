@@ -8,6 +8,9 @@ export const Start = () => {
   const [hostVote, setHostVote] = useState(null);
   const [foeVote, setFoeVote] = useState(null);
   const { store, actions } = useContext(Context);
+  const [previewURL, setPreviewURL] = useState("");
+  const placeholderImage =
+    "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
   const handleFileUpload = (e, setUser) => {
     setUser(URL.createObjectURL(e.target.files[0]));
@@ -58,6 +61,23 @@ export const Start = () => {
       actions.fetchCurrentUser();
     } else {
       alert("Failed to update win streak");
+    }
+  };
+  const getDisplayImageFoe = () => {
+    const foeProfilePic = store.userData.indulgers.foe.profile_pic;
+    if (foeProfilePic && foeProfilePic.image_url) {
+      return foeProfilePic.image_url;
+    } else if (placeholderImage) {
+      return placeholderImage;
+    }
+  };
+
+  const getDisplayImageHost = () => {
+    const hostProfilePic = store.userData.indulgers.host.profile_pic;
+    if (hostProfilePic && hostProfilePic.image_url) {
+      return hostProfilePic.image_url;
+    } else if (placeholderImage) {
+      return placeholderImage;
     }
   };
 
@@ -116,15 +136,17 @@ export const Start = () => {
                         Upload KO
                       </button>
                     </div>
-                    {hostUser && (
-                      <img
-                        src={hostUser}
-                        alt="Host User"
-                        className="user-img"
-                      />
-                    )}
+                    {/* {hostUser && (
+                      
+                    )} */}
                     <div className="user-vote">
                       <div className="user-name">
+                        <img
+                          src={getDisplayImageHost()}
+                          alt="Host User"
+                          className="rounded-circle img-fluid pe-1"
+                          style={{ width: "68px", height: "68px" }}
+                        />
                         {store.userData.indulgers.host.name}
                       </div>
                       <div className="vote-buttons">
@@ -154,21 +176,26 @@ export const Start = () => {
                     </div>
                   </div>
                   <div className="user-section">
-                    {foeUser && (
-                      <img src={foeUser} alt="Foe User" className="user-img" />
-                    )}
                     <div className="user-vote">
                       <div className="user-name">
+                        <img
+                          src={getDisplayImageFoe()}
+                          alt="Host User"
+                          className="rounded-circle img-fluid pe-1"
+                          style={{ width: "68px", height: "68px" }}
+                        />
+
                         {store.userData.indulgers.foe.name}
                       </div>
                       <div className="vote-buttons">
+                      
                         <button
                           type="button"
                           className="rounded-lg"
                           style={{
                             backgroundColor:
-                              foeVote === "winner" ? "#f5c116" : "black",
-                            color: foeVote === "winner" ? "black" : "#f5c116",
+                              foeVote === "winner" ? "green" : "black",
+                            color: foeVote === "winner" ? "white" : "white",
                           }}
                           onClick={() => handleFoeVote("winner")}
                         >
