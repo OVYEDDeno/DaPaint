@@ -98,9 +98,16 @@ export const Invite = ({ onClose }) => {
         <div className="notification-circle">{notifs.length || 0}</div>
       </div>
 
-      <div className="modal fade" id="inviteModal">
+      <div
+        class="modal fade"
+        id="inviteModal"
+        aria-hidden="true"
+        aria-labelledby="inviteModal"
+        tabindex="-1"
+        data-bs-backdrop="static"
+      >
         <div className="modal-dialog modal-dialog-centered">
-          <div className="invite-content">
+          <div className="modal-content">
             <div className="invite-header">
               <h1 className="invite-title">
                 INVITE
@@ -118,7 +125,8 @@ export const Invite = ({ onClose }) => {
                   Invite the most people by the end of this winstreak and win
                   500K!
                 </p>
-                <p>ExampleUser1 has invited 2 of Indulgers</p>
+                <p>ExampleUser1 has invited 2 Indulgers</p>
+                <p>copy & paste code to send</p>
                 <h5 className="font-bold mb-2">Your Invite Code</h5>
 
                 {loadingCodes ? (

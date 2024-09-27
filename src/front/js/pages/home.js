@@ -39,7 +39,7 @@ export const Home = () => {
         </p>
         <div className="d-flex cta-button-container">
         <Link to="/auth">
-          <button className="cta-button btn-lg p-3">Join Now!</button>
+          <button className="btn-secondary w-5000">Join Now!</button>
         </Link>
         </div>
       </main>

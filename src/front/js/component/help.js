@@ -296,7 +296,7 @@ export const Help = () => {
             </div> */}
             <div class="profile-container">
               Long Long Man2
-              {/* <iframe
+              <iframe
                 width="auto"
                 height="249"
                 src="https://www.youtube.com/embed/6-1Ue0FFrHY?si=5-DCnlmIGzQW6KKp&amp;controls=0"
@@ -305,7 +305,7 @@ export const Help = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
-              ></iframe> */}
+              ></iframe>
               {/* <script type="text/javascript">aclib.runAutoTag({zoneId: '3jdazwaval',});</script> */}
               <button
                 className="btn-danger"
@@ -379,15 +379,6 @@ export const Help = () => {
           </div>
         </div>
       </div>
-      {/* <button
-        type="button"
-        onClick={handleResetWinStreak}
-        className="btn btn-danger btn-lg"
-        data-bs-toggle="modal"
-        data-bs-target="#DaPaint"
-      >
-        <h1>⚔️FIND FOE⚔️</h1>
-      </button> */}
       <button
         className="btn-danger btn-lg"
         data-bs-target="#DaPaint"
