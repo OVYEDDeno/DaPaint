@@ -242,32 +242,32 @@ def get_current_user():
         }
     }), 200
 
-@api.route('/max-win-streak', methods=['GET'])
-@jwt_required()
-def get_max_win_streak():    
-    # Subquery to find the maximum win streak
-    max_winstreak_subquery = db.session.query(
-        db.func.max(User.winstreak).label('max_winstreak')
-    ).subquery()
+# @api.route('/max-win-streak', methods=['GET'])
+# @jwt_required()
+# def get_max_win_streak():    
+#     # Subquery to find the maximum win streak
+#     max_winstreak_subquery = db.session.query(
+#         db.func.max(User.winstreak).label('max_winstreak')
+#     ).subquery()
 
-    # Alias for the User table
-    user_alias = aliased(User)
+#     # Alias for the User table
+#     user_alias = aliased(User)
 
-    # Query to get the user with the maximum win streak
-    user_with_max_winstreak = db.session.query(user_alias).join(
-        max_winstreak_subquery,
-        user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
-    ).first()
+#     # Query to get the user with the maximum win streak
+#     user_with_max_winstreak = db.session.query(user_alias).join(
+#         max_winstreak_subquery,
+#         user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
+#     ).first()
 
-    # Ensure the user is found
-    if user_with_max_winstreak:
-        return jsonify({
-            "maxWinStreak": user_with_max_winstreak.winstreak,
-            "maxWinStreakUser": user_with_max_winstreak.serialize(),
-            "WinStreakGoal": WINSTREAK_GOAL
-        }), 200
-    else:
-        return jsonify({"message": "No user found"}), 404
+#     # Ensure the user is found
+#     if user_with_max_winstreak:
+#         return jsonify({
+#             "maxWinStreak": user_with_max_winstreak.winstreak,
+#             "maxWinStreakUser": user_with_max_winstreak.serialize(),
+#             "WinStreakGoal": WINSTREAK_GOAL
+#         }), 200
+#     else:
+#         return jsonify({"message": "No user found"}), 404
     
 @api.route('/reset-win-streak', methods=['PUT'])
 @jwt_required()
