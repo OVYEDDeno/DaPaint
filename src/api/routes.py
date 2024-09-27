@@ -241,6 +241,10 @@ def get_current_user():
         }
     }), 200
 
+from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from cloudinary import uploader
+
 @api.route('/user-img', methods=['POST'])
 @jwt_required()
 def user_img():
@@ -252,12 +256,40 @@ def user_img():
     if not image:
         return jsonify({"msg": "No image uploaded"}), 400
 
-    upload_result = cloudinary.uploader.upload(image)
-    print(upload_result)
-    new_image = UserImg(public_id=upload_result['public_id'], image_url=upload_result['secure_url'], user_id=user.id)
+    # Check if user already has an image
+    existing_image = UserImg.query.filter_by(user_id=user.id).first()
+    
+    if existing_image:
+        # Delete the old image from Cloudinary
+        try:
+            uploader.destroy(existing_image.public_id)
+        except Exception as e:
+            print(f"Error deleting old image: {str(e)}")
+        
+        # Delete the old image record from the database
+        db.session.delete(existing_image)
+        db.session.commit()
+
+    # Upload the new image
+    try:
+        upload_result = uploader.upload(image)
+    except Exception as e:
+        return jsonify({"msg": f"Error uploading image: {str(e)}"}), 500
+
+    # Create new image record
+    new_image = UserImg(
+        public_id=upload_result['public_id'],
+        image_url=upload_result['secure_url'],
+        user_id=user.id
+    )
+    
     db.session.add(new_image)    
     db.session.commit()
-    return jsonify({"msg": "Image successfully uploaded"}), 200
+
+    return jsonify({
+        "msg": "Image successfully uploaded",
+        "image_url": new_image.image_url
+    }), 200
 
 @api.route('/users', methods=['GET'])
 @jwt_required()

@@ -454,15 +454,17 @@ const getState = ({ getStore, getActions, setStore }) => {
           if (!response.ok) {
             const errorText = await response.text();
             console.error(`Server responded with ${response.status}: ${errorText}`);
-            return false;
+            return { success: false, imageUrl: null };
           }
       
           const responseBody = await response.json();
           console.log(responseBody);
-          return true;
+          
+          // Assuming the server returns the new image URL in the response
+          return { success: true, imageUrl: responseBody.image_url };
         } catch (error) {
           console.error('Error uploading image:', error);
-          return false;
+          return { success: false, imageUrl: null };
         }
       },
       setInviteCode: (newCode) => {
