@@ -6,6 +6,7 @@ from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
 import re, os
+from sqlalchemy.orm import aliased
 import cloudinary.uploader as uploader
 from cloudinary.uploader import destroy
 from cloudinary.api import delete_resources_by_tag
@@ -241,9 +242,41 @@ def get_current_user():
         }
     }), 200
 
-from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from cloudinary import uploader
+@api.route('/max-win-streak', methods=['GET'])
+@jwt_required()
+def get_max_win_streak():    
+    # Subquery to find the maximum win streak
+    max_winstreak_subquery = db.session.query(
+        db.func.max(User.winstreak).label('max_winstreak')
+    ).subquery()
+
+    # Alias for the User table
+    user_alias = aliased(User)
+
+    # Query to get the user with the maximum win streak
+    user_with_max_winstreak = db.session.query(user_alias).join(
+        max_winstreak_subquery,
+        user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
+    ).first()
+
+    # Ensure the user is found
+    if user_with_max_winstreak:
+        return jsonify({
+            "maxWinStreak": user_with_max_winstreak.winstreak,
+            "maxWinStreakUser": user_with_max_winstreak.serialize(),
+            "WinStreakGoal": WINSTREAK_GOAL
+        }), 200
+    else:
+        return jsonify({"message": "No user found"}), 404
+    
+@api.route('/reset-win-streak', methods=['PUT'])
+@jwt_required()
+def reset_win_streak():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    user.winstreak = 0
+    db.session.commit()
+    return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200
 
 @api.route('/user-img', methods=['POST'])
 @jwt_required()
@@ -384,6 +417,18 @@ def get_all_dapaint():
             .filter(DaPaint.foeId.is_(None), User.winstreak == winstreak)\
             .filter(~DaPaint.hostFoeId.in_(subquery)).all()
     return jsonify([paint.serialize() for paint in dapaint]), 200
+
+@api.route('/dapaint/delete/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_dapaint(id):
+    dapaint = DaPaint.query.get(id)
+    if dapaint is None:
+        return jsonify({"msg": "No DaPaint found"}), 404 
+
+    db.session.delete(dapaint)
+    db.session.commit()
+
+    return jsonify({"message": "DaPaint record deleted successfully"}), 200
 
 @api.route('/checktime', methods=['GET'])
 def check_time():

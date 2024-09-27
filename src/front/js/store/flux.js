@@ -412,28 +412,26 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       resetWinStreak: async () => {
-        let store = getStore();
-        console.log("FLUX: actions.RESETWINSTREAK DATA RESULTS: ", store);
-        if (store.WinStreakGoal <= store.userData.winstreak) {
-          try {
-            const response = await fetch(
-              process.env.BACKEND_URL + "/api/reset-win-streak",
-              {
-                method: "PUT",
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            );
-            const data = await response.json();
+				let store = getStore()
+				let userData = store.userData
+				if (userData && userData.winstreak >= process.env.WINSTREAK_GOAL) {
+					try {
+						const response = await fetch(process.env.BACKEND_URL + '/api/reset-win-streak', {
+							method: "PUT",
+							headers: {
+								"Authorization": `Bearer ${localStorage.getItem("token")}`
+							}
+						});
+						const data = await response.json();
 
-            getStore().userData.winstreak = 0;
-            setStore({ userData: userData });
-          } catch (error) {
-            console.error("Error fetching current user:", error);
-          }
-        }
-      },
+						userData.winstreak = 0
+						setStore({ userData: userData });
+					} catch (error) {
+						console.error("Error fetching current user:", error);
+					}
+				}
+
+			},
 
       addUserImage: async (imageFile) => {
         try {
