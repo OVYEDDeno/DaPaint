@@ -7,6 +7,9 @@ from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_
 import re, os
 import cloudinary.uploader as uploader
+from cloudinary.uploader import destroy
+from cloudinary.api import delete_resources_by_tag
+import cloudinary
 import random
 import string
 from sendgrid.helpers.mail import Mail
@@ -238,6 +241,23 @@ def get_current_user():
         }
     }), 200
 
+@api.route('/user-img', methods=['POST'])
+@jwt_required()
+def user_img():
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+    if user is None:
+        return jsonify({"msg": "No user found"}), 404
+
+    image = request.files.get('file')
+    if not image:
+        return jsonify({"msg": "No image uploaded"}), 400
+
+    upload_result = cloudinary.uploader.upload(image)
+    print(upload_result)
+    new_image = UserImg(public_id=upload_result['public_id'], image_url=upload_result['secure_url'], user_id=user.id)
+    db.session.add(new_image)    
+    db.session.commit()
+    return jsonify({"msg": "Image successfully uploaded"}), 200
 
 @api.route('/users', methods=['GET'])
 @jwt_required()

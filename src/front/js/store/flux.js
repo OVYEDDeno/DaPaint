@@ -436,24 +436,34 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       addUserImage: async (imageFile) => {
-        let formData = new FormData();
-        formData.append("file", imageFile[0]); // Assuming imageFile is an array
-
-        const response = await fetch(
-          process.env.BACKEND_URL + "/api/user-img",
-          {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-            body: formData,
+        try {
+          let formData = new FormData();
+          formData.append("file", imageFile[0]); // Assuming imageFile is an array
+      
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/user-img`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: formData,
+            }
+          );
+      
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Server responded with ${response.status}: ${errorText}`);
+            return false;
           }
-        );
-
-        if (response.status !== 200) return false;
-        const responseBody = await response.json();
-        console.log(responseBody);
-        return true;
+      
+          const responseBody = await response.json();
+          console.log(responseBody);
+          return true;
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          return false;
+        }
       },
       setInviteCode: (newCode) => {
         const store = getStore();

@@ -210,8 +210,15 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
-              Hide this modal and show the fourth with the button below.
+            <div class="profile-container">          
+              1. TAP FIND FOE BUTTON
+              <br/>3. TAP CLOCK IN
+              <br/>2. FIND A HOST CHALLENGING YOU IN A SPORT
+              <br/>1. TAP CLOCK IN
+              <br/>3. SPREAD THE WORD TO SELL TICKETS TO YOUR MATCH
+              <br/>4. TAP START
+              <br/>6. SUBMIT YOUR FOOTAGE/RESULT OF THE MATCH
+              <br/>5. REPEAT TILL YOU REACH 30 WINSTREAKS FOR A SURPRISE
             </div>
             <button
               class="btn btn-secondary"

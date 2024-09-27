@@ -19,15 +19,16 @@ export const Profile = () => {
   const [facebook_url, setFacebook_url] = useState("");
   const [previewURL, setPreviewURL] = useState("");
   const [imageSizeError, setImageSizeError] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadedImage, setUploadedImage] = useState(null);
 
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
-  const profileImageUrl =
-    store.userData?.profile_pic?.image_url || placeholderImage;
 
   useEffect(() => {
     actions.fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
     if (store.userData) {
       setName(store.userData.name || "");
       setCity(store.userData.city || "");
@@ -44,27 +45,28 @@ export const Profile = () => {
       setFacebook_url(store.userData.facebook_url || "");
       setPreviewURL(store.userData?.profile_pic?.image_url || placeholderImage);
     }
-  }, []);
-  // console.log("Profile User Info", fetchCurrentUser)
+  }, [store.userData]);
 
   const handleImageUpload = (event) => {
-    const files = event.target.files;
-    let file_size = files[0].size;
-    if (file_size <= 1000000) {
+    const file = event.target.files[0];
+    if (file && file.size <= 1000000) {
       setImageSizeError(false);
-      setUploadedImages(files);
+      setUploadedImage(file);
+      setPreviewURL(URL.createObjectURL(file));
     } else {
       setImageSizeError(true);
     }
   };
 
   const handleNewImage = async () => {
-    const success = await actions.addUserImage(uploadedImages);
-    if (success) {
-      alert("Profile picture has been updated");
-      actions.fetchCurrentUser(); // Refresh user data after update
-    } else {
-      alert("Failed to update profile picture");
+    if (uploadedImage) {
+      const success = await actions.addUserImage([uploadedImage]);
+      if (success) {
+        alert("Profile picture has been updated");
+        actions.fetchCurrentUser();
+      } else {
+        alert("Failed to update profile picture");
+      }
     }
   };
 
@@ -86,8 +88,7 @@ export const Profile = () => {
     };
     let result = await actions.editUserbyUser(updatedUser);
     if (result) {
-      window.location.reload();
-      actions.fetchCurrentUser(); // Refresh user data after update
+      actions.fetchCurrentUser();
     } else {
       alert("Failed to update user data");
     }
@@ -212,7 +213,7 @@ export const Profile = () => {
               {/* Profile picture and upload logic */}
               <div className="text-center m-6">
                 <img
-                  src={profileImageUrl}
+                  src={previewURL}
                   alt="Profile Picture"
                   className="rounded-circle img-fluid"
                   style={{ width: "68px", height: "68px" }}
