@@ -117,7 +117,7 @@ export const Setting = ({ onClose }) => {
                 data-bs-target="#exampleModalToggle5"
                 data-bs-toggle="modal"
               >
-                <h5>Open fifth modal</h5>
+                <h5>SWITCH PROFILE</h5>
               </button>
               <button
                 class="btn btn-secondary"

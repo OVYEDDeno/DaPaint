@@ -142,15 +142,15 @@ export const DaPaintList = ({ onClose }) => {
         onClick={handleResetWinStreak}
         className="btn btn-danger btn-lg"
         data-bs-toggle="modal"
-        data-bs-target="#DaPaint"
+        data-bs-target="#DaPaint1"
       >
         <h1>⚔️FIND FOE⚔️</h1>
       </button>
       <div
         className="modal fade"
-        id="DaPaint"
+        id="DaPaint1"
         tabIndex="-1"
-        aria-labelledby="DaPaintLabel"
+        aria-labelledby="DaPaint1Label"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">

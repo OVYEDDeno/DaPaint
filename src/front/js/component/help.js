@@ -182,6 +182,7 @@ export const Help = () => {
             </div> */}
             <div class="profile-container">
               Hide this modal and show the fourth with the button below.
+              DaPaint List new front end
               <button
                 class="btn-danger"
                 data-bs-target="#DaPaint4"
@@ -366,6 +367,7 @@ export const Help = () => {
             </div> */}
             <div class="profile-container">
               Hide this modal and go back to the first with the button below.
+              Dapaint create front end
             </div>
             <div class="modal-footer">
               <button

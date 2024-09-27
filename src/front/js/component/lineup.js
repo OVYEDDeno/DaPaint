@@ -79,7 +79,7 @@ export const Lineup = () => {
         );
 
         if (response.ok) {
-          alert(`Notification sent to add ${platform} link.`);
+          alert(`Request sent to add ${platform} link.`);
         } else {
           alert("Failed to send notification.");
         }
@@ -110,7 +110,7 @@ export const Lineup = () => {
                 onClick={() => sendNotification(platform.key)}
                 className="notification-button"
               >
-                Request {platform.key} Link
+                Request {platform.key}
               </button>
             )}
           </div>
@@ -223,9 +223,9 @@ export const Lineup = () => {
                     <div className="user">
                       <img src={matchup.user1Image} alt={matchup.user1name} />
                       <span>{matchup.user1name}</span>
-                      <p className="d-inline-flex gap-1">
+                      {/* <p className="d-inline-flex gap-1"> */}
                         <button
-                          className="btn btn-primary"
+                          className="btn-primary"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target={`#collapseUser1-${matchup.id}`}
@@ -234,12 +234,12 @@ export const Lineup = () => {
                         >
                           Live
                         </button>
-                      </p>
+                      {/* </p> */}
                       <div
                         className="collapse"
                         id={`collapseUser1-${matchup.id}`}
                       >
-                        <div className="card card-body">
+                        <div className="forgot-password">
                           {SocialMediaButtons(
                             matchup.hostFoeId,
                             matchup.user1Id
