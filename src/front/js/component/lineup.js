@@ -157,24 +157,27 @@ export const Lineup = () => {
   function convertTo12Hr(timeStr) {
     // Create a Date object from the input string
     const date = new Date(timeStr);
-  
+
     // Extract hours, minutes, and seconds
     let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-  
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
     // Determine AM or PM
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-  
+    const ampm = hours >= 12 ? "PM" : "AM";
+
     // Convert hours to 12-hour format
     hours = hours % 12;
     hours = hours ? hours : 12; // Handle midnight (0 should be 12)
-  
+
     // Format the date part (MM/DD/YYYY)
-    const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '/' + 
-                          date.getDate().toString().padStart(2, '0') + '/' + 
-                          date.getFullYear();
-  
+    const formattedDate =
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      "/" +
+      date.getDate().toString().padStart(2, "0") +
+      "/" +
+      date.getFullYear();
+
     // Return formatted time in 12-hour format
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
@@ -224,16 +227,16 @@ export const Lineup = () => {
                       <img src={matchup.user1Image} alt={matchup.user1name} />
                       <span>{matchup.user1name}</span>
                       {/* <p className="d-inline-flex gap-1"> */}
-                        <button
-                          className="btn-primary"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target={`#collapseUser1-${matchup.id}`}
-                          aria-expanded="false"
-                          aria-controls={`collapseUser1-${matchup.id}`}
-                        >
-                          Live
-                        </button>
+                      <button
+                        className="btn-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#collapseUser1-${matchup.id}`}
+                        aria-expanded="false"
+                        aria-controls={`collapseUser1-${matchup.id}`}
+                      >
+                        Live
+                      </button>
                       {/* </p> */}
                       <div
                         className="collapse"
@@ -251,23 +254,23 @@ export const Lineup = () => {
                     <div className="user">
                       <img src={matchup.user2Image} alt={matchup.user2name} />
                       <span>{matchup.user2name}</span>
-                      <p className="d-inline-flex gap-1">
-                        <button
-                          className="btn btn-primary"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target={`#collapseUser2-${matchup.id}`}
-                          aria-expanded="false"
-                          aria-controls={`collapseUser2-${matchup.id}`}
-                        >
-                          Live
-                        </button>
-                      </p>
+                      {/* <p className="d-inline-flex p-10"> */}
+                      <button
+                        className="btn-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#collapseUser2-${matchup.id}`}
+                        aria-expanded="false"
+                        aria-controls={`collapseUser2-${matchup.id}`}
+                      >
+                        Live
+                      </button>
+                      {/* </p> */}
                       <div
                         className="collapse"
                         id={`collapseUser2-${matchup.id}`}
                       >
-                        <div className="card card-body">
+                        <div className="forgot-password">
                           {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
                         </div>
                       </div>
@@ -276,28 +279,31 @@ export const Lineup = () => {
                       <span>{convertTo12Hr(matchup.date_time)}</span>
                       <span>{matchup.fitnessStyle}</span>
                       <span>{matchup.location}</span>
-                    
-                    <div className="btn-group">
-                      {userId === matchup.user1Id ||
-                      userId === matchup.user2Id ? (
-                        <button
-                          className="bg-black text-white p-2 rounded"
-                          onClick={() => {
-                            if (verifyTime(matchup.date_time)) {
-                              actions.cancelMatch(matchup.id);
-                            } else {
-                              actions.forfeitMatch(matchup.id);
-                            }
-                          }}
-                        >
-                          {verifyTime(matchup.date_time) ? "CANCEL" : "FORFEIT"}
-                        </button>
-                      ) : (
-                        <button className="bg-black text-white p-2 rounded">
-                          BUY TICKETS
-                        </button>
-                      )}
-                    </div></div>
+
+                      <div className="btn-group">
+                        {userId === matchup.user1Id ||
+                        userId === matchup.user2Id ? (
+                          <button
+                            className="bg-black text-white p-2 rounded"
+                            onClick={() => {
+                              if (verifyTime(matchup.date_time)) {
+                                actions.cancelMatch(matchup.id);
+                              } else {
+                                actions.forfeitMatch(matchup.id);
+                              }
+                            }}
+                          >
+                            {verifyTime(matchup.date_time)
+                              ? "CANCEL"
+                              : "FORFEIT"}
+                          </button>
+                        ) : (
+                          <button className="bg-black text-white p-2 rounded">
+                            BUY TICKETS
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -324,7 +324,7 @@ export const Profile = () => {
 
                 {/* Save Profile Button */}
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-secondary"
                   data-bs-dismiss="modal"
                   onClick={handleEditSubmit}
                 >
