@@ -91,7 +91,7 @@ export const Lineup = () => {
     return (
       <div className="social-media-buttons">
         {platforms.map((platform) => (
-          <div key={platform.key}>
+          <div className="d-grid gap-2" key={platform.key}>
             {platform.url ? (
               <button
                 onClick={() => {
@@ -110,7 +110,7 @@ export const Lineup = () => {
                 onClick={() => sendNotification(platform.key)}
                 className="notification-button"
               >
-                Request {platform.key}
+                  Request {platform.key}
               </button>
             )}
           </div>
@@ -130,8 +130,8 @@ export const Lineup = () => {
       user2name: event.foeId.name,
       user1Id: event.hostFoeId.id,
       user2Id: event.foeId.id,
-      user1Image: getProfileImageUrl(event.hostFoeId.profileImageUrl),
-      user2Image: getProfileImageUrl(event.foeId?.profileImageUrl),
+      user1Image: getProfileImageUrl(event.hostFoeId.profile_pic?.image_url),
+      user2Image: getProfileImageUrl(event.foeId.profile_pic?.image_url),
       hostFoeId: event.hostFoeId,
       foeId: event.foeId,
     }));
@@ -242,7 +242,7 @@ export const Lineup = () => {
                         className="collapse"
                         id={`collapseUser1-${matchup.id}`}
                       >
-                        <div className="forgot-password">
+                        <div>
                           {SocialMediaButtons(
                             matchup.hostFoeId,
                             matchup.user1Id
@@ -250,7 +250,8 @@ export const Lineup = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="vs">VS</div>
+                    <div className="vs p-1" style={{ fontSize: '34px' }}>VS</div>
+
                     <div className="user">
                       <img src={matchup.user2Image} alt={matchup.user2name} />
                       <span>{matchup.user2name}</span>
