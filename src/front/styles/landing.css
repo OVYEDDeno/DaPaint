@@ -220,9 +220,9 @@ h4 {
     gap: 20px; /* Add some space between items */
   }
 
-  .top-header h1 {
+  /* .top-header h1 {
     margin: 0;
-  }
+  } */
 
   .actions-section {
     display: flex;
@@ -236,10 +236,6 @@ h4 {
     width: auto; /* Allow buttons to size themselves */
     padding: 10px 15px; /* Keep button padding for better tap targets */
     margin: 5px; /* Space between buttons */
-  }
-
-  h1 {
-    font-size: 1.2em; /* Adjust font size if needed */
   }
 }
 /* This is for DaPaintManager createform */

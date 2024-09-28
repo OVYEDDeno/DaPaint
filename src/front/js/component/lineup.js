@@ -201,7 +201,7 @@ export const Lineup = () => {
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="profile-header ">
+            <div className="profile-header">
               <h1 className="profile-title" id="lineUpLabel">
                 LINEUP
               </h1>

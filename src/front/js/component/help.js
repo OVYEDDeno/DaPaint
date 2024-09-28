@@ -64,7 +64,7 @@ export const Help = () => {
 
   const handleCreate = async () => {
     if (!validateDateTime()) return;
-
+  
     const token = localStorage.getItem("token");
     const newDaPaint = {
       fitnessStyle: formData.fitnessStyle,
@@ -72,7 +72,7 @@ export const Help = () => {
       date_time: `${formData.date} ${formData.time}:00`,
       price: parseFloat(formData.amount),
     };
-
+  
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
         method: "POST",
@@ -82,10 +82,9 @@ export const Help = () => {
         },
         body: JSON.stringify(newDaPaint),
       });
-
+  
       if (response.ok) {
-        const createdEvent = await response.json();
-        setEvents([...events, createdEvent]);
+        await fetchEvents(); // Refetch all events after creating a new one
         setFormData({
           fitnessStyle: "",
           location: "",
@@ -593,13 +592,13 @@ export const Help = () => {
                 className="rounded-circle img-fluid"
                 style={{ width: "auto", height: "auto" }}
                 src={
-                  store.userData.user.profile_pic?.image_url ||
+                  store.userData?.user?.profile_pic?.image_url||
                   "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
                 }
-                alt={store.userData.user.name || "Unknown Host"}
+                alt={store.userData?.user?.name || "Unknown Host"}
               />
               <span className="m-1">
-                {store.userData.user.name || "Unknown Host"}
+                {store.userData?.user?.name || "Unknown Host"}
               </span>
               <div className="create-form">
                 <div>
