@@ -21,6 +21,7 @@ export const Landing = () => {
   const [user, setUser] = useState();
   const [maxWinStreakUser, setMaxWinStreakUser] = useState();
   const navigate = useNavigate();
+
   useEffect(() => {
     actions.fetchAndSetUser(setUser, setCurrentWinStreak);
     actions.fetchMaxWinStreak(
@@ -30,15 +31,19 @@ export const Landing = () => {
     );
   }, []);
 
+  const calculatedMaxWinStreak = Math.round(
+    (currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) *
+      GoalWinStreak *
+      100
+  );
+
   console.log(
     "GoalWinStreak",
     GoalWinStreak,
     "CURRENTWinStreak",
     currentWinStreak,
     "calc",
-    ((currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) /
-      GoalWinStreak) *
-      100
+    calculatedMaxWinStreak
   );
   console.log("max Win Streak", maxWinStreak);
 
@@ -105,7 +110,6 @@ export const Landing = () => {
         <Help />
         <div className="find-foe-section">
           {(store.userData.dapaintId && <Start />) || <DaPaintList />}
-          {/* <Start/> */}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

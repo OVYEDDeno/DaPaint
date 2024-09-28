@@ -76,3 +76,9 @@
 .details span {
   margin: 2px 0;
 }
+
+.SocialMediaButtons{
+  width: 100px;
+  background-size: 100%;
+  font-size: 10px;
+}

@@ -1,19 +1,137 @@
-import React, { useState, useContext, useEffect } from "react";
-import "../../styles/start.css";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import { DaPaintList } from "./dapaintlist.js";
+import PropTypes from "prop-types";
+import "../../styles/landing.css";
 
 export const Help = () => {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.text = `aclib.runAutoTag({zoneId: '3jdazwaval'});`;
-    document.body.appendChild(script);
+  // once everything is done name it DaPaintManager
+  const { store, actions } = useContext(Context);
+  const [events, setEvents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [formData, setFormData] = useState({
+    fitnessStyle: "",
+    location: "",
+    date: "",
+    time: "",
+    amount: "0",
+  });
+  const [error, setError] = useState("");
 
-    return () => {
-      document.body.removeChild(script); // Clean up the script on component unmount
-    };
+  useEffect(() => {
+    actions.fetchCurrentUser();
+    fetchEvents();
   }, []);
+
+  const fetchEvents = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/lineup`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const eventList = await response.json();
+        setEvents(eventList);
+      } else {
+        console.error("Failed to retrieve list of events");
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const validateDateTime = () => {
+    if (!formData.date || !formData.time) {
+      setError("Please select a valid date and time.");
+      return false;
+    }
+    const selectedDateTime = new Date(`${formData.date}T${formData.time}`);
+    if (selectedDateTime < new Date()) {
+      setError("Please select a future date and time.");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
+  const handleCreate = async () => {
+    if (!validateDateTime()) return;
+
+    const token = localStorage.getItem("token");
+    const newDaPaint = {
+      fitnessStyle: formData.fitnessStyle,
+      location: formData.location,
+      date_time: `${formData.date} ${formData.time}:00`,
+      price: parseFloat(formData.amount),
+    };
+
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newDaPaint),
+      });
+
+      if (response.ok) {
+        const createdEvent = await response.json();
+        setEvents([...events, createdEvent]);
+        setFormData({
+          fitnessStyle: "",
+          location: "",
+          date: "",
+          time: "",
+          amount: "0",
+        });
+      } else {
+        console.error("Failed to create event");
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
+  };
+
+  const handleDelete = async (eventId) => {
+    const success = await actions.deleteEvent(eventId);
+    if (success) {
+      setEvents(events.filter((event) => event.id !== eventId));
+    }
+  };
+
+  const handleClockIn = async (event) => {
+    try {
+      const updatedDapaint = await actions.handleClockIn(event);
+      if (updatedDapaint) {
+        setEvents(
+          events.map((e) => (e.id === updatedDapaint.id ? updatedDapaint : e))
+        );
+        console.log("Successfully clocked in!");
+      }
+    } catch (error) {
+      console.error("Error clocking in:", error);
+    }
+  };
+
+  const filteredEvents = events.filter((event) => {
+    const hostFoeName = event.hostFoeId?.name?.toLowerCase() || "";
+    const foeName = event.foeId?.name?.toLowerCase() || "";
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    return (
+      hostFoeName.includes(lowerCaseSearchTerm) ||
+      foeName.includes(lowerCaseSearchTerm)
+    );
+  });
+
   return (
     <>
       <div
@@ -95,7 +213,7 @@ export const Help = () => {
           <div class="modal-content">
             <div className="invite-header">
               <h1 className="invite-title">
-              Long Long Man
+                Long Long Man
                 {/* <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -181,20 +299,100 @@ export const Help = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              Hide this modal and show the fourth with the button below.
-              DaPaint List new front end
+              DaPaint List new front end goes here
+              {/* TODO:FIX THE ISSUE WITH THE DAPAINT NOT STAYING AFTER BEING CREATED */}
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search for a foe..."
+                className="form-control mb-3"
+              />
               <button
                 class="btn-danger"
                 data-bs-target="#DaPaint4"
                 data-bs-toggle="modal"
               >
-                +Add
+                +ADD
               </button>
+              {/* <div className="event-list">
+                {filteredEvents.map((event) => (
+                  <div key={event.id} className="event-item">
+                    <div className="event-info">
+                      <img
+                        src={
+                          event.hostFoeId?.profile_pic?.image_url ||
+                          "default-avatar.png"
+                        }
+                        alt={event.hostFoeId?.name || "Unknown Host"}
+                        className="rounded-circle img-fluid"
+                        style={{ width: "21px", height: "21px" }}
+                      />
+                      <span>{event.hostFoeId?.name || "Unknown Host"}</span>
+                      <span>{event.fitnessStyle}</span>
+                      <span>{event.location}</span>
+                      <span>{event.date_time}</span>
+                    </div>
+                    {event.hostFoeId?.id !== store.userData.user?.id ? (
+                      <button
+                        onClick={() => handleClockIn(event)}
+                        className="btn-danger"
+                      >
+                        CLOCK IN
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleDelete(event.id)}
+                        className="btn-danger"
+                      >
+                        DELETE
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div> */}
+              <div className="event-list">
+                {filteredEvents.map((event) => (
+                  <div key={event.id} className="event-item">
+                    <img
+                      src={
+                        event.hostFoeId?.profile_pic?.image_url ||
+                        "default-avatar.png"
+                      }
+                      alt={event.hostFoeId?.name || "Unknown Host"}
+                      className="rounded-circle img-fluid avatar"
+                    />
+                    <div className="details-container">
+                      <span>{event.hostFoeId?.name || "Unknown Host"}</span>
+                      <span>{event.fitnessStyle}</span>
+                      <span>{event.location}</span>
+                      <span>{event.date_time}</span>
+                    </div>
+                    <div className="button-container">
+                      {event.hostFoeId?.id !== store.userData.user?.id ? (
+                        <button
+                          onClick={() => handleClockIn(event)}
+                          className="btn-danger"
+                        >
+                          CLOCK IN
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(event.id)}
+                          className="btn-danger"
+                        >
+                          DELETE
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div
         class="modal fade"
         id="DaPaint4"
@@ -262,7 +460,7 @@ export const Help = () => {
           </div>
         </div>
       </div>
-      
+
       <div
         class="modal fade"
         id="DaPaint5"
@@ -275,7 +473,7 @@ export const Help = () => {
           <div class="modal-content">
             <div className="invite-header">
               <h1 className="invite-title">
-              Long Long Man2
+                Long Long Man2
                 {/* <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -330,9 +528,6 @@ export const Help = () => {
         </div>
       </div>
 
-
-
-
       <div
         class="modal fade"
         id="DaPaint6"
@@ -366,10 +561,96 @@ export const Help = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              Hide this modal and go back to the first with the button below.
-              Dapaint create front end
+              <img
+                className="rounded-circle img-fluid"
+                style={{ width: "auto", height: "auto" }}
+                src={
+                  store.userData.user.profile_pic?.image_url ||
+                  "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
+                }
+                alt={store.userData.user.name || "Unknown Host"}
+              />
+              <span className="m-1">
+                {store.userData.user.name || "Unknown Host"}
+              </span>
+              <div className="create-form">
+                <div>
+                  <label className="form-label" htmlFor="fitnessSelect">
+                    Fitness Style:
+                  </label>
+                  <select
+                    name="fitnessStyle"
+                    value={formData.fitnessStyle}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  >
+                    <option value="">Select Fitness Style</option>
+                    <option value="boxing">Boxing</option>
+                    <option value="breakDancing">Breaking</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="locationSelect">
+                    Select a Location:
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="Location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="stateSelect">
+                    Select a Date:
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="timeSelect">
+                    Select a Time:
+                  </label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="stateSelect">
+                    Ticket Prices:
+                  </label>
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="Ticket Price"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                {error && <div className="error-message">{error}</div>}
+                <button
+                  onClick={handleCreate}
+                  className="btn-danger"
+                  data-bs-target="#DaPaint3"
+                  data-bs-toggle="modal"
+                >
+                  CREATE
+                </button>
+              </div>
             </div>
-            <div class="modal-footer">
+            {/* <div class="modal-footer">
               <button
                 class="btn btn-primary"
                 data-bs-target="#DaPaint"
@@ -377,7 +658,7 @@ export const Help = () => {
               >
                 Back to first modal
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

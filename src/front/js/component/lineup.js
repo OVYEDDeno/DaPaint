@@ -270,7 +270,7 @@ export const Lineup = () => {
                         className="collapse"
                         id={`collapseUser2-${matchup.id}`}
                       >
-                        <div className="forgot-password">
+                        <div className="profile-container">
                           {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
                         </div>
                       </div>
