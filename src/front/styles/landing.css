@@ -288,7 +288,7 @@ h4 {
   align-items: center; /* Align items to the center vertically */
   border: 1px solid #ccc; /* Optional: border around each event */
   padding: 10px; /* Padding inside the event item */
-  border-radius: 5px; /* Optional: rounded corners */
+  /* border-radius: 5px; Optional: rounded corners */
 }
 
 .event-info {
@@ -298,8 +298,8 @@ h4 {
 }
 
 .avatar {
-  width: 5rem; /* Fixed width for the avatar */
-  height: auto; /* Fixed height for the avatar */
+  width: 10rem; /* Fixed width for the avatar */
+  height: 10rem; /* Fixed height for the avatar */
   border-radius: 50%; /* Make the image round */
   margin-right: 10px; /* Space between the avatar and the text */
 }
@@ -312,10 +312,4 @@ h4 {
 
 span {
   margin-bottom: 4px; /* Space between spans */
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end; /* Align the button to the right */
-  margin-left: auto; /* Push the button to the right */
 }

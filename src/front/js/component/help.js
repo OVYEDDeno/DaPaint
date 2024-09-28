@@ -131,6 +131,34 @@ export const Help = () => {
       foeName.includes(lowerCaseSearchTerm)
     );
   });
+  function convertTo12Hr(timeStr) {
+    // Create a Date object from the input string
+    const date = new Date(timeStr);
+
+    // Extract hours, minutes, and seconds
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
+    // Determine AM or PM
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle midnight (0 should be 12)
+
+    // Format the date part (MM/DD/YYYY)
+    const formattedDate =
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      "/" +
+      date.getDate().toString().padStart(2, "0") +
+      "/" +
+      date.getFullYear();
+
+    // Return formatted time in 12-hour format
+    return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
+  }
+
 
   return (
     <>
@@ -299,7 +327,6 @@ export const Help = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              DaPaint List new front end goes here
               {/* TODO:FIX THE ISSUE WITH THE DAPAINT NOT STAYING AFTER BEING CREATED */}
               <input
                 type="text"
@@ -366,24 +393,25 @@ export const Help = () => {
                       <span>{event.hostFoeId?.name || "Unknown Host"}</span>
                       <span>{event.fitnessStyle}</span>
                       <span>{event.location}</span>
-                      <span>{event.date_time}</span>
-                    </div>
-                    <div className="button-container">
-                      {event.hostFoeId?.id !== store.userData.user?.id ? (
-                        <button
-                          onClick={() => handleClockIn(event)}
-                          className="btn-danger"
-                        >
-                          CLOCK IN
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleDelete(event.id)}
-                          className="btn-danger"
-                        >
-                          DELETE
-                        </button>
-                      )}
+                      <span>{convertTo12Hr(event.date_time)}</span>
+
+                      {/* <div className="button-container"> */}
+                        {event.hostFoeId?.id !== store.userData.user?.id ? (
+                          <button
+                            onClick={() => handleClockIn(event)}
+                            className="btn-danger"
+                          >
+                            CLOCK IN
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleDelete(event.id)}
+                            className="btn-danger"
+                          >
+                            DELETE
+                          </button>
+                        )}
+                      {/* </div> */}
                     </div>
                   </div>
                 ))}
