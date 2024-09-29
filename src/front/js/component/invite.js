@@ -5,8 +5,8 @@ import "../../styles/invite.css";
 export const Invite = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const [notifs, setNotifs] = useState([]);
-  const [MaxInviteeCount, setMaxInviteeCount] = useState([]);
-  const [MaxInviteeUser, setMaxInviteeUser] = useState([]);
+  const [maxInviteeCount, setMaxInviteeCount] = useState(null);
+  const [maxInviteeUser, setMaxInviteeUser] = useState(null);
   const [inviteCodes, setInviteCodes] = useState([]);
   const [loadingNotifs, setLoadingNotifs] = useState(true);
   const [loadingCodes, setLoadingCodes] = useState(true);
@@ -16,10 +16,10 @@ export const Invite = ({ onClose }) => {
   // Fetch invitee
   useEffect(() => {
     actions.fetchMaxInvitee(
-      setMaxInviteeCount,  // State setter for invitee count
-      setMaxInviteeUser    // State setter for inviter's name with max invitees
+      setMaxInviteeCount, // State setter for invitee count
+      setMaxInviteeUser // State setter for inviter's name with max invitees
     );
-}, []);
+  }, []);
 
   // Fetch notifications
   useEffect(() => {
@@ -135,8 +135,14 @@ export const Invite = ({ onClose }) => {
                   Invite the most people by the end of this winstreak and win
                   500K!
                 </p>
-                <p>{MaxInviteeUser} has invited {MaxInviteeCount} Indulgers</p>
-                <p>You have invited {store.userData?.user?.invite_code?.completed_dapaints.length} Indulgers</p>
+                <p>
+                  {maxInviteeUser} has invited {maxInviteeCount} Indulgers
+                </p>
+                <p>
+                  You have invited{" "}
+                  {store.userData?.user?.invite_code?.completed_dapaints.length}{" "}
+                  Indulgers
+                </p>
                 <h5 className="font-bold mb-2">Your Invite Code</h5>
 
                 {loadingCodes ? (
@@ -151,7 +157,6 @@ export const Invite = ({ onClose }) => {
                   <p>No invite codes</p>
                 )}
                 <p>^copy your code to easily send^</p>
-                
               </div>
 
               <div>

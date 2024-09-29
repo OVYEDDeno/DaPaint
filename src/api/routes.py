@@ -273,7 +273,6 @@ def get_max_win_streak():
         return jsonify({"message": "No user found"}), 404
 
 
-
 @api.route('/max-invitee', methods=['GET'])
 @jwt_required()
 def get_max_invitee():
