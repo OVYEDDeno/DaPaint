@@ -14,7 +14,7 @@ import { Help } from "../component/help.js";
 export const Landing = () => {
   const { store, actions } = useContext(Context);
   const [currentWinStreak, setCurrentWinStreak] = useState(0);
-  const [GoalWinStreak, setGoalWinStreak] = useState(30);
+  const [GoalWinStreak, setGoalWinStreak] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [maxWinStreak, setMaxWinStreak] = useState(0);
   const nextWinStreak = maxWinStreak + 1;
@@ -30,7 +30,7 @@ export const Landing = () => {
       setMaxWinStreakUser
     );
   }, []);
-
+console.log("MAXWINUSER: " + maxWinStreakUser)
   const calculatedMaxWinStreak = Math.round(
     (currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) *
       GoalWinStreak *
@@ -72,20 +72,20 @@ export const Landing = () => {
                 className="custom-progress"
                 style={{
                   width: `${
-                    ((currentWinStreak < GoalWinStreak
+                    ((currentWinStreak < store.WinStreakGoal
                       ? currentWinStreak
-                      : GoalWinStreak) /
-                      GoalWinStreak) *
+                      : store.WinStreakGoal) /
+                      store.WinStreakGoal) *
                     100
                   }%`,
                 }}
               ></div>
               <div
                 className={`custom-circle ms-auto custom-end ${
-                  currentWinStreak >= GoalWinStreak ? "bg-yellow" : ""
+                  currentWinStreak >= store.WinStreakGoal ? "bg-yellow" : ""
                 }`}
               >
-                <h4>{GoalWinStreak}</h4>
+                <h4>{store.WinStreakGoal}</h4>
               </div>
             </div>
           </div>

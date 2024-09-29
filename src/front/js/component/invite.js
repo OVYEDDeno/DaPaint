@@ -5,11 +5,21 @@ import "../../styles/invite.css";
 export const Invite = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const [notifs, setNotifs] = useState([]);
+  const [MaxInviteeCount, setMaxInviteeCount] = useState([]);
+  const [MaxInviteeUser, setMaxInviteeUser] = useState([]);
   const [inviteCodes, setInviteCodes] = useState([]);
   const [loadingNotifs, setLoadingNotifs] = useState(true);
   const [loadingCodes, setLoadingCodes] = useState(true);
   const [errorNotifs, setErrorNotifs] = useState(null);
   const [errorCodes, setErrorCodes] = useState(null);
+
+  // Fetch invitee
+  useEffect(() => {
+    actions.fetchMaxInvitee(
+      setMaxInviteeCount,  // State setter for invitee count
+      setMaxInviteeUser    // State setter for inviter's name with max invitees
+    );
+}, []);
 
   // Fetch notifications
   useEffect(() => {
@@ -125,8 +135,8 @@ export const Invite = ({ onClose }) => {
                   Invite the most people by the end of this winstreak and win
                   500K!
                 </p>
-                <p>ExampleUser1 has invited 2 Indulgers</p>
-                <p>You have invited 0 Indulgers</p>
+                <p>{MaxInviteeUser} has invited {MaxInviteeCount} Indulgers</p>
+                <p>You have invited {store.userData?.user?.invite_code?.completed_dapaints.length} Indulgers</p>
                 <h5 className="font-bold mb-2">Your Invite Code</h5>
 
                 {loadingCodes ? (

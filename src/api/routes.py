@@ -15,6 +15,9 @@ import random
 import string
 from sendgrid.helpers.mail import Mail
 from api.send_email import send_email
+from sqlalchemy.orm import aliased
+from sqlalchemy import func
+
 
 
 api = Blueprint('api', __name__)
@@ -242,33 +245,63 @@ def get_current_user():
         }
     }), 200
 
-# @api.route('/max-win-streak', methods=['GET'])
-# @jwt_required()
-# def get_max_win_streak():    
-#     # Subquery to find the maximum win streak
-#     max_winstreak_subquery = db.session.query(
-#         db.func.max(User.winstreak).label('max_winstreak')
-#     ).subquery()
+@api.route('/max-win-streak', methods=['GET'])
+@jwt_required()
+def get_max_win_streak():    
+    # Subquery to find the maximum win streak
+    max_winstreak_subquery = db.session.query(
+        db.func.max(User.winstreak).label('max_winstreak')
+    ).subquery()
 
-#     # Alias for the User table
-#     user_alias = aliased(User)
+    # Alias for the User table
+    user_alias = aliased(User)
 
-#     # Query to get the user with the maximum win streak
-#     user_with_max_winstreak = db.session.query(user_alias).join(
-#         max_winstreak_subquery,
-#         user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
-#     ).first()
+    # Query to get the user with the maximum win streak
+    user_with_max_winstreak = db.session.query(user_alias).join(
+        max_winstreak_subquery,
+        user_alias.winstreak == max_winstreak_subquery.c.max_winstreak
+    ).first()
 
-#     # Ensure the user is found
-#     if user_with_max_winstreak:
-#         return jsonify({
-#             "maxWinStreak": user_with_max_winstreak.winstreak,
-#             "maxWinStreakUser": user_with_max_winstreak.serialize(),
-#             "WinStreakGoal": WINSTREAK_GOAL
-#         }), 200
-#     else:
-#         return jsonify({"message": "No user found"}), 404
-    
+    # Ensure the user is found
+    if user_with_max_winstreak:
+        return jsonify({
+            "maxWinStreak": user_with_max_winstreak.winstreak,
+            "maxWinStreakUser": user_with_max_winstreak.serialize(),
+            "WinStreakGoal": WINSTREAK_GOAL
+        }), 200
+    else:
+        return jsonify({"message": "No user found"}), 404
+
+
+
+@api.route('/max-invitee', methods=['GET'])
+@jwt_required()
+def get_max_invitee():
+    # Subquery to count invitees for each inviter
+    invitee_count_subquery = db.session.query(
+        InviteCode.inviter_id,
+        func.count(InviteCode.invitees).label('invitee_count')
+    ).group_by(InviteCode.inviter_id).subquery()
+
+    # Alias for the User table
+    user_alias = aliased(User)
+
+    # Query to get the user with the maximum invitee count
+    user_with_max_invitees = db.session.query(user_alias, invitee_count_subquery.c.invitee_count).join(
+        invitee_count_subquery,
+        user_alias.id == invitee_count_subquery.c.inviter_id
+    ).order_by(invitee_count_subquery.c.invitee_count.desc()).first()
+
+    # Ensure a user with maximum invitees is found
+    if user_with_max_invitees:
+        return jsonify({
+            "maxInviteeCount": user_with_max_invitees[1],  # Invitee count
+            "maxInviteeUser": user_with_max_invitees[0].serialize()  # User details
+        }), 200
+    else:
+        return jsonify({"message": "No inviter found with invitees"}), 404
+
+
 @api.route('/reset-win-streak', methods=['PUT'])
 @jwt_required()
 def reset_win_streak():
@@ -519,40 +552,6 @@ def create_report():
 
     return jsonify({"msg": "Report successfully created"}), 201
 
-@api.route('/api/max-win-streak', methods=['GET'])
-@jwt_required()
-def get_max_win_streak():
-    # Get the current user ID from the JWT token
-    user_id = get_jwt_identity()
-
-    # Fetch the user from the database
-    user = User.query.filter_by(id=user_id).first()
-
-    # Check if the user exists
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
-
-    # Find the user with the max win streak
-    max_winstreak_user = User.query.order_by(User.winstreak.desc()).first()
-
-    try:
-        # Prepare the response data
-        response = {
-            "user": {
-                "maxWinStreak": user.winstreak,
-                "WinStreakGoal": None,  # Do not return here; it's already in the store
-                "maxWinStreakUser": {
-                    "user": {
-                        "name": max_winstreak_user.name,
-                        "winstreak": max_winstreak_user.winstreak
-                    }
-                }
-            }
-        }
-        return jsonify(response), 200
-    except Exception as e:
-        return jsonify({"msg": "Error fetching max win streak", "error": str(e)}), 500
-
 
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
 @jwt_required()
@@ -727,13 +726,6 @@ def process_invite_code():
     if not invite_code_record or invite_code_record.inviter_id == current_user_id:
         return jsonify({"message": "Invalid invite code"}), 400
 
-    # Check if the count field is initialized; if not, set it to 0
-    if invite_code_record.count is None:
-        invite_code_record.count = 0
-
-    # Increment the count by 1
-    invite_code_record.count += 1
-
     # Create an association between the current user and the invite code
     db.session.execute(invitee_association.insert().values(
         invite_code_id=invite_code_record.id,
@@ -747,6 +739,5 @@ def process_invite_code():
     # Return success response
     return jsonify({
         "message": "Invite code processed successfully",
-        "hasInviter": True,
-        "new_count": invite_code_record.count  # Return the updated count
+        "hasInviter": True,    
     }), 200

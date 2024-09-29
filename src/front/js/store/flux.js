@@ -104,6 +104,33 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Failed to cancel match:", response.statusText);
         }
       },
+      
+      fetchMaxInvitee: async (setMaxInviteeCount, setMaxInviteeUser) => {
+        let store = getStore();
+        try {
+          const response = await fetch(process.env.BACKEND_URL + "/api/max-invitee", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+      
+          if (response.status !== 200) {
+            console.error("Failed to retrieve max invitee count:", response.statusText);
+            return null;
+          }
+      
+          const data = await response.json();
+          console.log("FLUX:ACTIONS.FETCHMAXINVITEE.DATA", data);
+      
+          // Update the state/store with the response data
+          setMaxInviteeCount(data.maxInviteeCount);  // Set the max invitee count
+          setMaxInviteeUser(data.maxInviteeUser.name);  // Set the inviter's name with the most invitees
+        } catch (error) {
+          console.error("Error fetching max invitee:", error);
+          return null;
+        }
+      },
+      
 
       fetchCurrentUser: async () => {
         try {
@@ -401,10 +428,10 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
           const data = await response.json();
           console.log("FLUX:ACTIONS.FETCHMAXWINSTREAK.DATA", data);
-          setStore({ WinStreakGoal: data.WinStreakGoal });
-          setMaxWinStreak(data.user?.maxWinStreak);
-          setGoalWinStreak(data.user?.WinStreakGoal);
-          setMaxWinStreakUser(data.user?.maxWinStreakUser.user.name);
+          setStore({ WinStreakGoal: parseInt(data.WinStreakGoal) });
+          setMaxWinStreak(data.maxWinStreak);
+          setGoalWinStreak(data.WinStreakGoal);
+          setMaxWinStreakUser(data.maxWinStreakUser.name);
         } catch (error) {
           console.error("Error fetching max win streak:", error);
           return null;

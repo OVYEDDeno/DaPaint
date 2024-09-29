@@ -94,7 +94,6 @@ class InviteCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(10), unique=True, nullable=False)
     inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
-    count= db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
 
     # Relationships
@@ -109,10 +108,17 @@ class InviteCode(db.Model):
             'id': self.id,
             'code': self.code,
             'inviter_id': self.inviter_id,
-            'count': self.count,
             'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S"),
             'invitees': [invitee.id for invitee in self.invitees],
-            'completed_dapaints': [dapaint.id for dapaint in self.completed_dapaints]
+             'completed_dapaints': [
+            {
+                'invitee_id': invitee.id,
+                'wins': invitee.wins,
+                'losses': invitee.losses
+            } 
+            for invitee in self.invitees 
+            if invitee.wins > 0 or invitee.losses > 0
+        ]
         }
 
 invitee_association = db.Table('invitee_association',
