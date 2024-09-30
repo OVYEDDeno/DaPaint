@@ -800,3 +800,41 @@ def process_invite_code():
         "message": "Invite code processed successfully",
         "hasInviter": True,    
     }), 200
+@api.route('/feedback', methods=['POST'])
+@jwt_required()
+def handle_feedback_submission():
+    # Get the JSON data from the request
+    data = request.get_json()
+    
+    # Extract the feedback details
+    feedback_text = data.get('feedback')
+    rating = data.get('rating')
+
+    # Ensure the necessary fields are provided
+    if not feedback_text or rating is None:
+        return jsonify({"msg": "Feedback text and rating are required."}), 400
+
+    # Ensure the rating is within the allowed range (e.g., 1-5)
+    if not (1 <= rating <= 5):
+        return jsonify({"msg": "Rating must be between 1 and 5."}), 400
+
+    # Get the current user
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if user is None:
+        return jsonify({"msg": "No user found"}), 404
+
+    # Create a new feedback entry
+    new_feedback = Feedback(
+        user_id=user.id,
+        feedback_text=feedback_text,
+        rating=rating,
+        created_at=datetime.utcnow()
+    )
+
+    # Save feedback to the database
+    db.session.add(new_feedback)
+    db.session.commit()
+
+    return jsonify({"msg": "Feedback submitted successfully!"}), 201

@@ -42,6 +42,9 @@ class User(db.Model):
 
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
+    
+     # Feedback relationship
+    feedback = db.relationship('Feedback', back_populates='user', cascade='all, delete-orphan')
 
     # Other relationships
     reports = db.relationship('Reports', back_populates='user', uselist=False, cascade='all, delete-orphan')
@@ -120,6 +123,7 @@ class InviteCode(db.Model):
             if invitee.wins > 0 or invitee.losses > 0
         ]
         }
+        
 
 invitee_association = db.Table('invitee_association',
     db.Column('invite_code_id', db.Integer, db.ForeignKey('invite_code.id'), primary_key=True),
@@ -401,3 +405,13 @@ class AdCampaign(db.Model):
         }
 
 Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    feedback_text = db.Column(db.String(500), nullable=False)
+    rating = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationship to User model
+    user = db.relationship('User', back_populates='feedback')

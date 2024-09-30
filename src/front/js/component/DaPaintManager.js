@@ -302,6 +302,13 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
+            <img
+                data-bs-target="#DaPaint"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 DAPAINT
                 <img
@@ -324,7 +331,6 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              {/* TODO:FIX THE ISSUE WITH THE DAPAINT NOT STAYING AFTER BEING CREATED */}
               <input
                 type="text"
                 value={searchTerm}
@@ -428,6 +434,13 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
+            <img
+                data-bs-target="#DaPaint3"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 DAPAINT
                 <img
@@ -564,6 +577,13 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
+            <img
+                data-bs-target="#DaPaint3"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 DAPAINT
                 <img

@@ -1,7 +1,6 @@
-  
 import os
 from flask_admin import Admin
-from .models import db, User, DaPaint, UserImg, Reports, InviteCode, Notifications, Insight, UserDisqualification
+from .models import db, User, DaPaint, UserImg, Reports, InviteCode, Notifications, Insight, UserDisqualification, Feedback
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -19,6 +18,7 @@ def setup_admin(app):
     admin.add_view(ModelView(Notifications, db.session))
     admin.add_view(ModelView(Insight, db.session))
     admin.add_view(ModelView(UserDisqualification, db.session))
+    admin.add_view(ModelView(Feedback, db.session))
 
     # You can duplicate that line to add mew models
     # admin.add_view(ModelView(YourModelName, db.session))

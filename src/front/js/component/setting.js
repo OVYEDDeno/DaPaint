@@ -9,14 +9,24 @@ export const Setting = ({ onClose }) => {
   const [isActive, setIsActive] = useState(null);
   const [feedback, setFeedback] = useState(""); // State to store feedback input
 
+  // State variables to store user information
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
   useEffect(() => {
     const fetchUserStatus = async () => {
       await actions.fetchCurrentUser();
       setIsActive(store.user?.is_active);
+
+      // Update user information from store
+      if (store.userData && store.userData.user) {
+        setName(store.userData.user.name || "");
+        setEmail(store.userData.user.email || "");
+      }
     };
 
     fetchUserStatus();
-  }, []);
+  }, []); // Depend on store.userData to update when user data changes
 
   const toggleActiveStatus = async () => {
     let options = {
@@ -49,8 +59,11 @@ export const Setting = ({ onClose }) => {
     navigate("/");
   };
 
-  const handleFeedbackSubmit = async () => {
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     console.log("Feedback submitted:", feedback);
+    console.log("User:", name);
+    console.log("Email:", email);
     alert("Thank you for your feedback!");
     setFeedback(""); // Clear feedback input
   };
@@ -79,6 +92,13 @@ export const Setting = ({ onClose }) => {
       </div> */}
 
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 SETTING
                 <img
@@ -152,6 +172,13 @@ export const Setting = ({ onClose }) => {
       </div> */}
 
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 FEEDBACK
                 <img
@@ -164,22 +191,21 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-              <form>
+            <form onSubmit={handleFeedbackSubmit}>
+                <p>User: {name}</p>
+                <p>Email: {email}</p>
+
                 <textarea
                   name="message"
                   required
                   placeholder="Enter Feedback"
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
                 ></textarea>
                 <button type="submit">Submit Feedback</button>
               </form>
             </div>
-            <button
-              class="btn btn-secondary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first modal
-            </button>
+            
           </div>
         </div>
       </div>
@@ -204,6 +230,13 @@ export const Setting = ({ onClose }) => {
         ></button>
       </div> */}
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 HOW TO PLAY
                 <img
@@ -232,13 +265,7 @@ export const Setting = ({ onClose }) => {
               <br />
               5. REPEAT TILL YOU REACH 30 WINSTREAKS FOR A SURPRISE
             </div>
-            <button
-              class="btn btn-secondary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first modal
-            </button>
+            
           </div>
         </div>
       </div>
@@ -264,6 +291,13 @@ export const Setting = ({ onClose }) => {
       </div> */}
 
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 TICKETS
                 <img
@@ -278,13 +312,7 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the fifth with the button below.
             </div>
-            <button
-              class="btn btn-secondary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first modal
-            </button>
+            
           </div>
         </div>
       </div>
@@ -310,6 +338,13 @@ export const Setting = ({ onClose }) => {
       </div> */}
 
             <div className="invite-header">
+              <img
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
+                alt="Back"
+                className="invite-close"
+              />
               <h1 className="invite-title">
                 SETTING
                 <img
@@ -324,13 +359,7 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the sixth with the button below.
             </div>
-            <button
-              class="btn btn-secondary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first modal
-            </button>
+            
           </div>
         </div>
       </div>
@@ -355,7 +384,7 @@ export const Setting = ({ onClose }) => {
         ></button>
       </div> */}
 
-            <div className="invite-header">
+            <div className="invite-header">              
               <img
                 data-bs-target="#exampleModalToggle"
                 data-bs-toggle="modal"
@@ -376,16 +405,17 @@ export const Setting = ({ onClose }) => {
 
             <div class="profile-container">
               Are you sure you want to clock out?
-              <button>YES</button>
-              <button>NO</button>
-            </div>
-            <button
-              class="btn btn-secondary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first modal
-            </button>
+              <button className="btn btn-secondary" onClick={handleLogout}>
+                YES
+              </button>
+              <button
+                className="btn btn-secondary"
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal"
+              >
+                NO
+              </button>
+            </div>            
           </div>
         </div>
       </div>
