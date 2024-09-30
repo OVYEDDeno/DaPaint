@@ -134,3 +134,30 @@ button[type="submit"] {
 .closeIcon {
   color: #fff;
 }
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.star-label {
+  cursor: pointer;
+  padding: 0 0.1em;
+  font-size: 2rem;
+}
+
+.star-label svg {
+  width: 1em;
+  height: 1em;
+  fill: transparent;
+  stroke: #FFD700;
+  stroke-width: 1;
+  transition: all 0.2s;
+}
+
+input[type="radio"]:checked ~ label svg,
+label:hover svg,
+label:hover ~ label svg {
+  fill: #FFD700;
+}

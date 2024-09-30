@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 import re, os
 from sqlalchemy.orm import aliased
 import cloudinary.uploader as uploader
@@ -838,3 +838,27 @@ def handle_feedback_submission():
     db.session.commit()
 
     return jsonify({"msg": "Feedback submitted successfully!"}), 201
+
+@api.route('/users/highest-completed-dapaints', methods=['GET'])
+@jwt_required()
+def get_user_with_highest_completed_dapaints():
+    # Subquery to sum wins and losses for each inviter
+    subquery = db.session.query(
+        InviteCode.inviter_id,
+        func.sum(func.json_array_length(InviteCode.completed_dapaints)).label('dapaints_count')
+    ).group_by(InviteCode.inviter_id).subquery()
+
+    # Query to get the user with the highest count
+    user_with_highest = db.session.query(User, subquery.c.dapaints_count)\
+        .join(subquery, User.id == subquery.c.inviter_id)\
+        .order_by(subquery.c.dapaints_count.desc())\
+        .first()
+
+    if user_with_highest:
+        user, count = user_with_highest
+        return jsonify({
+            'name': user.name,
+            'completed_dapaints_count': int(count)
+        }), 200
+    else:
+        return jsonify({'message': 'No users found with completed DaPaints'}), 404

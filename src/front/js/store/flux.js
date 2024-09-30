@@ -84,6 +84,25 @@ const getState = ({ getStore, getActions, setStore }) => {
           window.location.reload();
         }
       },
+      submitFeedback: async (feedback, rating) => {
+        try {
+          const resp = await fetch(`${process.env.BACKEND_URL}/api/feedback`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ feedback, rating }),
+          });
+          
+          if (!resp.ok) throw Error("There was a problem submitting the feedback");
+          
+          const data = await resp.json();
+          return data;
+        } catch (error) {
+          console.error("Error submitting feedback:", error);
+        }
+      },
       cancelMatch: async (dapaintId) => {
         const response = await fetch(
           process.env.BACKEND_URL + "/api/cancel/" + dapaintId,

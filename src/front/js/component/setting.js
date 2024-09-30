@@ -7,18 +7,25 @@ export const Setting = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(null);
-  const [feedback, setFeedback] = useState(""); // State to store feedback input
-
-  // State variables to store user information
+  const [feedback, setFeedback] = useState("");
+  const [rating, setRating] = useState(0); // New state for rating
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  // const [rating, setRating] = useState(0);
+
+  const handleRatingChange = (value) => {
+    setRating(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission
+    console.log("Rating:", rating, "Feedback:", feedback);
+  };
 
   useEffect(() => {
     const fetchUserStatus = async () => {
       await actions.fetchCurrentUser();
-      setIsActive(store.user?.is_active);
-
-      // Update user information from store
       if (store.userData && store.userData.user) {
         setName(store.userData.user.name || "");
         setEmail(store.userData.user.email || "");
@@ -26,7 +33,26 @@ export const Setting = ({ onClose }) => {
     };
 
     fetchUserStatus();
-  }, []); // Depend on store.userData to update when user data changes
+  }, []);
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    if (!feedback || rating === 0) {
+      alert("Please provide both feedback and rating.");
+      return;
+    }
+    try {
+      const response = await actions.submitFeedback(feedback, rating);
+      if (response && response.msg) {
+        alert(response.msg);
+        setFeedback("");
+        setRating(0);
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert("There was an error submitting your feedback. Please try again.");
+    }
+  };
 
   const toggleActiveStatus = async () => {
     let options = {
@@ -57,15 +83,6 @@ export const Setting = ({ onClose }) => {
     localStorage.removeItem("token");
     console.log("Log out successful");
     navigate("/");
-  };
-
-  const handleFeedbackSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log("Feedback submitted:", feedback);
-    console.log("User:", name);
-    console.log("Email:", email);
-    alert("Thank you for your feedback!");
-    setFeedback(""); // Clear feedback input
   };
 
   return (
@@ -191,21 +208,42 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-            <form onSubmit={handleFeedbackSubmit}>
-                <p>User: {name}</p>
-                <p>Email: {email}</p>
-
+              <form onSubmit={handleFeedbackSubmit}>
+                <div className="star-rating">
+                  {[5, 4, 3, 2, 1].map((star) => (
+                    <React.Fragment key={star}>
+                      <input
+                        type="radio"
+                        id={`star-${star}`}
+                        name="star-radio"
+                        value={star}
+                        checked={rating === star}
+                        onChange={() => handleRatingChange(star)}
+                        className="visually-hidden"
+                      />
+                      <label htmlFor={`star-${star}`} className="star-label">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            pathLength="360"
+                            d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+                          />
+                        </svg>
+                      </label>
+                    </React.Fragment>
+                  ))}
+                </div>
                 <textarea
-                  name="message"
-                  required
-                  placeholder="Enter Feedback"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
-                ></textarea>
+                  placeholder="Enter your feedback here"
+                  required
+                />
                 <button type="submit">Submit Feedback</button>
               </form>
             </div>
-            
           </div>
         </div>
       </div>
@@ -265,7 +303,6 @@ export const Setting = ({ onClose }) => {
               <br />
               5. REPEAT TILL YOU REACH 30 WINSTREAKS FOR A SURPRISE
             </div>
-            
           </div>
         </div>
       </div>
@@ -312,7 +349,6 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the fifth with the button below.
             </div>
-            
           </div>
         </div>
       </div>
@@ -359,7 +395,6 @@ export const Setting = ({ onClose }) => {
             <div class="profile-container">
               Hide this modal and show the sixth with the button below.
             </div>
-            
           </div>
         </div>
       </div>
@@ -384,7 +419,7 @@ export const Setting = ({ onClose }) => {
         ></button>
       </div> */}
 
-            <div className="invite-header">              
+            <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
                 data-bs-toggle="modal"
@@ -415,7 +450,7 @@ export const Setting = ({ onClose }) => {
               >
                 NO
               </button>
-            </div>            
+            </div>
           </div>
         </div>
       </div>

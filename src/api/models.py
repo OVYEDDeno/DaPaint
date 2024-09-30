@@ -407,7 +407,7 @@ class AdCampaign(db.Model):
 Advertiser.ad_campaigns = db.relationship('AdCampaign', order_by=AdCampaign.id, back_populates='advertiser')
 
 class Feedback(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)    
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     feedback_text = db.Column(db.String(500), nullable=False)
     rating = db.Column(db.Integer, nullable=True)
@@ -415,3 +415,13 @@ class Feedback(db.Model):
 
     # Relationship to User model
     user = db.relationship('User', back_populates='feedback')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'feedback_text': self.feedback_text,
+            'rating': self.rating,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    
