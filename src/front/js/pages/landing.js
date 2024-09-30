@@ -3,13 +3,11 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/landing.css";
 import { Profile } from "../component/profile";
-import { DaPaintList } from "../component/dapaintlist.js";
-import { DaPaintCreate } from "../component/dapaintcreate.js";
 import { Lineup } from "../component/lineup.js";
 import { Setting } from "../component/setting.js";
 import { Invite } from "../component/invite.js";
-import { Start, Wlsub } from "../component/start.js";
-import { Help } from "../component/help.js";
+import { Start } from "../component/start.js";
+import { DaPaintManager } from "../component/DaPaintManager.js";
 
 export const Landing = () => {
   const { store, actions } = useContext(Context);
@@ -30,7 +28,7 @@ export const Landing = () => {
       setMaxWinStreakUser
     );
   }, []);
-console.log("MAXWINUSER: " + maxWinStreakUser)
+  console.log("MAXWINUSER: " + maxWinStreakUser);
   const calculatedMaxWinStreak = Math.round(
     (currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) *
       GoalWinStreak *
@@ -107,9 +105,9 @@ console.log("MAXWINUSER: " + maxWinStreakUser)
         <Lineup />
         <p></p>
         <p></p>
-        <Help />
+        
         <div className="find-foe-section">
-          {(store.userData.dapaintId && <Start />) || <DaPaintList />}
+          {(store.userData.dapaintId && <Start />) || <DaPaintManager />}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

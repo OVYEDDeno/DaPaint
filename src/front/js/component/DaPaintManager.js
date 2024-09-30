@@ -3,8 +3,7 @@ import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 
-export const Help = () => {
-  // once everything is done name it DaPaintManager
+export const DaPaintManager = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,7 +63,7 @@ export const Help = () => {
 
   const handleCreate = async () => {
     if (!validateDateTime()) return;
-  
+
     const token = localStorage.getItem("token");
     const newDaPaint = {
       fitnessStyle: formData.fitnessStyle,
@@ -72,7 +71,7 @@ export const Help = () => {
       date_time: `${formData.date} ${formData.time}:00`,
       price: parseFloat(formData.amount),
     };
-  
+
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/dapaint`, {
         method: "POST",
@@ -82,7 +81,7 @@ export const Help = () => {
         },
         body: JSON.stringify(newDaPaint),
       });
-  
+
       if (response.ok) {
         await fetchEvents(); // Refetch all events after creating a new one
         setFormData({
@@ -157,7 +156,6 @@ export const Help = () => {
     // Return formatted time in 12-hour format
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
-
 
   return (
     <>
@@ -395,21 +393,21 @@ export const Help = () => {
                       <span>{convertTo12Hr(event.date_time)}</span>
 
                       {/* <div className="button-container"> */}
-                        {event.hostFoeId?.id !== store.userData.user?.id ? (
-                          <button
-                            onClick={() => handleClockIn(event)}
-                            className="btn-danger"
-                          >
-                            CLOCK IN
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleDelete(event.id)}
-                            className="btn-danger"
-                          >
-                            DELETE
-                          </button>
-                        )}
+                      {event.hostFoeId?.id !== store.userData.user?.id ? (
+                        <button
+                          onClick={() => handleClockIn(event)}
+                          className="btn-danger"
+                        >
+                          CLOCK IN
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(event.id)}
+                          className="btn-danger"
+                        >
+                          DELETE
+                        </button>
+                      )}
                       {/* </div> */}
                     </div>
                   </div>
@@ -592,7 +590,7 @@ export const Help = () => {
                 className="rounded-circle img-fluid"
                 style={{ width: "auto", height: "auto" }}
                 src={
-                  store.userData?.user?.profile_pic?.image_url||
+                  store.userData?.user?.profile_pic?.image_url ||
                   "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
                 }
                 alt={store.userData?.user?.name || "Unknown Host"}
