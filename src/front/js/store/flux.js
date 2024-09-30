@@ -94,9 +94,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             body: JSON.stringify({ feedback, rating }),
           });
-          
-          if (!resp.ok) throw Error("There was a problem submitting the feedback");
-          
+
+          if (!resp.ok)
+            throw Error("There was a problem submitting the feedback");
+
           const data = await resp.json();
           return data;
         } catch (error) {
@@ -123,33 +124,38 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Failed to cancel match:", response.statusText);
         }
       },
-      
+
       fetchMaxInvitee: async (setMaxInviteeCount, setMaxInviteeUser) => {
         let store = getStore();
         try {
-          const response = await fetch(process.env.BACKEND_URL + "/api/max-invitee", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-      
+          const response = await fetch(
+            process.env.BACKEND_URL + "/api/max-invitee",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
           if (response.status !== 200) {
-            console.error("Failed to retrieve max invitee count:", response.statusText);
+            console.error(
+              "Failed to retrieve max invitee count:",
+              response.statusText
+            );
             return null;
           }
-      
+
           const data = await response.json();
           console.log("FLUX:ACTIONS.FETCHMAXINVITEE.DATA", data);
-      
+
           // Update the state/store with the response data
-          setMaxInviteeCount(data.maxInviteeCount);  // Set the max invitee count
-          setMaxInviteeUser(data.maxInviteeUser.name);  // Set the inviter's name with the most invitees
+          setMaxInviteeCount(data.maxInviteeUser.invite_code.completed_dapaints.length);
+          setMaxInviteeUser(data.maxInviteeUser.name); // Set the inviter's name with the most invitees
         } catch (error) {
           console.error("Error fetching max invitee:", error);
           return null;
         }
       },
-      
 
       fetchCurrentUser: async () => {
         try {
@@ -458,32 +464,34 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       resetWinStreak: async () => {
-				let store = getStore()
-				let userData = store.userData
-				if (userData && userData.winstreak >= process.env.WINSTREAK_GOAL) {
-					try {
-						const response = await fetch(process.env.BACKEND_URL + '/api/reset-win-streak', {
-							method: "PUT",
-							headers: {
-								"Authorization": `Bearer ${localStorage.getItem("token")}`
-							}
-						});
-						const data = await response.json();
+        let store = getStore();
+        let userData = store.userData;
+        if (userData && userData.winstreak >= process.env.WINSTREAK_GOAL) {
+          try {
+            const response = await fetch(
+              process.env.BACKEND_URL + "/api/reset-win-streak",
+              {
+                method: "PUT",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            const data = await response.json();
 
-						userData.winstreak = 0
-						setStore({ userData: userData });
-					} catch (error) {
-						console.error("Error fetching current user:", error);
-					}
-				}
-
-			},
+            userData.winstreak = 0;
+            setStore({ userData: userData });
+          } catch (error) {
+            console.error("Error fetching current user:", error);
+          }
+        }
+      },
 
       addUserImage: async (imageFile) => {
         try {
           let formData = new FormData();
           formData.append("file", imageFile[0]); // Assuming imageFile is an array
-      
+
           const response = await fetch(
             `${process.env.BACKEND_URL}/api/user-img`,
             {
@@ -494,20 +502,22 @@ const getState = ({ getStore, getActions, setStore }) => {
               body: formData,
             }
           );
-      
+
           if (!response.ok) {
             const errorText = await response.text();
-            console.error(`Server responded with ${response.status}: ${errorText}`);
+            console.error(
+              `Server responded with ${response.status}: ${errorText}`
+            );
             return { success: false, imageUrl: null };
           }
-      
+
           const responseBody = await response.json();
           console.log(responseBody);
-          
+
           // Assuming the server returns the new image URL in the response
           return { success: true, imageUrl: responseBody.image_url };
         } catch (error) {
-          console.error('Error uploading image:', error);
+          console.error("Error uploading image:", error);
           return { success: false, imageUrl: null };
         }
       },
