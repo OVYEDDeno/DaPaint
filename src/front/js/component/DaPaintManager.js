@@ -357,43 +357,7 @@ export const DaPaintManager = () => {
                 data-bs-toggle="modal"
               >
                 +ADD
-              </button>
-              {/* <div className="event-list">
-                {filteredEvents.map((event) => (
-                  <div key={event.id} className="event-item">
-                    <div className="event-info">
-                      <img
-                        src={
-                          event.hostFoeId?.profile_pic?.image_url ||
-                          "default-avatar.png"
-                        }
-                        alt={event.hostFoeId?.name || "Unknown Host"}
-                        className="rounded-circle img-fluid"
-                        style={{ width: "21px", height: "21px" }}
-                      />
-                      <span>{event.hostFoeId?.name || "Unknown Host"}</span>
-                      <span>{event.fitnessStyle}</span>
-                      <span>{event.location}</span>
-                      <span>{event.date_time}</span>
-                    </div>
-                    {event.hostFoeId?.id !== store.userData.user?.id ? (
-                      <button
-                        onClick={() => handleClockIn(event)}
-                        className="btn-danger"
-                      >
-                        CLOCK IN
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleDelete(event.id)}
-                        className="btn-danger"
-                      >
-                        DELETE
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div> */}
+              </button>              
               <div className="event-list">
                 {filteredEvents.map((event) => (
                   <div key={event.id} className="event-item">

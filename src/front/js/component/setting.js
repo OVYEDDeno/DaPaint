@@ -356,7 +356,7 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="tickets-container">
+            <div class="tickets-container mx-auto">
             <table className="ticket-table">
       <tbody>
         {Array.from({ length: 3 }).map((_, rowIndex) => (

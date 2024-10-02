@@ -191,7 +191,6 @@ class DaPaint(db.Model):
             "foe_winnerImg": self.foe_winnerImg,
             "dispute_status": self.dispute_status,
             "dispute_reported": self.dispute_reported,
-            "invite_code_id": self.invite_code_id,
         }
 
 
@@ -241,28 +240,27 @@ class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Corrected foreign key reference
-    host_winnerImg = db.Column(db.String, db.ForeignKey('dapaint.host_winnerImg'), nullable=False) 
-    foe_winnerImg = db.Column(db.String, db.ForeignKey('dapaint.foe_winnerImg'), nullable=False) 
+    host_winnerImg = db.Column(db.String(500),  nullable=False) 
+    foe_winnerImg = db.Column(db.String(500), nullable=False) 
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    # issue_description = db.Column(db.String(500), nullable=True)
     resolved = db.Column(db.Boolean, default=False)
     resolved_at = db.Column(db.DateTime, nullable=True)
 
+    # Relationships with explicit foreign_keys to resolve ambiguity
+    dapaint = db.relationship('DaPaint', back_populates='reports', foreign_keys=[dapaint_id])
+
     user = db.relationship('User', back_populates='reports')
-    dapaint = db.relationship('DaPaint', back_populates='reports')
 
     def serialize(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
             'dapaint_id': self.dapaint_id,
-            'img_url': self.img_url,
-            'vid_url': self.vid_url,
             'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            # 'issue_description': self.issue_description,
             'resolved': self.resolved,
             'resolved_at': self.resolved_at.strftime("%Y-%m-%d %H:%M:%S") if self.resolved else None
         }
+
 
 class UserDisqualification(db.Model):
     id = db.Column(db.Integer, primary_key=True)

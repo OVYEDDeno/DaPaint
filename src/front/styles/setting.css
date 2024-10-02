@@ -197,6 +197,32 @@ label:hover ~ label svg {
   box-shadow: 0px 0px 68px #333333;
 }
 
+ .ticket {
+  text-align: center;
+  padding: 10px;
+}
+
+.qr-code {
+  width: 100px;
+  height: 100px;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.qr-code.expanded {
+  width: 300px;
+  height: 300px;
+}
+
+.btn {
+  margin-top: 10px;
+  display: block;
+}
+
+.details-label {
+  font-weight: bold;
+  margin: 10px 0;
+}
+
 .ticket-table {
   width: 100%;
 }
@@ -205,3 +231,7 @@ label:hover ~ label svg {
   padding: 10px;
 }
 
+.ticket.expanded .refund-btn,
+.ticket.expanded .show-btn {
+  display: none;
+}
