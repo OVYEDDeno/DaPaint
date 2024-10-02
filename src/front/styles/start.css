@@ -136,23 +136,14 @@ form {
 }
 
 .btn-danger {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: #fa0000;
+  color: #e3e3e3;
   border: none;
   padding: 10px 20px;
   font-size: 1.25rem;
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 20px;
-}
-
-.btn-secondary {
-  background-color: #e3e3e3;
-  color: #000000;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 .modal-dialog-centered {
@@ -170,4 +161,27 @@ button[type="submit"] {
   cursor: pointer;
   margin-top: 20px;
   border: none;
+}
+
+.btn-start {
+  background-color: transparent; /* Original button color */
+  color: #e3e3e3e3;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 17px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 21px;
+}
+.btn-start:hover{
+  color: #e3e3e3;
+  box-shadow: 0px 0px 51px #333333;
+}
+.btn-danger:hover{
+  background-color: #131313;
+  color: #e3e3e3;
+  box-shadow: 0px 0px 34px #e3e3e3;
 }

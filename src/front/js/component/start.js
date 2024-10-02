@@ -85,7 +85,7 @@ export const Start = () => {
     <>
       <button
         type="button"
-        className="btn btn-secondary"
+        className="btn-start"
         data-bs-toggle="modal"
         data-bs-target="#startModal"
       >

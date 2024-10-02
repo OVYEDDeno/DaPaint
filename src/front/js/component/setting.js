@@ -11,7 +11,7 @@ export const Setting = ({ onClose }) => {
   const [rating, setRating] = useState(0); // New state for rating
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  // const [rating, setRating] = useState(0);
+  const [expanded, setExpanded] = useState(Array(9).fill(false));
 
   const handleRatingChange = (value) => {
     setRating(value);
@@ -84,6 +84,16 @@ export const Setting = ({ onClose }) => {
     console.log("Log out successful");
     navigate("/");
   };
+
+  const toggleQRCode = (index) => {
+    setExpanded((prev) => {
+      const newExpanded = [...prev];
+      newExpanded[index] = !newExpanded[index];
+      return newExpanded;
+    });
+  };
+  
+  
 
   return (
     <>
@@ -346,9 +356,37 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
-              Hide this modal and show the fifth with the button below.
-            </div>
+            <div class="tickets-container">
+            <table className="ticket-table">
+      <tbody>
+        {Array.from({ length: 3 }).map((_, rowIndex) => (
+          <tr key={rowIndex}>
+            {Array.from({ length: 3 }).map((_, colIndex) => {
+              const ticketIndex = rowIndex * 3 + colIndex;
+              return (
+                <td className="ticket-cell" key={colIndex}>
+                  <div className={`ticket ${expanded[ticketIndex] ? 'expanded' : ''}`}>
+                    <img
+                      src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                      alt="QR Code"
+                      className="qr-code"
+                    />
+                    <button className="btn refund-btn">REFUND</button>
+                    {expanded[ticketIndex] ? (
+                      <button className="btn hide-btn" onClick={() => toggleQRCode(ticketIndex)}>HIDE</button>
+                    ) : (
+                      <button className="btn show-btn" onClick={() => toggleQRCode(ticketIndex)}>SHOW</button>
+                    )}
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+</div>
+
           </div>
         </div>
       </div>

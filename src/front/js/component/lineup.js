@@ -6,6 +6,8 @@ export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [targetZipcode, setTargetZipcode] = useState(null);  
+
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
@@ -43,9 +45,16 @@ export const Lineup = () => {
 
   // Fetch current user data
   useEffect(() => {
-    actions.fetchCurrentUser();
-    console.log("Updated user data:", store.userData);
+    async function getUserInfo(){
+      let success = await actions.fetchCurrentUser();
+      if(success){
+        setTargetZipcode(store.userData.user.zipcode);
+        console.log("Updated user data:", store.userData);
+      }
+    }      
+    getUserInfo()
   }, []);
+
 
   // Function to dynamically return the profile image URL or placeholder
   const getProfileImageUrl = (url) => {
@@ -118,9 +127,13 @@ export const Lineup = () => {
       </div>
     );
   };
-
+  const isCloseZipcode = (userZipcode, targetZipcode, range = 10) => {
+		return (
+			Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range
+		);
+	};
   const matchups = events
-    .filter((event) => event.hostFoeId)
+    .filter((event) => event.hostFoeId && isCloseZipcode(event.hostFoeId.zipcode, targetZipcode))
     .map((event) => ({
       id: event.id,
       date_time: event.date_time,
@@ -181,6 +194,8 @@ export const Lineup = () => {
     // Return formatted time in 12-hour format
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
+
+	
 
   return (
     <>

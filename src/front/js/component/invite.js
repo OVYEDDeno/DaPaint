@@ -134,29 +134,62 @@ export const Invite = ({ onClose }) => {
                 <p className=" m-3">
                   Invite the most people by the end of this winstreak and win
                   500K!
-                </p>
+                
                 <p>
                   {maxInviteeUser} has invited {maxInviteeCount} Indulgers
+                  <p>
+                    You have invited{" "}
+                    {
+                      store.userData?.user?.invite_code?.completed_dapaints
+                        .length
+                    }{" "}
+                    Indulgers
+                  </p></p>
                 </p>
-                <p>
-                  You have invited{" "}
-                  {store.userData?.user?.invite_code?.completed_dapaints.length}{" "}
-                  Indulgers
-                </p>
-                <h5 className="font-bold mb-2">Your Invite Code</h5>
-
-                {loadingCodes ? (
-                  <p>Loading invite codes...</p>
-                ) : errorCodes ? (
-                  <p>Error: {errorCodes}</p>
-                ) : inviteCodes.length > 0 ? (
-                  inviteCodes.map((code, index) => (
-                    <p key={index}>{code.code}</p>
-                  ))
-                ) : (
-                  <p>No invite codes</p>
-                )}
-                <p>^copy your code to easily send^</p>
+                <h5 className="font-bold mb-2">
+                  Your Invite Code
+                  {loadingCodes ? (
+                    <p
+                      style={{
+                        color: "blue",
+                        fontWeight: "bold",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      Loading invite codes...
+                    </p>
+                  ) : errorCodes ? (
+                    <p
+                      style={{
+                        color: "red",
+                        fontWeight: "bold",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      Error: {errorCodes}
+                    </p>
+                  ) : inviteCodes.length > 0 ? (
+                    inviteCodes.map((code, index) => (
+                      <p
+                        key={index}
+                        style={{
+                          backgroundColor: "yellow",
+                          padding: "5px",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        {code.code}
+                      </p>
+                    ))
+                  ) : (
+                    <p style={{ color: "gray", fontStyle: "italic" }}>
+                      No invite codes
+                    </p>
+                  )}</h5>
+                  {/* <p style={{ fontWeight: "regular", color: "#131313" }}>
+                    ^copy your code to easily send^
+                  </p> */}
+                
               </div>
 
               <div>

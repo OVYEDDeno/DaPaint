@@ -501,6 +501,7 @@ def get_all_dapaint():
 
     if is_accepted == '1':
         dapaint = DaPaint.query.filter(DaPaint.foeId.isnot(None), DaPaint.winnerId == None).all()
+            
     else:
         subquery = db.session.query(DaPaint.hostFoeId).filter(DaPaint.foeId.isnot(None)).subquery()
 

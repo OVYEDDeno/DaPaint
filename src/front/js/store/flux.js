@@ -406,6 +406,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               },
             }
           );
+          if (response.status!=200){
+           console.log("ERROR", response.statusText, response.status)
+            return false;
+          }
           const data = await response.json();
 
           // Debugging log
@@ -424,6 +428,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
 
           console.log("Current User DATA has been set", getStore().userData);
+          return true;
         } catch (error) {
           console.error("Error fetching current user:", error);
         }

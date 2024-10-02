@@ -6,6 +6,7 @@ import "../../styles/landing.css";
 export const DaPaintManager = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
+  const [targetZipcode, setTargetZipcode] = useState(null);  
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     fitnessStyle: "",
@@ -17,8 +18,15 @@ export const DaPaintManager = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    actions.fetchCurrentUser();
-    fetchEvents();
+    async function getUserInfo(){
+      let success = await actions.fetchCurrentUser();
+      if(success){
+        setTargetZipcode(store.userData.user.zipcode);
+        fetchEvents();
+        console.log("Updated user data:", store.userData);
+      }
+    }      
+    getUserInfo()    
   }, []);
 
   const fetchEvents = async () => {
@@ -119,14 +127,19 @@ export const DaPaintManager = () => {
       console.error("Error clocking in:", error);
     }
   };
+  const isCloseZipcode = (userZipcode, targetZipcode, range = 10) => {
+		return (
+			Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range
+		);
+  };
 
   const filteredEvents = events.filter((event) => {
     const hostFoeName = event.hostFoeId?.name?.toLowerCase() || "";
     const foeName = event.foeId?.name?.toLowerCase() || "";
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return (
-      hostFoeName.includes(lowerCaseSearchTerm) ||
-      foeName.includes(lowerCaseSearchTerm)
+      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) && hostFoeName.includes(lowerCaseSearchTerm) ||
+      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) && foeName.includes(lowerCaseSearchTerm)
     );
   });
   function convertTo12Hr(timeStr) {
