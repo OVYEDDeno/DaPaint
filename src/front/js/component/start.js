@@ -132,9 +132,7 @@ export const Start = () => {
                         accept="image/*,video/*"
                         onChange={(e) => handleFileUpload(e, setHostUser)}
                       />
-                      <button type="button" className="rounded-lg">
-                        Upload KO
-                      </button>
+                      
                     </div>
                     {/* {hostUser && (
                       

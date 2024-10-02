@@ -104,7 +104,7 @@ class InviteCode(db.Model):
     invitees = db.relationship('User', secondary='invitee_association', back_populates='invited_by')
 
     # Relationship to track completed DaPaints
-    completed_dapaints = db.relationship('DaPaint', back_populates='invite_code')
+    # completed_dapaints = db.relationship('DaPaint', back_populates='invite_code')
 
     def serialize(self):
         return {
@@ -169,10 +169,6 @@ class DaPaint(db.Model):
     # Dispute tracking
     dispute_status = db.Column(db.String(50), nullable=True)  # e.g., 'pending', 'resolved'
     dispute_reported = db.Column(db.Boolean, default=False)
-
-    # Invite code
-    invite_code_id = db.Column(db.Integer, db.ForeignKey('invite_code.id'), nullable=True)
-    invite_code = db.relationship('InviteCode', back_populates='completed_dapaints')
 
     # Relationship with tickets (single relationship definition)
     # user_tickets = db.relationship('Ticket', back_populates='dapaint', cascade='all, delete-orphan')
@@ -245,8 +241,8 @@ class Reports(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)  # Corrected foreign key reference
-    img_url = db.Column(db.String(250), nullable=False)
-    vid_url = db.Column(db.String(250), nullable=True)
+    host_winnerImg = db.Column(db.String, db.ForeignKey('dapaint.host_winnerImg'), nullable=False) 
+    foe_winnerImg = db.Column(db.String, db.ForeignKey('dapaint.foe_winnerImg'), nullable=False) 
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     # issue_description = db.Column(db.String(500), nullable=True)
     resolved = db.Column(db.Boolean, default=False)

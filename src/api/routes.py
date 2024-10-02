@@ -238,7 +238,7 @@ def get_current_user():
     return jsonify({
         "user": user.serialize(),
         "hasfoe": True,
-        "dapaintId": match.id,
+        "dapaintId": not match.winnerId and not match.loserId,
         "indulgers": {
             "host": match.host_user.serialize() if match.hostFoeId else None,
             "foe": match.foe_user.serialize() if match.foeId else None
@@ -548,69 +548,69 @@ def check_time():
 
     return jsonify(message="Expired Records Deleted")
 
-@api.route('/dapaint/report/<int:id>', methods=['PUT'])
-@jwt_required()
-def report_dapaint_dispute(id):
-    user_id = get_jwt_identity()
-    data = request.get_json()
+# @api.route('/dapaint/report/<int:id>', methods=['PUT'])
+# @jwt_required()
+# def report_dapaint_dispute(id):
+#     user_id = get_jwt_identity()
+#     data = request.get_json()
 
-    dispute_reported = data.get('dispute_reported', None)
-    dispute_status = data.get('dispute_status', None)
+#     dispute_reported = data.get('dispute_reported', None)
+#     dispute_status = data.get('dispute_status', None)
 
-    dapaint = DaPaint.query.get(id)
-    if not dapaint:
-        return jsonify({"msg": "No DaPaint found"}), 404
+#     dapaint = DaPaint.query.get(id)
+#     if not dapaint:
+#         return jsonify({"msg": "No DaPaint found"}), 404
 
-    if dapaint.hostFoeId != user_id and dapaint.foeId != user_id:
-        return jsonify({"msg": "Unauthorized to report dispute"}), 403
+#     if dapaint.hostFoeId != user_id and dapaint.foeId != user_id:
+#         return jsonify({"msg": "Unauthorized to report dispute"}), 403
 
-    dapaint.dispute_reported = dispute_reported
-    dapaint.dispute_status = dispute_status
+#     dapaint.dispute_reported = dispute_reported
+#     dapaint.dispute_status = dispute_status
 
-    db.session.commit()
+#     db.session.commit()
 
-    return jsonify({"msg": "Dispute status updated successfully", "dapaint": dapaint.serialize()}), 200
-
-
-@api.route('/dapaint/dispute/<int:id>', methods=['GET'])
-@jwt_required()
-def get_dapaint_dispute(id):
-    dapaint = DaPaint.query.get(id)
-    if not dapaint:
-        return jsonify({"msg": "No DaPaint found"}), 404
-
-    return jsonify({
-        "dispute_reported": dapaint.dispute_reported,
-        "dispute_status": dapaint.dispute_status
-    }), 200
+#     return jsonify({"msg": "Dispute status updated successfully", "dapaint": dapaint.serialize()}), 200
 
 
-@api.route('/createReport', methods=['POST'])
-@jwt_required()
-def create_report():
-    user_id = get_jwt_identity()
-    data = request.get_json()
+# @api.route('/dapaint/dispute/<int:id>', methods=['GET'])
+# @jwt_required()
+# def get_dapaint_dispute(id):
+#     dapaint = DaPaint.query.get(id)
+#     if not dapaint:
+#         return jsonify({"msg": "No DaPaint found"}), 404
 
-    dapaint_id = data.get("dapaint_id")
-    reason = data.get("reason")
+#     return jsonify({
+#         "dispute_reported": dapaint.dispute_reported,
+#         "dispute_status": dapaint.dispute_status
+#     }), 200
 
-    if not dapaint_id or not reason:
-        return jsonify({"msg": "Dapaint ID and reason are required"}), 400
 
-    dapaint = DaPaint.query.get(dapaint_id)
-    if not dapaint:
-        return jsonify({"msg": "No DaPaint found"}), 404
+# @api.route('/createReport', methods=['POST'])
+# @jwt_required()
+# def create_report():
+#     user_id = get_jwt_identity()
+#     data = request.get_json()
 
-    new_report = UserDisqualification(
-        user_id=user_id,
-        dapaint_id=dapaint_id,
-        reason=reason
-    )
+#     dapaint_id = data.get("dapaint_id")
+#     reason = data.get("reason")
 
-    db.session.add(new_report)
-    db.session.commit()
+#     if not dapaint_id or not reason:
+#         return jsonify({"msg": "Dapaint ID and reason are required"}), 400
 
-    return jsonify({"msg": "Report successfully created"}), 201
+#     dapaint = DaPaint.query.get(dapaint_id)
+#     if not dapaint:
+#         return jsonify({"msg": "No DaPaint found"}), 404
+
+#     new_report = UserDisqualification(
+#         user_id=user_id,
+#         dapaint_id=dapaint_id,
+#         reason=reason
+#     )
+
+#     db.session.add(new_report)
+#     db.session.commit()
+
+#     return jsonify({"msg": "Report successfully created"}), 201
 
 
 @api.route('/update-win-streak/<int:dapaint_id>', methods=['PUT'])
@@ -650,6 +650,16 @@ def update_win_streak(dapaint_id):
         print(f"Foe's choice: winnerId={winner_vote}, loserId={loser_vote}")
     else:
         return jsonify({"msg": "User is neither the host nor the foe."}), 403
+    
+
+    try:
+        db.session.commit()
+        print("Database commit successful.")
+    except Exception as e:
+        print(f"Database commit failed: {e}")
+        return jsonify({"msg": "Database commit failed"}), 500
+
+    db.session.refresh(daPaint)
 
     # Check for conflict
     if daPaint.host_winnerId and daPaint.foe_winnerId:
@@ -664,15 +674,10 @@ def update_win_streak(dapaint_id):
                 img_url=img_url
             )
             db.session.add(conflict_report)
+            db.session.commit()
             print(f"Conflict report created for DaPaint ID: {dapaint_id}")
 
-    try:
-        db.session.commit()
-        print("Database commit successful.")
-    except Exception as e:
-        print(f"Database commit failed: {e}")
-        return jsonify({"msg": "Database commit failed"}), 500
-    
+
     if daPaint.host_winnerId and daPaint.foe_winnerId and daPaint.host_winnerId == daPaint.foe_winnerId:
         winner = User.query.get(winner_vote)
         loser = User.query.get(loser_vote)
@@ -801,6 +806,7 @@ def process_invite_code():
         "message": "Invite code processed successfully",
         "hasInviter": True,    
     }), 200
+
 @api.route('/feedback', methods=['POST'])
 @jwt_required()
 def handle_feedback_submission():
@@ -839,27 +845,3 @@ def handle_feedback_submission():
     db.session.commit()
 
     return jsonify({"msg": "Feedback submitted successfully!"}), 201
-
-@api.route('/users/highest-completed-dapaints', methods=['GET'])
-@jwt_required()
-def get_user_with_highest_completed_dapaints():
-    # Subquery to sum wins and losses for each inviter
-    subquery = db.session.query(
-        InviteCode.inviter_id,
-        func.sum(func.json_array_length(InviteCode.completed_dapaints)).label('dapaints_count')
-    ).group_by(InviteCode.inviter_id).subquery()
-
-    # Query to get the user with the highest count
-    user_with_highest = db.session.query(User, subquery.c.dapaints_count)\
-        .join(subquery, User.id == subquery.c.inviter_id)\
-        .order_by(subquery.c.dapaints_count.desc())\
-        .first()
-
-    if user_with_highest:
-        user, count = user_with_highest
-        return jsonify({
-            'name': user.name,
-            'completed_dapaints_count': int(count)
-        }), 200
-    else:
-        return jsonify({'message': 'No users found with completed DaPaints'}), 404

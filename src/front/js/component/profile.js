@@ -93,6 +93,7 @@ export const Profile = () => {
 
   // Handle user data update
   const handleEditSubmit = async () => {
+    handleNewImage()
     const updatedUser = {
       name,
       city,
@@ -231,8 +232,8 @@ export const Profile = () => {
                   className="form-control-file"
                   onChange={handleImageUpload}
                 />
-                <button className="btn btn-secondary" onClick={handleNewImage}>
-                  Upload Photo
+                <button className="btn mx-auto" onClick={handleEditSubmit}>
+                  Save Profile
                 </button>
                 {imageSizeError && (
                   <div className="text-danger">Image size exceeds the limit.</div>
@@ -324,7 +325,7 @@ export const Profile = () => {
 
                 {/* Save Profile Button */}
                 <button
-                  className="btn btn-secondary"
+                  className="btn mx-auto"
                   data-bs-dismiss="modal"
                   onClick={handleEditSubmit}
                 >
