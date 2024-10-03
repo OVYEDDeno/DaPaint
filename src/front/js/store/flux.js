@@ -361,12 +361,12 @@ const getState = ({ getStore, getActions, setStore }) => {
         // Validate daPaint_id
         if (typeof daPaint_id !== "number" && typeof daPaint_id !== "string") {
           console.error("Invalid daPaint_id");
-          return;
+          return false;
         }
 
         if (!token) {
           console.error("No token found");
-          return;
+          return false;
         }
 
         try {

@@ -238,7 +238,7 @@ def get_current_user():
     return jsonify({
         "user": user.serialize(),
         "hasfoe": True,
-        "dapaintId": not match.winnerId and not match.loserId,
+        "dapaintId":match.id,
         "indulgers": {
             "host": match.host_user.serialize() if match.hostFoeId else None,
             "foe": match.foe_user.serialize() if match.foeId else None
@@ -694,6 +694,7 @@ def update_win_streak(dapaint_id):
         daPaint.loserId = loser.id
 
         try:
+            db.session.delete(daPaint)
             db.session.commit()
             print("Winner and loser stats updated.")
         except Exception as e:

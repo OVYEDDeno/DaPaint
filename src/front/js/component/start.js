@@ -59,6 +59,7 @@ export const Start = () => {
     if (result) {
       alert("Winstreak has been updated");
       actions.fetchCurrentUser();
+      window.location.reload();
     } else {
       alert("Failed to update win streak");
     }
@@ -109,6 +110,9 @@ export const Start = () => {
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Prohibited-3d-icon.png"
                 alt="Close"
                 className="invite-close"
+                onClick={() => {
+                  actions.forfeitMatch(store.userData.dapaintId);
+                }}
               />
               <p>--Forfeit</p>
               <h1 className="invite-title">
@@ -126,17 +130,15 @@ export const Start = () => {
               <div className="start-container">
                 <form onSubmit={handleSubmit}>
                   <div className="user-section">
-                    <div className="upload-ko">
+                    <p>Keep a personal record of your winstreak we will request each one upon your 30th winstreaks</p>
+                    
+                    <div className="mx-auto">
                       <input
-                        type="file"
-                        accept="image/*,video/*"
-                        onChange={(e) => handleFileUpload(e, setHostUser)}
+                        type="text" placeholder="add 1 post link here"
+                        required
                       />
-                      
                     </div>
-                    {/* {hostUser && (
-                      
-                    )} */}
+
                     <div className="user-vote">
                       <div className="user-name">
                         <img
@@ -186,7 +188,6 @@ export const Start = () => {
                         {store.userData.indulgers.foe.name}
                       </div>
                       <div className="vote-buttons">
-                      
                         <button
                           type="button"
                           className="rounded-lg"
@@ -213,7 +214,7 @@ export const Start = () => {
                       </div>
                     </div>
                   </div>
-                  <button type="submit">Submit</button>
+                  <button type="submit" >Submit</button>
                 </form>
               </div>
             </div>

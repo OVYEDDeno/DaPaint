@@ -138,13 +138,14 @@ button[type="submit"] {
 .star-rating {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: flex-end;
+  justify-content: center;
 }
+
 
 .star-label {
   cursor: pointer;
   padding: 0 0.1em;
-  font-size: 2rem;
+  font-size: 3rem;
 }
 
 .star-label svg {
@@ -152,7 +153,7 @@ button[type="submit"] {
   height: 1em;
   fill: transparent;
   stroke: #FFD700;
-  stroke-width: 1;
+  stroke-width: 1.5;
   transition: all 0.2s;
 }
 

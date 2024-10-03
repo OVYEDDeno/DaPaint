@@ -3,6 +3,7 @@ import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 
+
 export const DaPaintManager = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
@@ -364,7 +365,7 @@ export const DaPaintManager = () => {
                     <img
                       src={
                         event.hostFoeId?.profile_pic?.image_url ||
-                        "default-avatar.png"
+                        "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
                       }
                       alt={event.hostFoeId?.name || "Unknown Host"}
                       className="rounded-circle img-fluid avatar"
@@ -380,6 +381,7 @@ export const DaPaintManager = () => {
                         <button
                           onClick={() => handleClockIn(event)}
                           className="btn-danger"
+                          data-bs-target="#lineUp"
                         >
                           CLOCK IN
                         </button>
