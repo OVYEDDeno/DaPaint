@@ -225,6 +225,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           if (!response.ok) {
+            getActions().getDaPaintList()
             const errorData = await response.json();
             throw new Error(errorData.error || "Failed to clock in");
           }

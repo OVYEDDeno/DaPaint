@@ -3,11 +3,10 @@ import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
 
-
 export const DaPaintManager = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
-  const [targetZipcode, setTargetZipcode] = useState(null);  
+  const [targetZipcode, setTargetZipcode] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     fitnessStyle: "",
@@ -19,15 +18,15 @@ export const DaPaintManager = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function getUserInfo(){
+    async function getUserInfo() {
       let success = await actions.fetchCurrentUser();
-      if(success){
+      if (success) {
         setTargetZipcode(store.userData.user.zipcode);
         fetchEvents();
         console.log("Updated user data:", store.userData);
       }
-    }      
-    getUserInfo()    
+    }
+    getUserInfo();
   }, []);
 
   const fetchEvents = async () => {
@@ -128,10 +127,8 @@ export const DaPaintManager = () => {
       console.error("Error clocking in:", error);
     }
   };
-  const isCloseZipcode = (userZipcode, targetZipcode, range = 10) => {
-		return (
-			Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range
-		);
+  const isCloseZipcode = (userZipcode, targetZipcode, range = 100) => {
+    return Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range;
   };
 
   const filteredEvents = events.filter((event) => {
@@ -139,8 +136,10 @@ export const DaPaintManager = () => {
     const foeName = event.foeId?.name?.toLowerCase() || "";
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return (
-      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) && hostFoeName.includes(lowerCaseSearchTerm) ||
-      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) && foeName.includes(lowerCaseSearchTerm)
+      (isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) &&
+        hostFoeName.includes(lowerCaseSearchTerm)) ||
+      (isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) &&
+        foeName.includes(lowerCaseSearchTerm))
     );
   });
   function convertTo12Hr(timeStr) {
@@ -170,7 +169,6 @@ export const DaPaintManager = () => {
     // Return formatted time in 12-hour format
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
-
   return (
     <>
       <div
@@ -316,7 +314,7 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
-            <img
+              <img
                 data-bs-target="#DaPaint"
                 data-bs-toggle="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
@@ -358,7 +356,7 @@ export const DaPaintManager = () => {
                 data-bs-toggle="modal"
               >
                 +ADD
-              </button>              
+              </button>
               <div className="event-list">
                 {filteredEvents.map((event) => (
                   <div key={event.id} className="event-item">
@@ -382,6 +380,7 @@ export const DaPaintManager = () => {
                           onClick={() => handleClockIn(event)}
                           className="btn-danger"
                           data-bs-target="#lineUp"
+                          data-bs-toggle="modal"
                         >
                           CLOCK IN
                         </button>
@@ -413,7 +412,7 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
-            <img
+              <img
                 data-bs-target="#DaPaint3"
                 data-bs-toggle="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
@@ -556,7 +555,7 @@ export const DaPaintManager = () => {
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div className="invite-header">
-            <img
+              <img
                 data-bs-target="#DaPaint3"
                 data-bs-toggle="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"

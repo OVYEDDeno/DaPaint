@@ -11,7 +11,7 @@ export const Setting = ({ onClose }) => {
   const [rating, setRating] = useState(0); // New state for rating
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [expanded, setExpanded] = useState(Array(9).fill(false));
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const handleRatingChange = (value) => {
     setRating(value);
@@ -86,11 +86,7 @@ export const Setting = ({ onClose }) => {
   };
 
   const toggleQRCode = (index) => {
-    setExpanded((prev) => {
-      const newExpanded = [...prev];
-      newExpanded[index] = !newExpanded[index];
-      return newExpanded;
-    });
+    setExpandedIndex(prevIndex => (prevIndex === index ? null : index)); // Toggle between expanding and collapsing
   };
   
   
@@ -363,19 +359,33 @@ export const Setting = ({ onClose }) => {
           <tr key={rowIndex}>
             {Array.from({ length: 3 }).map((_, colIndex) => {
               const ticketIndex = rowIndex * 3 + colIndex;
+              const isExpanded = expandedIndex === ticketIndex; // Check if this ticket is the expanded one
+
               return (
-                <td className="ticket-cell" key={colIndex}>
-                  <div className={`ticket ${expanded[ticketIndex] ? 'expanded' : ''}`}>
-                    <img
-                      src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-                      alt="QR Code"
-                      className="qr-code"
-                    />
-                    <button className="btn refund-btn">REFUND</button>
-                    {expanded[ticketIndex] ? (
-                      <button className="btn hide-btn" onClick={() => toggleQRCode(ticketIndex)}>HIDE</button>
-                    ) : (
-                      <button className="btn show-btn" onClick={() => toggleQRCode(ticketIndex)}>SHOW</button>
+                <td className={`ticket-cell ${expandedIndex !== null && !isExpanded ? 'hidden' : ''}`} key={colIndex}>
+                  <div className={`ticket ${isExpanded ? 'expanded' : ''}`}>
+                    {!isExpanded && (
+                      <>
+                        <img
+                          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                          alt="QR Code"
+                          className="qr-code"
+                        />
+                        <button className="btn refund-btn">REFUND</button>
+                        <button className="btn show-btn" onClick={() => toggleQRCode(ticketIndex)}>SHOW</button>
+                      </>
+                    )}
+
+                    {isExpanded && (
+                      <>
+                        <img
+                          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                          alt="QR Code"
+                          className="qr-code expanded"
+                        />
+                        <div className="details-label">Details</div>
+                        <button className="btn hide-btn" onClick={() => toggleQRCode(ticketIndex)}>HIDE</button>
+                      </>
                     )}
                   </div>
                 </td>

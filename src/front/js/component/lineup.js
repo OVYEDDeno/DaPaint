@@ -127,7 +127,7 @@ export const Lineup = () => {
       </div>
     );
   };
-  const isCloseZipcode = (userZipcode, targetZipcode, range = 10) => {
+  const isCloseZipcode = (userZipcode, targetZipcode, range = 100) => {
 		return (
 			Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range
 		);
@@ -195,7 +195,9 @@ export const Lineup = () => {
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
 
-	
+	function getMatchList(){
+    return filteredMatchups.length?filteredMatchups:store.daPaintList
+  }
 
   return (
     <>
@@ -235,8 +237,9 @@ export const Lineup = () => {
                 placeholder="Search for a user..."
                 className="form-control mb-3"
               />
+              
               <div className="lineup">
-                {filteredMatchups.map((matchup) => (
+                {getMatchList().map((matchup) => (
                   <div className="matchup" key={matchup.id}>
                     <div className="user">
                       <img src={matchup.user1Image} alt={matchup.user1name} />
