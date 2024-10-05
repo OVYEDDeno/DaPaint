@@ -47,11 +47,11 @@ export const Home = () => {
       <footer className="footer">
         <div className="footer-column">
           <ul>
-            <li>
+            {/* <li>
               <a href="/advertise" target="_blank">
                 Advertise With Us
               </a>
-            </li>
+            </li> */}
             <li>
               <a href="/privacy" target="_blank">
                 Privacy
@@ -62,11 +62,11 @@ export const Home = () => {
                 Terms
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="/faqs" target="_blank">
                 FAQs
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="footer-column social-media-logos">
