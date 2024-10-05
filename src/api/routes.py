@@ -238,7 +238,7 @@ def get_current_user():
     return jsonify({
         "user": user.serialize(),
         "hasfoe": True,
-        "dapaintId":match.id,
+        "dapaintId":match.serialize(),
         "indulgers": {
             "host": match.host_user.serialize() if match.hostFoeId else None,
             "foe": match.foe_user.serialize() if match.foeId else None
@@ -636,10 +636,11 @@ def update_win_streak(dapaint_id):
     if daPaint.hostFoeId == user_id:
         if daPaint.host_winnerId is not None or daPaint.host_loserId is not None:
             return jsonify({"msg": "Host has already made their choice."}), 400
-
+    
         daPaint.host_winnerId = winner_vote
         daPaint.host_loserId = loser_vote
-        print(f"Host's choice: winnerId={winner_vote}, loserId={loser_vote}")
+        daPaint.host_winnerImg = img_url  # Optional image for report
+        print(f"Host's choice: winnerId={winner_vote}, loserId={loser_vote}, hostImg={img_url}")
 
     elif daPaint.foeId == user_id:
         if daPaint.foe_winnerId is not None or daPaint.foe_loserId is not None:
@@ -647,7 +648,8 @@ def update_win_streak(dapaint_id):
 
         daPaint.foe_winnerId = winner_vote
         daPaint.foe_loserId = loser_vote
-        print(f"Foe's choice: winnerId={winner_vote}, loserId={loser_vote}")
+        daPaint.foe_winnerImg = img_url
+        print(f"Foe's choice: winnerId={winner_vote}, loserId={loser_vote}, foeImg={img_url}")
     else:
         return jsonify({"msg": "User is neither the host nor the foe."}), 403
     
@@ -671,11 +673,27 @@ def update_win_streak(dapaint_id):
             conflict_report = Reports(
                 user_id=user_id,
                 dapaint_id=dapaint_id,
-                img_url=img_url
+                host_winnerImg=daPaint.host_winnerImg,
+                foe_winnerImg=daPaint.foe_winnerImg            
             )
             db.session.add(conflict_report)
             db.session.commit()
             print(f"Conflict report created for DaPaint ID: {dapaint_id}")
+
+    # if daPaint.host_loserId and daPaint.foe_loserId:
+    #     if daPaint.host_loserId != daPaint.foe_loserId:
+    #         # Conflict found, create a report
+    #         if not img_url:
+    #             return jsonify({"msg": "Conflict detected! Please provide an image for the report."}), 400
+
+    #         conflict_report = Reports(
+    #             user_id=user_id,
+    #             dapaint_id=dapaint_id,
+    #             img_url=img_url
+    #         )
+    #         db.session.add(conflict_report)
+    #         db.session.commit()
+    #         print(f"Conflict report created for DaPaint ID: {dapaint_id}")
 
 
     if daPaint.host_winnerId and daPaint.foe_winnerId and daPaint.host_winnerId == daPaint.foe_winnerId:

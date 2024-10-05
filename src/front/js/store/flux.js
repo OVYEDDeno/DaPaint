@@ -356,7 +356,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
-      updateWinstreak: async (daPaint_id, winner_id, loser_id) => {
+      updateWinstreak: async (daPaint_id, winner_id, loser_id, img_url) => {
         const token = localStorage.getItem("token");
 
         // Validate daPaint_id
@@ -379,7 +379,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify({ winner: winner_id, loser: loser_id }),
+              body: JSON.stringify({ winner: winner_id, loser: loser_id, img_url: img_url}),
             }
           );
 

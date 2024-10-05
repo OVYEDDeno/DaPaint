@@ -28,13 +28,14 @@ export const Start = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!store.userData.dapaintId) {
+    if (!store.userData.dapaintId.id) {
       alert("No valid event found for this user");
       return;
     }
 
     let winner_id = null;
     let loser_id = null;
+    let img_url = e.target.img.value;
 
     // Determine the winner/loser for host
     if (hostVote === "winner") {
@@ -52,9 +53,10 @@ export const Start = () => {
 
     // Update win streaks and other fields when no conflict
     let result = await actions.updateWinstreak(
-      store.userData.dapaintId,
+      store.userData.dapaintId.id,
       winner_id,
-      loser_id
+      loser_id,
+      img_url
     );
     if (result) {
       alert("Winstreak has been updated");
@@ -65,7 +67,7 @@ export const Start = () => {
     }
   };
   const getDisplayImageFoe = () => {
-    const foeProfilePic = store.userData.indulgers.foe.profile_pic;
+    const foeProfilePic = store.userData.indulgers?.foe.profile_pic;
     if (foeProfilePic && foeProfilePic.image_url) {
       return foeProfilePic.image_url;
     } else if (placeholderImage) {
@@ -74,7 +76,7 @@ export const Start = () => {
   };
 
   const getDisplayImageHost = () => {
-    const hostProfilePic = store.userData.indulgers.host.profile_pic;
+    const hostProfilePic = store.userData.indulgers?.host.profile_pic;
     if (hostProfilePic && hostProfilePic.image_url) {
       return hostProfilePic.image_url;
     } else if (placeholderImage) {
@@ -111,7 +113,7 @@ export const Start = () => {
                 alt="Close"
                 className="invite-close"
                 onClick={() => {
-                  actions.forfeitMatch(store.userData.dapaintId);
+                  actions.forfeitMatch(store.userData.dapaintId.id);
                 }}
               />
               <p>--Forfeit</p>
@@ -130,11 +132,16 @@ export const Start = () => {
               <div className="start-container">
                 <form onSubmit={handleSubmit}>
                   <div className="user-section">
-                    <p>Keep a personal record of your winstreak we will request each one upon your 30th winstreaks</p>
-                    
+                    <p>
+                      Keep a personal record of your winstreak we will request
+                      each one upon your 30th winstreaks
+                    </p>
+
                     <div className="mx-auto">
                       <input
-                        type="text" placeholder="add 1 post link here"
+                        name="img"
+                        type="text"
+                        placeholder="add 1 post link here"
                         required
                       />
                     </div>
@@ -147,7 +154,7 @@ export const Start = () => {
                           className="rounded-circle img-fluid pe-1"
                           style={{ width: "68px", height: "68px" }}
                         />
-                        {store.userData.indulgers.host.name}
+                        {store.userData?.indulgers?.host.name}
                       </div>
                       <div className="vote-buttons">
                         <button
@@ -185,7 +192,7 @@ export const Start = () => {
                           style={{ width: "68px", height: "68px" }}
                         />
 
-                        {store.userData.indulgers.foe.name}
+                        {store.userData.indulgers?.foe.name}
                       </div>
                       <div className="vote-buttons">
                         <button
@@ -214,7 +221,7 @@ export const Start = () => {
                       </div>
                     </div>
                   </div>
-                  <button type="submit" >Submit</button>
+                  <button type="submit">Submit</button>
                 </form>
               </div>
             </div>

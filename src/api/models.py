@@ -191,6 +191,8 @@ class DaPaint(db.Model):
             "foe_winnerImg": self.foe_winnerImg,
             "dispute_status": self.dispute_status,
             "dispute_reported": self.dispute_reported,
+            "winnerId": self.winnerId,
+            "loserId": self.loserId,
         }
 
 
