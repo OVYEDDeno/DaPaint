@@ -35,13 +35,13 @@ export const Home = () => {
             </p>
             <p>
               Join early with an exclusive invite from a current user—we can't
-              wait for you to enter DaPaint!
+              wait for you to Clock In DaPaint!
             </p>
-            <p>30 win streaks = $1 MILLION. Real competition. Real rewards.</p>
+            <p>30 win streaks = $1 MILLION. Real competition. Real reward.</p>
             <strong>
               <p style={{ color: "red" }}>
                 WARNING: This is NOT for everyone. If you can’t handle the heat,
-                stay out. Only the strongest will survive.
+                stay out.
               </p>
             </strong>
             <div className="d-flex cta-button-container">
