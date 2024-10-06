@@ -50,11 +50,11 @@ body {
   color: #ff4500;
 }
 
-h5 {
+/* h5 {
   font-size: 1.2em;
   margin-bottom: 15px;
-  color: #ffd700;
-}
+  color: #000000;
+} */
 
 p {
   margin-bottom: 15px;
@@ -65,7 +65,7 @@ p {
   margin-top: 30px;
 }
 
-.btn-secondary {
+/* .btn-secondary {
   background-color: #ff4500;
   color: #ffffff;
   border: none;
@@ -82,7 +82,7 @@ p {
 
 .btn-secondary:hover {
   background-color: #ff6347;
-}
+} */
 
 .DaPaintLogo1 {
   height: 2rem;

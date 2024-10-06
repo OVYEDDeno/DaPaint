@@ -49,9 +49,9 @@ export const Home = () => {
               <strong>30 win streaks = $1 MILLION.</strong> Real competition.
               Real rewards.
             </p>
-            <p>
-              <strong>Join Now</strong>—victory awaits.
-            </p>
+            {/* <p>
+              <strong>Join Now</strong>—
+            </p> */}
 
             <div className="d-flex cta-button-container">
               <Link to="/auth">
@@ -61,7 +61,7 @@ export const Home = () => {
                     src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="DaPaintLogo"
                     className="DaPaintLogo1"
-                  />
+                  />  victory awaits.
                 </button>
               </Link>
             </div>
