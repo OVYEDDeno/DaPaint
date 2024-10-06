@@ -39,6 +39,7 @@ class User(db.Model):
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False, cascade='all, delete-orphan')
+    user_pay = db.relationship("UserPay", back_populates="user", cascade='all, delete-orphan')
 
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
@@ -77,6 +78,7 @@ class User(db.Model):
             "disqualifications": self.disqualifications,
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
+            "user_pay": self.user_pay.serialize() if self.user_pay else None,            
             "notifications": [n.serialize() for n in self.notifications],
             "instagram_url": self.instagram_url,
             "tiktok_url": self.tiktok_url,
@@ -172,6 +174,8 @@ class DaPaint(db.Model):
 
     # Relationship with tickets (single relationship definition)
     # user_tickets = db.relationship('Ticket', back_populates='dapaint', cascade='all, delete-orphan')
+    user_pay = db.relationship("UserPay", back_populates="dapaint", cascade='all, delete-orphan')
+
 
     def serialize(self):
         return {
@@ -193,8 +197,24 @@ class DaPaint(db.Model):
             "dispute_reported": self.dispute_reported,
             "winnerId": self.winnerId,
             "loserId": self.loserId,
+            "reports": [report.serialize() for report in self.reports],
+            "lastmodify": self.lastmodify,
+            "user_pay": [user_pay.serialize() for user_pay in self.user_pay]
         }
 
+class UserPay(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    dapaint_id = db.Column(db.Integer, db.ForeignKey("dapaint.id"), nullable=True)
+    user = db.relationship("User", back_populates="user_pay")
+    dapaint = db.relationship("DaPaint", back_populates="user_pay")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "dapaint_id": self.dapaint_id
+        }
 
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -318,6 +338,7 @@ class Insight(db.Model):
             "matches_per_day": self.matches_per_day,
             "inactive_users": self.inactive_users
         }
+
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)

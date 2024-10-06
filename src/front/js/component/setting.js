@@ -2,25 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/setting.css";
 import { Context } from "../store/appContext";
+import QRCode from 'qrcode';
 
 export const Setting = ({ onClose }) => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(null);
   const [feedback, setFeedback] = useState("");
-  const [rating, setRating] = useState(0); // New state for rating
+  const [rating, setRating] = useState(0);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [qrCodes, setQrCodes] = useState(Array(9).fill(null));
 
   const handleRatingChange = (value) => {
     setRating(value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Rating:", rating, "Feedback:", feedback);
   };
 
   useEffect(() => {
@@ -85,33 +81,48 @@ export const Setting = ({ onClose }) => {
     navigate("/");
   };
 
-  const toggleQRCode = (index) => {
-    setExpandedIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle between expanding and collapsing
+  const generateInviteCode = () => {
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
+  };
+
+  const generateQRCode = async (inviteCode) => {
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(inviteCode);
+      return qrCodeDataUrl;
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      return null;
+    }
+  };
+
+  const toggleQRCode = async (index) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+    } else {
+      setExpandedIndex(index);
+      if (!qrCodes[index]) {
+        const inviteCode = generateInviteCode();
+        const qrCodeDataUrl = await generateQRCode(inviteCode);
+        setQrCodes(prevCodes => {
+          const newCodes = [...prevCodes];
+          newCodes[index] = qrCodeDataUrl;
+          return newCodes;
+        });
+      }
+    }
   };
 
   return (
     <>
       <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalToggle"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel"
-        tabindex="-1"
+        tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
-
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
             <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
@@ -131,37 +142,30 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
+            <div className="profile-container">
               <button
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-target="#exampleModalToggle2"
                 data-bs-toggle="modal"
               >
                 <h5>FEEDBACK</h5>
               </button>
               <button
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-target="#exampleModalToggle3"
                 data-bs-toggle="modal"
               >
                 <h5>HOW TO PLAY</h5>
               </button>
               <button
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-target="#exampleModalToggle4"
                 data-bs-toggle="modal"
               >
                 <h5>TICKETS</h5>
               </button>
-              {/* <button
-                class="btn btn-secondary"
-                data-bs-target="#exampleModalToggle5"
-                data-bs-toggle="modal"
-              >
-                <h5>SWITCH PROFILE</h5>
-              </button> */}
               <button
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-target="#exampleModalToggle6"
                 data-bs-toggle="modal"
               >
@@ -172,26 +176,14 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
       <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalToggle2"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel2"
-        tabindex="-1"
+        tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
-
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
             <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
@@ -211,7 +203,7 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
+            <div className="profile-container">
               <form onSubmit={handleFeedbackSubmit}>
                 <div className="star-rating">
                   {[5, 4, 3, 2, 1].map((star) => (
@@ -252,25 +244,14 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
       <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalToggle3"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel3"
-        tabindex="-1"
+        tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
             <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
@@ -290,7 +271,7 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
+            <div className="profile-container">
               <ol>
                 TAP the "Find Foe" button.
                 <br />
@@ -312,26 +293,14 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
       <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalToggle4"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel4"
-        tabindex="-1"
+        tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
-
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
             <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
@@ -351,14 +320,14 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="tickets-container mx-auto">
+            <div className="tickets-container mx-auto">
               <table className="ticket-table">
                 <tbody>
                   {Array.from({ length: 3 }).map((_, rowIndex) => (
                     <tr key={rowIndex}>
                       {Array.from({ length: 3 }).map((_, colIndex) => {
                         const ticketIndex = rowIndex * 3 + colIndex;
-                        const isExpanded = expandedIndex === ticketIndex; // Check if this ticket is the expanded one
+                        const isExpanded = expandedIndex === ticketIndex;
 
                         return (
                           <td
@@ -377,7 +346,7 @@ export const Setting = ({ onClose }) => {
                               {!isExpanded && (
                                 <>
                                   <img
-                                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                                    src={qrCodes[ticketIndex]}
                                     alt="QR Code"
                                     className="qr-code"
                                   />
@@ -396,7 +365,7 @@ export const Setting = ({ onClose }) => {
                               {isExpanded && (
                                 <>
                                   <img
-                                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                                    src={qrCodes[ticketIndex]}
                                     alt="QR Code"
                                     className="qr-code expanded"
                                   />
@@ -422,72 +391,14 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
       <div
-        class="modal fade"
-        id="exampleModalToggle5"
-        aria-hidden="true"
-        aria-labelledby="exampleModalToggleLabel5"
-        tabindex="-1"
-      >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
-
-            <div className="invite-header">
-              <img
-                data-bs-target="#exampleModalToggle"
-                data-bs-toggle="modal"
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
-                alt="Back"
-                className="invite-close"
-              />
-              <h1 className="invite-title">
-                SETTING
-                <img
-                  data-bs-dismiss="modal"
-                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
-                  alt="Close"
-                  className="invite-close"
-                />
-              </h1>
-            </div>
-
-            <div class="profile-container">
-              Hide this modal and show the sixth with the button below.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalToggle6"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel6"
-        tabindex="-1"
+        tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            {/* <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">
-          Dapaint list
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div> */}
-
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
             <div className="invite-header">
               <img
                 data-bs-target="#exampleModalToggle"
@@ -507,7 +418,7 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
 
-            <div class="profile-container">
+            <div className="profile-container">
               Are you sure you want to clock out?
               <button className="btn btn-secondary" onClick={handleLogout}>
                 YES
@@ -524,7 +435,7 @@ export const Setting = ({ onClose }) => {
         </div>
       </div>
       <button
-        class="btn setting"
+        className="btn setting"
         data-bs-target="#exampleModalToggle"
         data-bs-toggle="modal"
       >

@@ -29,21 +29,31 @@ export const Home = () => {
               Welcome to DaPaint. <h5>Where Legends Are Made.</h5>
             </h1>
             <p>
-              We're still launching, but you can jump in early with an exclusive
-              invite from a current user! We can't wait for you to Clock In
-              DaPaint! Think you’ve got what it takes? Prove it.
+              This isn’t just another app; it’s the ultimate 1-on-1 sports
+              challenges. Sweat, grit, and glory await you. Ain’t no special
+              treatment—if you want to be a winner, then do what it takes to
+              WIN!
             </p>
             <p>
-              This isn’t another app. It’s the ultimate 1-on-1 sports
-              challenges. Sweat, grit, and glory. Ain’t no special treatment you wanna be a winner then do what it takes to WIN!
+              30 WIN STREAKS = $1 MILLION. Real competition. Real reward. We
+              can't wait for you to Clock In DaPaint! Think you’ve got what
+              it takes?
             </p>
-
-            <p>30 win streaks = $1 MILLION. Real competition. Real reward.</p>
+            <p>
+              We're still launching, but you can jump in early with an exclusive
+              invite code from a current user! Whether you’re a seasoned competitor
+              or just starting your journey, we believe in your potential to
+              rise.
+            </p>
+            
             <strong>
               <p style={{ color: "red" }}>
-                WARNING: DaPaint ISN’T FOR EVERYONE…WINNERS ONLY!
+                WARNING: DaPaint ISN’T FOR EVERYONE…WINNERS ONLY! But remember,
+                this is a space for growth and improvement, where everyone has
+                the chance to shine. Let’s make your mark together!
               </p>
             </strong>
+
             <div className="d-flex cta-button-container">
               <Link to="/auth">
                 <button className="btn-secondary w-5000">

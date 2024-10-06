@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import PropTypes from "prop-types";
 import "../../styles/landing.css";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 export const DaPaintManager = () => {
   const { store, actions } = useContext(Context);
@@ -169,6 +170,32 @@ export const DaPaintManager = () => {
     // Return formatted time in 12-hour format
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
+  const initialOptions = {
+    clientId:
+      "Ab3UDlPb82gsZcwSr7TDWewUxS8yUygIDlBBegXaDPolaA4PGtzqSG-rx6sDkg--HjtZ88XVGJycQbLz",
+    currency: "USD",
+    intent: "capture",
+  };
+  const handleApprove = () => {
+    console.log("PAYPAL");
+  
+    // Hide the previous modal first
+    const DaPaint = new window.bootstrap.Modal(
+      document.getElementById("DaPaint")
+    );
+    DaPaint.hide();
+  
+    // Use a small delay to ensure the modal is hidden before showing the next
+    setTimeout(() => {
+      // Now show the new modal
+      const modalElement = new window.bootstrap.Modal(
+        document.getElementById("DaPaint3")
+      );
+      modalElement.show();
+    }, 300); // This slight delay helps ensure the first modal is hidden properly
+  };
+  
+
   return (
     <>
       <div
@@ -212,19 +239,23 @@ export const DaPaintManager = () => {
                 WATCH AN AD
               </button>
               <h1 style={{ color: "black" }}>OR</h1>
-              <form
-                className="p-0"
-                action="https://www.paypal.com/ncp/payment/SFZCFW7AB3F8Y"
-                method="post"
-                target="_top"
-              >
-                <input
-                  className="btn-danger w-100 pp-SFZCFW7AB3F8Y"
-                  type="submit"
-                  value="PAY $1"
+              <PayPalScriptProvider options={initialOptions}>
+                <PayPalButtons
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          amount: {
+                            value: "1", // Set the amount here
+                          },
+                        },
+                      ],
+                    });
+                  }}
+                  onApprove={handleApprove}
                 />
-                <h1 style={{ color: "black" }}>TO UNLOCK</h1>
-              </form>
+              </PayPalScriptProvider>
+              <h1 style={{ color: "black" }}>TO UNLOCK</h1>
             </div>
             {/* <div class="modal-footer">
               <button
@@ -357,6 +388,7 @@ export const DaPaintManager = () => {
               >
                 +ADD
               </button>
+              <p>THERE’S NO NEW DAPAINT. PRESS +ADD TO CREATE ONE</p>
               <div className="event-list">
                 {filteredEvents.map((event) => (
                   <div key={event.id} className="event-item">
@@ -608,8 +640,16 @@ export const DaPaintManager = () => {
                     className="form-input"
                   >
                     <option value="">Select Fitness Style</option>
+                    <option value="basketball">Basketball</option>
                     <option value="boxing">Boxing</option>
-                    <option value="breakDancing">Breaking</option>
+                    <option value="racquetball">Racquetball/Squash</option>
+                    <option value="tennis">Tennis</option>
+                    <option value="pickleball">Pickleball</option>
+                    <option value="golf">Golf</option>
+                    <option value="volleyball">Volleyball</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="tableTennis">Table Tennis</option>
+                    <option value="breakDancing">Break Dancing</option>
                   </select>
                 </div>
                 <div>
@@ -619,7 +659,7 @@ export const DaPaintManager = () => {
                   <input
                     type="text"
                     name="location"
-                    placeholder="Location"
+                    placeholder="456 Elm Avenue, Los Angeles, CA 90012, USA"
                     value={formData.location}
                     onChange={handleInputChange}
                     className="form-input"
