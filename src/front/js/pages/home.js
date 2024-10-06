@@ -28,31 +28,22 @@ export const Home = () => {
             <h1 className="tagline">
               Welcome to DaPaint. Where Legends Are Made.
             </h1>
-            <h5>
-              <strong>
-                WARNING: This is NOT for everyone. If you can’t handle the heat,
-                stay out. Only the strongest will survive.
-              </strong>
-            </h5>
             <p>
-              <strong>
-                This isn’t another app. It’s the ultimate 1-on-1 sports
-                challenges.
-              </strong>{" "}
-              Sweat, grit, and glory. Think you’ve got what it takes? Prove it.
+              This isn’t another app. It’s the ultimate 1-on-1 sports
+              challenges. Sweat, grit, and glory. Think you’ve got what it
+              takes? Prove it.
             </p>
             <p>
               Join early with an exclusive invite from a current user—we can't
               wait for you to enter DaPaint!
             </p>
-            <p>
-              <strong>30 win streaks = $1 MILLION.</strong> Real competition.
-              Real rewards.
-            </p>
-            {/* <p>
-              <strong>Join Now</strong>—
-            </p> */}
-
+            <p>30 win streaks = $1 MILLION. Real competition. Real rewards.</p>
+            <strong>
+              <p style={{ color: "red" }}>
+                WARNING: This is NOT for everyone. If you can’t handle the heat,
+                stay out. Only the strongest will survive.
+              </p>
+            </strong>
             <div className="d-flex cta-button-container">
               <Link to="/auth">
                 <button className="btn-secondary w-5000">
@@ -61,7 +52,8 @@ export const Home = () => {
                     src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="DaPaintLogo"
                     className="DaPaintLogo1"
-                  />  victory awaits.
+                  />{" "}
+                  victory awaits.
                 </button>
               </Link>
             </div>
