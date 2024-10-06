@@ -36,16 +36,16 @@ export const Home = () => {
             </p>
             <p>
               30 WIN STREAKS = $1 MILLION. Real competition. Real reward. We
-              can't wait for you to Clock In DaPaint! Think you’ve got what
-              it takes?
+              can't wait for you to Clock In DaPaint! Think you’ve got what it
+              takes?
             </p>
             <p>
               We're still launching, but you can jump in early with an exclusive
-              invite code from a current user! Whether you’re a seasoned competitor
-              or just starting your journey, we believe in your potential to
-              rise.
+              invite code from a current user! Whether you’re a seasoned
+              competitor or just starting your journey, we believe in your
+              potential to rise.
             </p>
-            
+
             <strong>
               <p style={{ color: "red" }}>
                 WARNING: DaPaint ISN’T FOR EVERYONE…WINNERS ONLY! But remember,
@@ -56,15 +56,19 @@ export const Home = () => {
 
             <div className="d-flex cta-button-container">
               <Link to="/auth">
-                <button className="btn-secondary w-5000">
+                <button role="button" class="golden-button">
+                  <span class="golden-text">
                   Join Now!
                   <img
                     src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="DaPaintLogo"
                     className="DaPaintLogo1"
                   />{" "}
-                  victory awaits.
+                  victory awaits.</span>
                 </button>
+                {/* <button className="btn-secondary w-5000">
+                  
+                </button> */}
               </Link>
             </div>
           </div>

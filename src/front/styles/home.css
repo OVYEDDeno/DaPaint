@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap");
 
 body {
-  /* font-family: 'Anton', sans-serif; */
   margin: 0;
   padding: 0;
   background-color: #000000;
   color: #ffffff;
+  font-family: 'Roboto', sans-serif;
 }
 
 .home-container {
@@ -41,7 +41,6 @@ body {
   width: 50%;
   text-align: left;
   font-size: 1em;
-
 }
 
 .tagline {
@@ -49,43 +48,20 @@ body {
   font-size: 3.5em;
   margin-bottom: 20px;
   line-height: 1.2;
-  color: #fa0000;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
-
-/* h5 {
-  font-size: 1.2em;
-  margin-bottom: 15px;
-  color: #000000;
-} */
 
 p {
   margin-bottom: 15px;
   line-height: 1.6;
-  font-weight:lighter
+  font-weight: lighter;
+  color: #f0e68c;
 }
 
 .cta-button-container {
   margin-top: 30px;
 }
-
-/* .btn-secondary {
-  background-color: #ff4500;
-  color: #ffffff;
-  border: none;
-  padding: 15px 30px;
-  font-size: 1.2em;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-secondary:hover {
-  background-color: #ff6347;
-} */
 
 .DaPaintLogo1 {
   height: 2rem;
@@ -93,7 +69,7 @@ p {
 }
 
 .footer {
-  background-color: #000000;
+  background-color: #1a1a1a;
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -113,22 +89,70 @@ p {
 
 .footer-column ul li a {
   text-decoration: none;
-  color: #ffffff;
+  color: #ffd700;
   transition: color 0.3s ease;
 }
 
 .footer-column ul li a:hover {
-  color: #ff4500;
+  color: #ffff00;
 }
 
 .social-media-logos img {
   height: 24px;
   margin: 0 10px;
   transition: opacity 0.3s ease;
+  filter: brightness(0) saturate(100%) invert(79%) sepia(75%) saturate(552%) hue-rotate(359deg) brightness(105%) contrast(107%);
 }
 
 .social-media-logos img:hover {
   opacity: 0.8;
+}
+
+.golden-button {
+  touch-action: manipulation;
+  display: inline-block;
+  outline: none;
+  font-family: inherit;
+  font-size: 1em;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 0.3em;
+  height: 2.75em;
+  line-height: 2.5em;
+  text-transform: uppercase;
+  padding: 0 1em;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(110, 80, 20, 0.4),
+    inset 0 -2px 5px 1px rgba(139, 66, 8, 1),
+    inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
+  background-image: linear-gradient(
+    160deg,
+    #a54e07,
+    #b47e11,
+    #fef1a2,
+    #bc881b,
+    #a54e07
+  );
+  border: 1px solid #a55d07;
+  color: rgb(120, 50, 5);
+  text-shadow: 0 2px 2px rgba(250, 227, 133, 1);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.golden-button:focus,
+.golden-button:hover {
+  background-size: 150% 150%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23),
+    inset 0 -2px 5px 1px #b17d10, inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
+  border: 1px solid rgba(165, 93, 7, 0.6);
+  color: rgba(120, 50, 5, 0.8);
+}
+
+.golden-button:active {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(110, 80, 20, 0.4),
+    inset 0 -2px 5px 1px #b17d10, inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
 }
 
 @media screen and (max-width: 768px) {
@@ -136,7 +160,8 @@ p {
     flex-direction: column;
   }
 
-  .left-image, .text-container {
+  .left-image,
+  .text-container {
     width: 100%;
   }
 

@@ -15,10 +15,7 @@ export const Invite = ({ onClose }) => {
 
   // Fetch invitee
   useEffect(() => {
-    actions.fetchMaxInvitee(
-      setMaxInviteeCount, // State setter for invitee count
-      setMaxInviteeUser // State setter for inviter's name with max invitees
-    );
+    actions.fetchMaxInvitee(setMaxInviteeCount, setMaxInviteeUser);
   }, []);
 
   // Fetch notifications
@@ -89,6 +86,35 @@ export const Invite = ({ onClose }) => {
     fetchInviteCodes();
   }, []);
 
+  const CopyCodeButton = ({ code }) => {
+    const [copied, setCopied] = useState(false);
+  
+    const copyToClipboard = () => {
+      const fullMessage = `Use my code ${code} to join DaPaint if you think you can beat me?`;
+      navigator.clipboard.writeText(fullMessage).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    };
+
+    return (
+      <button
+        onClick={copyToClipboard}
+        style={{
+          backgroundColor: "yellow",
+          padding: "10px 15px",
+          borderRadius: "4px",
+          border: "none",
+          cursor: "pointer",
+          fontWeight: "bold",
+          transition: "background-color 0.3s ease",
+        }}
+      >
+        {copied ? "Copied!" : "Copy Code"}
+      </button>
+    );
+  };
+
   return (
     <>
       <div style={{ position: "relative" }}>
@@ -109,11 +135,11 @@ export const Invite = ({ onClose }) => {
       </div>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="inviteModal"
         aria-hidden="true"
         aria-labelledby="inviteModal"
-        tabindex="-1"
+        tabIndex="-1"
         data-bs-backdrop="static"
       >
         <div className="modal-dialog modal-dialog-centered">
@@ -131,20 +157,20 @@ export const Invite = ({ onClose }) => {
             </div>
             <div className="invite-container text-center">
               <div>
-                <p className=" m-3">
+                <p className="m-3">
                   Invite the most people by the end of this winstreak and win
                   500K!
-                
+                </p>
                 <p>
                   {maxInviteeUser} has invited {maxInviteeCount} Indulgers
-                  <p>
-                    You have invited{" "}
-                    {
-                      store.userData?.user?.invite_code?.completed_dapaints
-                        .length
-                    }{" "}
-                    Indulgers
-                  </p></p>
+                </p>
+                <p>
+                  You have invited{" "}
+                  {
+                    store.userData?.user?.invite_code?.completed_dapaints
+                      .length
+                  }{" "}
+                  Indulgers
                 </p>
                 <h5 className="font-bold mb-2">
                   Your Invite Code
@@ -170,26 +196,25 @@ export const Invite = ({ onClose }) => {
                     </p>
                   ) : inviteCodes.length > 0 ? (
                     inviteCodes.map((code, index) => (
-                      <p
-                        key={index}
-                        style={{
-                          backgroundColor: "yellow",
-                          padding: "5px",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        {code.code}
-                      </p>
+                      <div key={index}>
+                        <p
+                          style={{
+                            backgroundColor: "yellow",
+                            padding: "5px",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          {code.code}
+                        </p>
+                        <CopyCodeButton code={code.code} />
+                      </div>
                     ))
                   ) : (
                     <p style={{ color: "gray", fontStyle: "italic" }}>
                       No invite codes
                     </p>
-                  )}</h5>
-                  {/* <p style={{ fontWeight: "regular", color: "#131313" }}>
-                    ^copy your code to easily send^
-                  </p> */}
-                
+                  )}
+                </h5>
               </div>
 
               <div>
