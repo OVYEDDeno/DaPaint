@@ -26,22 +26,22 @@ export const Home = () => {
           />
           <div className="text-container">
             <h1 className="tagline">
-              Welcome to DaPaint. Where Legends Are Made.
+              Welcome to DaPaint. <h5>Where Legends Are Made.</h5>
             </h1>
             <p>
-              This isn’t another app. It’s the ultimate 1-on-1 sports
-              challenges. Sweat, grit, and glory. Think you’ve got what it
-              takes? Prove it.
+              We're still launching, but you can jump in early with an exclusive
+              invite from a current user! We can't wait for you to Clock In
+              DaPaint! Think you’ve got what it takes? Prove it.
             </p>
             <p>
-              Join early with an exclusive invite from a current user—we can't
-              wait for you to Clock In DaPaint!
+              This isn’t another app. It’s the ultimate 1-on-1 sports
+              challenges. Sweat, grit, and glory. Ain’t no special treatment you wanna be a winner then do what it takes to WIN!
             </p>
+
             <p>30 win streaks = $1 MILLION. Real competition. Real reward.</p>
             <strong>
               <p style={{ color: "red" }}>
-                WARNING: This is NOT for everyone. If you can’t handle the heat,
-                stay out.
+                WARNING: DaPaint ISN’T FOR EVERYONE…WINNERS ONLY!
               </p>
             </strong>
             <div className="d-flex cta-button-container">
