@@ -30,7 +30,7 @@
 #modalBody {
   display: flex;
   flex-direction: column;
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   color: #131313;
   width: 350px;
   margin: 10px auto;
@@ -126,7 +126,6 @@ button[type="submit"] {
   justify-content: center;
 }
 
-
 .star-label {
   cursor: pointer;
   padding: 0 0.1em;
@@ -137,7 +136,7 @@ button[type="submit"] {
   width: 1em;
   height: 1em;
   fill: transparent;
-  stroke: #FFD700;
+  stroke: #ffd700;
   stroke-width: 1.5;
   transition: all 0.2s;
 }
@@ -145,14 +144,14 @@ button[type="submit"] {
 input[type="radio"]:checked ~ label svg,
 label:hover svg,
 label:hover ~ label svg {
-  fill: #FFD700;
+  fill: #ffd700;
 }
 
 .tickets-container {
   text-align: center;
   display: flex;
   flex-direction: wrap;
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   color: #131313;
   width: 100%;
   max-width: 500px;
@@ -167,8 +166,8 @@ label:hover ~ label svg {
   color: #000;
   display: block;
 }
-  
-.btn:hover{
+
+.btn:hover {
   color: #fff;
   box-shadow: 0px 0px 68px #333333;
 }

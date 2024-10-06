@@ -28,11 +28,10 @@
   margin-left: auto; /* Ensure the close button stays on the right */
 }
 
-
 .profile-container {
   display: flex;
   flex-direction: column;
-  background-color: #e3e3e3;
+  background-color: #ffffff;
   color: #131313;
   width: 100%;
   max-width: 500px;
@@ -79,7 +78,7 @@
 .stats-table td.disqualifications {
   color: orange;
 }
-.form-control-file{
+.form-control-file {
   padding-left: 15%;
   padding-top: 2%;
   padding-bottom: 2%;
@@ -91,12 +90,12 @@
   border-radius: 21px;
 }
 
-.profile-footer{
+.profile-footer {
   margin: 20px;
   text-align: center;
   color: #ffffff;
 }
-.btn{
+.btn {
   background-color: transparent; /* Original button color */
   color: white;
   border: none;

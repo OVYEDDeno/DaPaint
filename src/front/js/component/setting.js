@@ -86,10 +86,8 @@ export const Setting = ({ onClose }) => {
   };
 
   const toggleQRCode = (index) => {
-    setExpandedIndex(prevIndex => (prevIndex === index ? null : index)); // Toggle between expanding and collapsing
+    setExpandedIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle between expanding and collapsing
   };
-  
-  
 
   return (
     <>
@@ -155,13 +153,13 @@ export const Setting = ({ onClose }) => {
               >
                 <h5>TICKETS</h5>
               </button>
-              <button
+              {/* <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle5"
                 data-bs-toggle="modal"
               >
                 <h5>SWITCH PROFILE</h5>
-              </button>
+              </button> */}
               <button
                 class="btn btn-secondary"
                 data-bs-target="#exampleModalToggle6"
@@ -293,21 +291,22 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="profile-container">
-              1. TAP FIND FOE BUTTON
-              <br />
-              3. TAP CLOCK IN
-              <br />
-              2. FIND A HOST CHALLENGING YOU IN A SPORT
-              <br />
-              1. TAP CLOCK IN
-              <br />
-              3. SPREAD THE WORD TO SELL TICKETS TO YOUR MATCH
-              <br />
-              4. TAP START
-              <br />
-              6. SUBMIT YOUR FOOTAGE/RESULT OF THE MATCH
-              <br />
-              5. REPEAT TILL YOU REACH 30 WINSTREAKS FOR A SURPRISE
+              <ol>
+                TAP the "Find Foe" button.
+                <br />
+                Locate a host who is challenging you in a sport.
+                <br />
+                TAP "Clock In."
+                <br />
+                Spread the word to sell tickets to your match.
+                <br />
+                TAP "Start."
+                <br />
+                Submit your footage/result of the match.
+                <br />
+                Repeat until you reach **30 win streaks** for your reward!
+                <br />
+              </ol>
             </div>
           </div>
         </div>
@@ -353,50 +352,72 @@ export const Setting = ({ onClose }) => {
             </div>
 
             <div class="tickets-container mx-auto">
-            <table className="ticket-table">
-      <tbody>
-        {Array.from({ length: 3 }).map((_, rowIndex) => (
-          <tr key={rowIndex}>
-            {Array.from({ length: 3 }).map((_, colIndex) => {
-              const ticketIndex = rowIndex * 3 + colIndex;
-              const isExpanded = expandedIndex === ticketIndex; // Check if this ticket is the expanded one
+              <table className="ticket-table">
+                <tbody>
+                  {Array.from({ length: 3 }).map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {Array.from({ length: 3 }).map((_, colIndex) => {
+                        const ticketIndex = rowIndex * 3 + colIndex;
+                        const isExpanded = expandedIndex === ticketIndex; // Check if this ticket is the expanded one
 
-              return (
-                <td className={`ticket-cell ${expandedIndex !== null && !isExpanded ? 'hidden' : ''}`} key={colIndex}>
-                  <div className={`ticket ${isExpanded ? 'expanded' : ''}`}>
-                    {!isExpanded && (
-                      <>
-                        <img
-                          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-                          alt="QR Code"
-                          className="qr-code"
-                        />
-                        <button className="btn refund-btn">REFUND</button>
-                        <button className="btn show-btn" onClick={() => toggleQRCode(ticketIndex)}>SHOW</button>
-                      </>
-                    )}
+                        return (
+                          <td
+                            className={`ticket-cell ${
+                              expandedIndex !== null && !isExpanded
+                                ? "hidden"
+                                : ""
+                            }`}
+                            key={colIndex}
+                          >
+                            <div
+                              className={`ticket ${
+                                isExpanded ? "expanded" : ""
+                              }`}
+                            >
+                              {!isExpanded && (
+                                <>
+                                  <img
+                                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                                    alt="QR Code"
+                                    className="qr-code"
+                                  />
+                                  <button className="btn refund-btn">
+                                    REFUND
+                                  </button>
+                                  <button
+                                    className="btn show-btn"
+                                    onClick={() => toggleQRCode(ticketIndex)}
+                                  >
+                                    SHOW
+                                  </button>
+                                </>
+                              )}
 
-                    {isExpanded && (
-                      <>
-                        <img
-                          src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-                          alt="QR Code"
-                          className="qr-code expanded"
-                        />
-                        <div className="details-label">Details</div>
-                        <button className="btn hide-btn" onClick={() => toggleQRCode(ticketIndex)}>HIDE</button>
-                      </>
-                    )}
-                  </div>
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-</div>
-
+                              {isExpanded && (
+                                <>
+                                  <img
+                                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                                    alt="QR Code"
+                                    className="qr-code expanded"
+                                  />
+                                  <div className="details-label">Details</div>
+                                  <button
+                                    className="btn hide-btn"
+                                    onClick={() => toggleQRCode(ticketIndex)}
+                                  >
+                                    HIDE
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

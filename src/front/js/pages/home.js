@@ -18,40 +18,60 @@ export const Home = () => {
         </Link>
       </header> */}
       <main className="main-body">
-        <a href="" onClick={() => location.reload()}>
+        <div className="flex-container">
           <img
-            src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-            alt="DaPaintLogo"
-            className="DaPaintLogo1"
+            src="https://res.cloudinary.com/dj2umay9c/image/upload/v1728188124/CLOCK_IN_n65pv1.png"
+            alt="DaPaintApp"
+            className="left-image"
           />
-        </a>
-        {/* <h1 className="tagline">Defy Your Limits</h1> */}
-        <h1 className="tagline">Welcome To DaPaint</h1>
-        <p></p>
-        <h5>
-          Hey, we're still launching, but you can jump in with an exclusive
-          invite from a current user!
-        </h5>
-        <p></p>
-        <p>
-          Sign up to see if you have friends on DaPaint who can let you in. We
-          can't wait for you to join!
-        </p>
-        <div className="d-flex cta-button-container">
-        <Link to="/auth">
-          <button className="btn-secondary w-5000">Join Now!</button>
-        </Link>
+          <div className="text-container">
+            <h1 className="tagline">
+              Welcome to DaPaint. Where Legends Are Made.
+            </h1>
+            <h5>
+              <strong>
+                WARNING: This is NOT for everyone. If you can’t handle the heat,
+                stay out. Only the strongest will survive.
+              </strong>
+            </h5>
+            <p>
+              <strong>
+                This isn’t another app. It’s the ultimate 1-on-1 sports
+                challenges.
+              </strong>{" "}
+              Sweat, grit, and glory. Think you’ve got what it takes? Prove it.
+            </p>
+            <p>
+              Join early with an exclusive invite from a current user—we can't
+              wait for you to enter DaPaint!
+            </p>
+            <p>
+              <strong>30 win streaks = $1 MILLION.</strong> Real competition.
+              Real rewards.
+            </p>
+            <p>
+              <strong>Join Now</strong>—victory awaits.
+            </p>
+
+            <div className="d-flex cta-button-container">
+              <Link to="/auth">
+                <button className="btn-secondary w-5000">
+                  Join Now!
+                  <img
+                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                    alt="DaPaintLogo"
+                    className="DaPaintLogo1"
+                  />
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
       </main>
 
       <footer className="footer">
         <div className="footer-column">
           <ul>
-            {/* <li>
-              <a href="/advertise" target="_blank">
-                Advertise With Us
-              </a>
-            </li> */}
             <li>
               <a href="/privacy" target="_blank">
                 Privacy
@@ -62,11 +82,6 @@ export const Home = () => {
                 Terms
               </a>
             </li>
-            {/* <li>
-              <a href="/faqs" target="_blank">
-                FAQs
-              </a>
-            </li> */}
           </ul>
         </div>
         <div className="footer-column social-media-logos">

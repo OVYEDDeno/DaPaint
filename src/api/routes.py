@@ -712,7 +712,7 @@ def update_win_streak(dapaint_id):
         daPaint.loserId = loser.id
 
         try:
-            db.session.delete(daPaint)
+            # db.session.delete(daPaint)
             db.session.commit()
             print("Winner and loser stats updated.")
         except Exception as e:
