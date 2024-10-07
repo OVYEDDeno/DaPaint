@@ -107,7 +107,7 @@ export const Landing = () => {
         <p></p>
 
         <div className="find-foe-section">
-          {(!(store.userData.dapaintId?.winnerId && store.userData.dapaintId?.loserId)  && <Start />) || <DaPaintManager />}
+          {(!(store.userData.dapaintId?.winnerId && store.userData.dapaintId?.loserId)  && <DaPaintManager />) ||<Start /> }
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>

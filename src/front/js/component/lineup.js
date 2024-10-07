@@ -317,7 +317,8 @@ export const Lineup = () => {
                               : "FORFEIT"}
                           </button>
                         ) : (
-                          <button className="bg-black text-white p-2 rounded">
+                          <button className="bg-black text-white p-2 rounded" data-bs-target="#exampleModalToggle4"
+                          data-bs-toggle="modal">
                             BUY TICKETS
                           </button>
                         )}

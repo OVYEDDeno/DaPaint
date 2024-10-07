@@ -179,22 +179,21 @@ export const DaPaintManager = () => {
   const handleApprove = () => {
     console.log("PAYPAL");
   
-    // Hide the previous modal first
-    const DaPaint = new window.bootstrap.Modal(
-      document.getElementById("DaPaint")
-    );
-    DaPaint.hide();
+    // Get references to both modals
+    const daPaintModal = document.getElementById("DaPaint");
+    const daPaint3Modal = document.getElementById("DaPaint3");
   
-    // Use a small delay to ensure the modal is hidden before showing the next
+    // Hide the DaPaint modal
+    const bsModalDaPaint = bootstrap.Modal.getInstance(daPaintModal);
+    bsModalDaPaint.hide();
+  
+    // Use a small delay to ensure the first modal is fully hidden
     setTimeout(() => {
-      // Now show the new modal
-      const modalElement = new window.bootstrap.Modal(
-        document.getElementById("DaPaint3")
-      );
-      modalElement.show();
-    }, 300); // This slight delay helps ensure the first modal is hidden properly
+      // Show the DaPaint3 modal
+      const bsModalDaPaint3 = new bootstrap.Modal(daPaint3Modal);
+      bsModalDaPaint3.show();
+    }, 300);
   };
-  
 
   return (
     <>
@@ -231,14 +230,14 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div className="profile-container">
-              <button
+              {/* <button
                 className="btn-danger"
                 data-bs-target="#DaPaint2"
                 data-bs-toggle="modal"
               >
                 WATCH AN AD
-              </button>
-              <h1 style={{ color: "black" }}>OR</h1>
+              </button> */}
+              <h1 style={{ color: "black" }}>PAY $1 TO UNLOCK</h1>
               <PayPalScriptProvider options={initialOptions}>
                 <PayPalButtons
                   createOrder={(data, actions) => {
@@ -255,7 +254,8 @@ export const DaPaintManager = () => {
                   onApprove={handleApprove}
                 />
               </PayPalScriptProvider>
-              <h1 style={{ color: "black" }}>TO UNLOCK</h1>
+              {/* <h1 style={{ color: "black" }}>TO UNLOCK</h1> */}
+              {/* <p style={{ color: "black" }}>To ensure your a real person</p> */}
             </div>
             {/* <div class="modal-footer">
               <button
@@ -383,7 +383,7 @@ export const DaPaintManager = () => {
               />
               <button
                 class="btn-danger"
-                data-bs-target="#DaPaint4"
+                data-bs-target="#DaPaint6"
                 data-bs-toggle="modal"
               >
                 +ADD
