@@ -87,13 +87,20 @@ export const Start = () => {
   return (
     <>
       <button
-        type="button"
-        className="btn-start"
+        role="button"
+        class="golden-button"
         data-bs-toggle="modal"
         data-bs-target="#startModal"
       >
-        <h1>👊🏾START👊🏾</h1>
+        <span class="golden-text">👊🏾START👊🏾</span>
       </button>
+      {/* <button
+        type="button"
+        className="btn-start"
+        
+      >
+        
+      </button> */}
 
       <div
         className="modal fade"

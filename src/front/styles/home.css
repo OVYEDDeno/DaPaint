@@ -1,11 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap");
-
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #000000;
-  color: #ffffff;
-  font-family: 'Roboto', sans-serif;
+  background-color: #000;
+  color: #fff;
+  font-family: "Arial", sans-serif;
 }
 
 .home-container {
@@ -19,7 +15,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  /* padding: 40px 20px; */
 }
 
 .flex-container {
@@ -40,72 +36,40 @@ body {
 .text-container {
   width: 50%;
   text-align: left;
-  font-size: 1em;
+  /* text-transform: uppercase; */
+  font-size: 1.1em;
+  padding-left: 1px;
+
 }
 
 .tagline {
-  font-family: 'Anton', sans-serif;
   font-size: 3.5em;
   margin-bottom: 20px;
   line-height: 1.2;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #f5c116;
+  text-transform: uppercase;
 }
 
 p {
-  margin-bottom: 15px;
+  font-size: 1.2em;
+  margin-bottom: 5px;
   line-height: 1.6;
   font-weight: lighter;
-  color: #f0e68c;
+  color: #e3e3e3;
+}
+
+.warning {
+  color: #d0021b;
+  font-weight: bold;
 }
 
 .cta-button-container {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .DaPaintLogo1 {
-  height: 2rem;
+  height: 3rem;
   margin-left: 10px;
-}
-
-.footer {
-  background-color: #1a1a1a;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-}
-
-.footer-column ul li {
-  margin-right: 20px;
-}
-
-.footer-column ul li a {
-  text-decoration: none;
-  color: #ffd700;
-  transition: color 0.3s ease;
-}
-
-.footer-column ul li a:hover {
-  color: #ffff00;
-}
-
-.social-media-logos img {
-  height: 24px;
-  margin: 0 10px;
-  transition: opacity 0.3s ease;
-  filter: brightness(0) saturate(100%) invert(79%) sepia(75%) saturate(552%) hue-rotate(359deg) brightness(105%) contrast(107%);
-}
-
-.social-media-logos img:hover {
-  opacity: 0.8;
 }
 
 .golden-button {
@@ -113,7 +77,7 @@ p {
   display: inline-block;
   outline: none;
   font-family: inherit;
-  font-size: 1em;
+  font-size: 1.5rem;
   box-sizing: border-box;
   border: none;
   border-radius: 0.3em;
@@ -121,9 +85,6 @@ p {
   line-height: 2.5em;
   text-transform: uppercase;
   padding: 0 1em;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(110, 80, 20, 0.4),
-    inset 0 -2px 5px 1px rgba(139, 66, 8, 1),
-    inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
   background-image: linear-gradient(
     160deg,
     #a54e07,
@@ -141,18 +102,48 @@ p {
   background-position: center;
 }
 
-.golden-button:focus,
 .golden-button:hover {
   background-size: 150% 150%;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23),
-    inset 0 -2px 5px 1px #b17d10, inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
-  border: 1px solid rgba(165, 93, 7, 0.6);
-  color: rgba(120, 50, 5, 0.8);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
-.golden-button:active {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(110, 80, 20, 0.4),
-    inset 0 -2px 5px 1px #b17d10, inset 0 -1px 1px 3px rgba(250, 227, 133, 1);
+.footer {
+  background-color: #000;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.footer-column ul li {
+  margin-right: 20px;
+}
+
+.footer-column ul li a {
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.footer-column ul li a:hover {
+  color: #e6b800;
+}
+
+.social-media-logos img {
+  height: 24px;
+  margin: 0 10px;
+  transition: opacity 0.3s ease;
+}
+
+.social-media-logos img:hover {
+  opacity: 0.8;
 }
 
 @media screen and (max-width: 768px) {
@@ -163,6 +154,8 @@ p {
   .left-image,
   .text-container {
     width: 100%;
+    text-align: center;
+    padding: 20px;
   }
 
   .tagline {
@@ -175,7 +168,7 @@ p {
   }
 
   .footer-column ul {
-    justify-content: center;
+    justify-content:center;
     margin-bottom: 10px;
   }
 }

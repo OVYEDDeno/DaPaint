@@ -26,7 +26,7 @@ export const Home = () => {
           />
           <div className="text-container">
             <h1 className="tagline">
-              Welcome to DaPaint. <h5>Where Legends Are Made.</h5>
+              WELCOME TO DaPaint. <h5>Where Legends Are Made.</h5>
             </h1>
             <p>
               This isn’t just another app; it’s the ultimate 1-on-1 sports
@@ -48,23 +48,22 @@ export const Home = () => {
 
             <strong>
               <p style={{ color: "red" }}>
-                WARNING: DaPaint ISN’T FOR EVERYONE…WINNERS ONLY! But remember,
-                this is a space for growth and improvement, where everyone has
-                the chance to shine. Let’s make your mark together!
+                WARNING: LIKE WINNING DAPAINT ISN’T FOR EVERYONE!
               </p>
             </strong>
 
-            <div className="d-flex cta-button-container">
+            <div className="text-center">
               <Link to="/auth">
-                <button role="button" class="golden-button">
+                <button role="button" class="golden-button ">
                   <span class="golden-text">
-                  Join Now!
-                  <img
-                    src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
-                    alt="DaPaintLogo"
-                    className="DaPaintLogo1"
-                  />{" "}
-                  victory awaits.</span>
+                    Join Now!
+                    <img
+                      src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
+                      alt="DaPaintLogo"
+                      className="DaPaintLogo1"
+                    />{" "}
+                    victory awaits.
+                  </span>
                 </button>
                 {/* <button className="btn-secondary w-5000">
                   
@@ -88,6 +87,11 @@ export const Home = () => {
                 Terms
               </a>
             </li>
+            {/* <li>
+              <a href="/terms" target="_blank">
+                Contact
+              </a>
+            </li> */}
           </ul>
         </div>
         <div className="footer-column social-media-logos">
