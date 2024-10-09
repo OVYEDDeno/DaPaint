@@ -18,6 +18,8 @@ export const DaPaintManager = () => {
   });
   const [error, setError] = useState("");
 
+  const [selectedFitnessStyle, setSelectedFitnessStyle] = useState("");
+
   useEffect(() => {
     async function getUserInfo() {
       let success = await actions.fetchCurrentUser();
@@ -136,13 +138,20 @@ export const DaPaintManager = () => {
     const hostFoeName = event.hostFoeId?.name?.toLowerCase() || "";
     const foeName = event.foeId?.name?.toLowerCase() || "";
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const matchesSearch =
+      hostFoeName.includes(lowerCaseSearchTerm) ||
+      foeName.includes(lowerCaseSearchTerm);
+    const matchesFitnessStyle =
+      selectedFitnessStyle === "" ||
+      event.fitnessStyle === selectedFitnessStyle;
+
     return (
-      (isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) &&
-        hostFoeName.includes(lowerCaseSearchTerm)) ||
-      (isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) &&
-        foeName.includes(lowerCaseSearchTerm))
+      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode) &&
+      matchesSearch &&
+      matchesFitnessStyle
     );
   });
+
   function convertTo12Hr(timeStr) {
     // Create a Date object from the input string
     const date = new Date(timeStr);
@@ -178,21 +187,25 @@ export const DaPaintManager = () => {
   };
   const handleApprove = () => {
     console.log("PAYPAL");
-  
+
     // Get references to both modals
     const daPaintModal = document.getElementById("DaPaint");
     const daPaint3Modal = document.getElementById("DaPaint3");
-  
+
     // Hide the DaPaint modal
     const bsModalDaPaint = bootstrap.Modal.getInstance(daPaintModal);
     bsModalDaPaint.hide();
-  
+
     // Use a small delay to ensure the first modal is fully hidden
     setTimeout(() => {
       // Show the DaPaint3 modal
       const bsModalDaPaint3 = new bootstrap.Modal(daPaint3Modal);
       bsModalDaPaint3.show();
     }, 300);
+  };
+
+  const handleFitnessStyleChange = (e) => {
+    setSelectedFitnessStyle(e.target.value);
   };
 
   return (
@@ -230,13 +243,13 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div className="profile-container">
-              {/* <button
+              <button
                 className="btn-danger"
-                data-bs-target="#DaPaint2"
+                data-bs-target="#DaPaint3"
                 data-bs-toggle="modal"
               >
                 WATCH AN AD
-              </button> */}
+              </button>
               <h1 style={{ color: "black" }}>PAY $1 TO UNLOCK</h1>
               <PayPalScriptProvider options={initialOptions}>
                 <PayPalButtons
@@ -374,13 +387,33 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search for a foe..."
-                className="form-control mb-3"
-              />
+              <div className="m-2">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search for a foe..."
+                  className="form-control mb-3"
+                />
+                <select
+                  value={selectedFitnessStyle}
+                  onChange={handleFitnessStyleChange}
+                  className="form-control mb-3"
+                >
+                  <option value="">Any Fitness Style</option>
+                  <option value="basketball">Basketball</option>
+                  <option value="boxing">Boxing</option>
+                  <option value="racquetball">Racquetball/Squash</option>
+                  <option value="tennis">Tennis</option>
+                  <option value="pickleball">Pickleball</option>
+                  <option value="golf">Golf</option>
+                  <option value="volleyball">Volleyball</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="tableTennis">Table Tennis</option>
+                  <option value="breakDancing">Break Dancing</option>
+                </select>
+              </div>
+
               <button
                 class="btn-danger"
                 data-bs-target="#DaPaint6"
@@ -388,46 +421,48 @@ export const DaPaintManager = () => {
               >
                 +ADD
               </button>
-              <p>THERE’S NO NEW DAPAINT. PRESS +ADD TO CREATE ONE</p>
-              <div className="event-list">
-                {filteredEvents.map((event) => (
-                  <div key={event.id} className="event-item">
-                    <img
-                      src={
-                        event.hostFoeId?.profile_pic?.image_url ||
-                        "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
-                      }
-                      alt={event.hostFoeId?.name || "Unknown Host"}
-                      className="rounded-circle img-fluid avatar"
-                    />
-                    <div className="details-container">
-                      <span>{event.hostFoeId?.name || "Unknown Host"}</span>
-                      <span>{event.fitnessStyle}</span>
-                      <span>{event.location}</span>
-                      <span>{convertTo12Hr(event.date_time)}</span>
 
-                      {/* <div className="button-container"> */}
-                      {event.hostFoeId?.id !== store.userData.user?.id ? (
-                        <button
-                          onClick={() => handleClockIn(event)}
-                          className="btn-danger"
-                          data-bs-target="#lineUp"
-                          data-bs-toggle="modal"
-                        >
-                          CLOCK IN
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleDelete(event.id)}
-                          className="btn-danger"
-                        >
-                          DELETE
-                        </button>
-                      )}
-                      {/* </div> */}
+              <div className="event-list">
+                {filteredEvents.length === 0 ? (
+                  <p>THERE’S NO NEW DAPAINT. PRESS +ADD TO CREATE ONE</p>
+                ) : (
+                  filteredEvents.map((event) => (
+                    <div key={event.id} className="event-item">
+                      <img
+                        src={
+                          event.hostFoeId?.profile_pic?.image_url ||
+                          "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png"
+                        }
+                        alt={event.hostFoeId?.name || "Unknown Host"}
+                        className="rounded-circle img-fluid avatar"
+                      />
+                      <div className="details-container">
+                        <span>{event.hostFoeId?.name || "Unknown Host"}</span>
+                        <span>{event.fitnessStyle}</span>
+                        <span>{event.location}</span>
+                        <span>{convertTo12Hr(event.date_time)}</span>
+
+                        {event.hostFoeId?.id !== store.userData.user?.id ? (
+                          <button
+                            onClick={() => handleClockIn(event)}
+                            className="btn-danger"
+                            data-bs-target="#lineUp"
+                            data-bs-toggle="modal"
+                          >
+                            CLOCK IN
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleDelete(event.id)}
+                            className="btn-danger"
+                          >
+                            DELETE
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>

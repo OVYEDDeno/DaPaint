@@ -210,7 +210,7 @@ export const Lineup = () => {
       });
       setTicketTracker(newTicketTracker);
     }
-  }, [filteredMatchups]);
+  }, []);
 
   function getMatchList() {
     return filteredMatchups.length ? filteredMatchups : store.daPaintList;
@@ -242,23 +242,26 @@ export const Lineup = () => {
     currency: "USD",
     intent: "capture",
   };
-  const handleApprove = () => {
-    console.log("PAYPAL");
+  const handleApprove = (data, actions) => {
+    return actions.order.capture().then(function (details) {
+      console.log("Transaction completed by " + details.payer.name.given_name);
+      console.log("PAYPAL");
 
-    // Get references to both modals
-    const lineUpModal = document.getElementById("lineUp");
-    const TicketModal = document.getElementById("Ticket");
+      // Get references to both modals
+      const lineUpModal = document.getElementById("lineUp");
+      const TicketModal = document.getElementById("Ticket");
 
-    // Hide the lineUp modal
-    const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
-    bsModallineUp.hide();
+      // Hide the lineUp modal
+      const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
+      bsModallineUp.hide();
 
-    // Use a small delay to ensure the first modal is fully hidden
-    setTimeout(() => {
-      // Show the Ticket modal
-      const bsModalTicket = new bootstrap.Modal(TicketModal);
-      bsModalTicket.show();
-    }, 300);
+      // Use a small delay to ensure the first modal is fully hidden
+      setTimeout(() => {
+        // Show the Ticket modal
+        const bsModalTicket = new bootstrap.Modal(TicketModal);
+        bsModalTicket.show();
+      }, 300);
+    });
   };
 
   return (
@@ -432,15 +435,17 @@ export const Lineup = () => {
                         <PayPalScriptProvider options={initialOptions}>
                           <PayPalButtons
                             createOrder={(data, actions) => {
+                              const ticketCount =
+                                ticketTracker[matchup.id]?.Tickets || 1;
+                              const ticketPrice =
+                                ticketTracker[matchup.id]?.Price || 7;
+                              const totalAmount = ticketCount * ticketPrice;
+
                               return actions.order.create({
                                 purchase_units: [
                                   {
                                     amount: {
-                                      value:
-                                        (ticketTracker[matchup.id]?.Price ||
-                                          matchup.price) *
-                                        (ticketTracker[matchup.id]?.Tickets ||
-                                          1),
+                                      value: totalAmount.toFixed(2),
                                     },
                                   },
                                 ],
