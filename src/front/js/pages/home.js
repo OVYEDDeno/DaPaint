@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"; // Added useState
+import React, { useState, useContext, useEffect } from "react"; // Added useState
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,15 @@ export const Home = () => {
     }
   };
 
+  useEffect (() => {
+    // Check if the user is already authenticated
+    const isAuthenticated = localStorage.getItem("token");
+    if (isAuthenticated) {
+      // If authenticated, navigate to the /home page
+      navigate("/landing");
+    }
+  },[]);
+
   return (
     <div className="home-container">
       <main className="main-body">
@@ -33,17 +42,17 @@ export const Home = () => {
             <h1 className="tagline">
               WELCOME TO DaPaint! <h5>Where Legends Are Made.</h5>
             </h1>
-            <p style={{ color: "goldenrod" }}>
+            <p style={{ color: "gold" }}>
               The ultimate 1-on-1 sports challenges. Sweat, grit, and glory
               await you.
             </p>
 
-            <p style={{ color: "goldenrod" }}>
+            <p style={{ color: "gold" }}>
               <input
                 type="checkbox"
                 checked
                 readOnly
-                style={{ accentColor: "goldenrod" }}
+                style={{ accentColor: "gold" }}
               />{" "}
               30 WIN STREAKS = $1 MILLION
               <br />
@@ -51,7 +60,7 @@ export const Home = () => {
                 type="checkbox"
                 checked
                 readOnly
-                style={{ accentColor: "goldenrod" }}
+                style={{ accentColor: "gold" }}
               />{" "}
               Real competitions! Real rewards!
               <br />
@@ -59,13 +68,13 @@ export const Home = () => {
                 type="checkbox"
                 id="agree-checkbox"
                 checked={isAgreed}
-                style={{ accentColor: "goldenrod" }}
+                style={{ accentColor: "gold" }}
                 onChange={handleCheckboxChange}
               />{" "}
               Think you've got what it takes?
             </p>
 
-            <p style={{ color: "goldenrod" }}>
+            <p style={{ color: "gold" }}>
               Whether you’re a seasoned competitor or just starting your
               journey. We believe in your potential to rise. We're still launching, but you can join early with an
               invite code from a current user.

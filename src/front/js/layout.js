@@ -2,9 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
-import ProtectedRoute from "./component/ProtectedRoute";
 import {ForgotPassword} from "./component/forgotpassword";
-import {Profile} from "./component/profile";
 
 
 import { Home } from "./pages/home";
@@ -33,12 +31,7 @@ const Layout = () => {
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Code />} path="/code" />
                         <Route element={<ForgotPassword />} path="/forgot-password" />
-                        <Route element={<ProtectedRoute>
-                            <Landing />
-                        </ProtectedRoute>} path="/landing" />
-                        <Route element={<ProtectedRoute>
-                            <Profile />
-                        </ProtectedRoute>} path="/profile" />
+                        <Route element={<Landing />} path="/landing" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

@@ -45,6 +45,15 @@ export const Landing = () => {
   );
   console.log("max Win Streak", maxWinStreak);
 
+  useEffect (() => {
+    // Check if the user is already authenticated
+    const isAuthenticated = localStorage.getItem("token");
+    if (!isAuthenticated) {
+      // If authenticated, navigate to the /home page
+      navigate("/auth");
+    }
+  },[]);
+
   return (
     <div className="home-container text-center">
       <main className="main-content">

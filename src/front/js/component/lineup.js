@@ -8,27 +8,7 @@ export const Lineup = () => {
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [targetZipcode, setTargetZipcode] = useState(null);
-  const femaleTicketPrice = 20; // Base price for female tickets
-  const maleTicketPrice = 30; // Base price for male tickets
-
-  const [femaleTickets, setFemaleTickets] = useState(1);
-  const [maleTickets, setMaleTickets] = useState(0);
-
-  const handleIncrement = (type) => {
-    if (type === 'female') {
-      setFemaleTickets(femaleTickets + 1);
-    } else if (type === 'male') {
-      setMaleTickets(maleTickets + 1);
-    }
-  };
-
-  const handleDecrement = (type) => {
-    if (type === 'female' && femaleTickets > 0) {
-      setFemaleTickets(femaleTickets - 1);
-    } else if (type === 'male' && maleTickets > 0) {
-      setMaleTickets(maleTickets - 1);
-    }
-  };
+  const [ticketTracker, setTicketTracker] = useState({});
 
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
@@ -170,6 +150,7 @@ export const Lineup = () => {
       user2Image: getProfileImageUrl(event.foeId.profile_pic?.image_url),
       hostFoeId: event.hostFoeId,
       foeId: event.foeId,
+      price: event.price,
     }));
 
   const filteredMatchups = matchups.filter(
@@ -218,9 +199,42 @@ export const Lineup = () => {
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
 
+  useEffect(() => {
+    if (filteredMatchups.length > 0) {
+      const newTicketTracker = {};
+      filteredMatchups.forEach((value) => {
+        newTicketTracker[value.id] = {
+          Tickets: 1,
+          Price: value.price,
+        };
+      });
+      setTicketTracker(newTicketTracker);
+    }
+  }, [filteredMatchups]);
+
   function getMatchList() {
     return filteredMatchups.length ? filteredMatchups : store.daPaintList;
   }
+
+  const handleTicketIncrement = (matchupId) => {
+    setTicketTracker((prevState) => ({
+      ...prevState,
+      [matchupId]: {
+        ...prevState[matchupId],
+        Tickets: (prevState[matchupId]?.Tickets || 0) + 1,
+      },
+    }));
+  };
+
+  const handleTicketDecrement = (matchupId) => {
+    setTicketTracker((prevState) => ({
+      ...prevState,
+      [matchupId]: {
+        ...prevState[matchupId],
+        Tickets: Math.max((prevState[matchupId]?.Tickets || 0) - 1, 1), // Ensure minimum of 1 ticket
+      },
+    }));
+  };
 
   const initialOptions = {
     clientId:
@@ -392,15 +406,25 @@ export const Lineup = () => {
                         <div className="ticket-row">
                           <div className="ticket-info">
                             <p>General Admission</p>
-                            {/* Dynamic price */}
-                            <p>${femaleTicketPrice * femaleTickets}</p>
+                            <p>
+                              $
+                              {(ticketTracker[matchup.id]?.Price ||
+                                matchup.price) *
+                                (ticketTracker[matchup.id]?.Tickets || 1)}
+                            </p>
                           </div>
                           <div className="ticket-controls">
-                            <button onClick={() => handleDecrement("female")}>
+                            <button
+                              onClick={() => handleTicketDecrement(matchup.id)}
+                            >
                               -
                             </button>
-                            <span>{femaleTickets}</span>
-                            <button onClick={() => handleIncrement("female")}>
+                            <span>
+                              {ticketTracker[matchup.id]?.Tickets || 1}
+                            </span>
+                            <button
+                              onClick={() => handleTicketIncrement(matchup.id)}
+                            >
                               +
                             </button>
                           </div>
@@ -412,7 +436,11 @@ export const Lineup = () => {
                                 purchase_units: [
                                   {
                                     amount: {
-                                      value: "1", // make sure this get the right amount from backend
+                                      value:
+                                        (ticketTracker[matchup.id]?.Price ||
+                                          matchup.price) *
+                                        (ticketTracker[matchup.id]?.Tickets ||
+                                          1),
                                     },
                                   },
                                 ],
