@@ -159,7 +159,7 @@ export const Setting = ({ onClose }) => {
               </button>
               <button
                 className="btn btn-secondary"
-                data-bs-target="#exampleModalToggle4"
+                data-bs-target="#Ticket"
                 data-bs-toggle="modal"
               >
                 <h5>TICKETS</h5>
@@ -294,7 +294,7 @@ export const Setting = ({ onClose }) => {
       </div>
       <div
         className="modal fade"
-        id="exampleModalToggle4"
+        id="Ticket"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel4"
         tabIndex="-1"

@@ -248,8 +248,23 @@ export const Auth = () => {
                       </div>
                     )}
                     <p>
-                      By signing up, you're agreeing to our terms of service and
-                      privacy policy.
+                      By signing up, you're agreeing to our{" "}
+                      <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        terms of service
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        href="/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        privacy policy
+                      </a>
+                      .
                     </p>
                   </div>
                 </>
@@ -257,7 +272,9 @@ export const Auth = () => {
               {isLogin && (
                 <>
                   <div className="mb-3">
-                    <label className="form-label">Email/Username</label>
+                    <label className="form-label">
+                      Email/Username (case sensitive)
+                    </label>
                     <input
                       type="text"
                       name="email"

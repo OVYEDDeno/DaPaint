@@ -1,12 +1,34 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [targetZipcode, setTargetZipcode] = useState(null);  
+  const [targetZipcode, setTargetZipcode] = useState(null);
+  const femaleTicketPrice = 20; // Base price for female tickets
+  const maleTicketPrice = 30; // Base price for male tickets
+
+  const [femaleTickets, setFemaleTickets] = useState(1);
+  const [maleTickets, setMaleTickets] = useState(0);
+
+  const handleIncrement = (type) => {
+    if (type === 'female') {
+      setFemaleTickets(femaleTickets + 1);
+    } else if (type === 'male') {
+      setMaleTickets(maleTickets + 1);
+    }
+  };
+
+  const handleDecrement = (type) => {
+    if (type === 'female' && femaleTickets > 0) {
+      setFemaleTickets(femaleTickets - 1);
+    } else if (type === 'male' && maleTickets > 0) {
+      setMaleTickets(maleTickets - 1);
+    }
+  };
 
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
@@ -45,16 +67,15 @@ export const Lineup = () => {
 
   // Fetch current user data
   useEffect(() => {
-    async function getUserInfo(){
+    async function getUserInfo() {
       let success = await actions.fetchCurrentUser();
-      if(success){
+      if (success) {
         setTargetZipcode(store.userData.user.zipcode);
         console.log("Updated user data:", store.userData);
       }
-    }      
-    getUserInfo()
+    }
+    getUserInfo();
   }, []);
-
 
   // Function to dynamically return the profile image URL or placeholder
   const getProfileImageUrl = (url) => {
@@ -119,7 +140,7 @@ export const Lineup = () => {
                 onClick={() => sendNotification(platform.key)}
                 className="notification-button"
               >
-                  Request {platform.key}
+                Request {platform.key}
               </button>
             )}
           </div>
@@ -128,12 +149,14 @@ export const Lineup = () => {
     );
   };
   const isCloseZipcode = (userZipcode, targetZipcode, range = 100) => {
-		return (
-			Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range
-		);
-	};
+    return Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range;
+  };
   const matchups = events
-    .filter((event) => event.hostFoeId && isCloseZipcode(event.hostFoeId.zipcode, targetZipcode))
+    .filter(
+      (event) =>
+        event.hostFoeId &&
+        isCloseZipcode(event.hostFoeId.zipcode, targetZipcode)
+    )
     .map((event) => ({
       id: event.id,
       date_time: event.date_time,
@@ -195,9 +218,34 @@ export const Lineup = () => {
     return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
   }
 
-	function getMatchList(){
-    return filteredMatchups.length?filteredMatchups:store.daPaintList
+  function getMatchList() {
+    return filteredMatchups.length ? filteredMatchups : store.daPaintList;
   }
+
+  const initialOptions = {
+    clientId:
+      "Ab3UDlPb82gsZcwSr7TDWewUxS8yUygIDlBBegXaDPolaA4PGtzqSG-rx6sDkg--HjtZ88XVGJycQbLz",
+    currency: "USD",
+    intent: "capture",
+  };
+  const handleApprove = () => {
+    console.log("PAYPAL");
+
+    // Get references to both modals
+    const lineUpModal = document.getElementById("lineUp");
+    const TicketModal = document.getElementById("Ticket");
+
+    // Hide the lineUp modal
+    const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
+    bsModallineUp.hide();
+
+    // Use a small delay to ensure the first modal is fully hidden
+    setTimeout(() => {
+      // Show the Ticket modal
+      const bsModalTicket = new bootstrap.Modal(TicketModal);
+      bsModalTicket.show();
+    }, 300);
+  };
 
   return (
     <>
@@ -237,94 +285,146 @@ export const Lineup = () => {
                 placeholder="Search for a user..."
                 className="form-control mb-3"
               />
-              
+
               <div className="lineup">
                 {getMatchList().map((matchup) => (
-                  <div className="matchup" key={matchup.id}>
-                    <div className="user">
-                      <img src={matchup.user1Image} alt={matchup.user1name} />
-                      <span>{matchup.user1name}</span>
-                      {/* <p className="d-inline-flex gap-1"> */}
-                      <button
-                        className="btn-primary"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target={`#collapseUser1-${matchup.id}`}
-                        aria-expanded="false"
-                        aria-controls={`collapseUser1-${matchup.id}`}
-                      >
-                        Live
-                      </button>
-                      {/* </p> */}
-                      <div
-                        className="collapse"
-                        id={`collapseUser1-${matchup.id}`}
-                      >
-                        <div>
-                          {SocialMediaButtons(
-                            matchup.hostFoeId,
-                            matchup.user1Id
+                  <>
+                    <div className="matchup" key={matchup.id}>
+                      <div className="user">
+                        <img src={matchup.user1Image} alt={matchup.user1name} />
+                        <span>{matchup.user1name}</span>
+                        {/* <p className="d-inline-flex gap-1"> */}
+                        <button
+                          className="btn-primary"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapseUser1-${matchup.id}`}
+                          aria-expanded="false"
+                          aria-controls={`collapseUser1-${matchup.id}`}
+                        >
+                          LIVE
+                        </button>
+                        {/* </p> */}
+                        <div
+                          className="collapse"
+                          id={`collapseUser1-${matchup.id}`}
+                        >
+                          <div>
+                            {SocialMediaButtons(
+                              matchup.hostFoeId,
+                              matchup.user1Id
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="vs p-1" style={{ fontSize: "34px" }}>
+                        VS
+                      </div>
+
+                      <div className="user">
+                        <img src={matchup.user2Image} alt={matchup.user2name} />
+                        <span>{matchup.user2name}</span>
+                        {/* <p className="d-inline-flex p-10"> */}
+                        <button
+                          className="btn-primary"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapseUser2-${matchup.id}`}
+                          aria-expanded="false"
+                          aria-controls={`collapseUser2-${matchup.id}`}
+                        >
+                          LIVE
+                        </button>
+                        {/* </p> */}
+                        <div
+                          className="collapse"
+                          id={`collapseUser2-${matchup.id}`}
+                        >
+                          <div className="profile-container">
+                            {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="details">
+                        <span>{convertTo12Hr(matchup.date_time)}</span>
+                        <span>{matchup.fitnessStyle}</span>
+                        <span>{matchup.location}</span>
+
+                        <div className="btn-group">
+                          {userId === matchup.user1Id ||
+                          userId === matchup.user2Id ? (
+                            <button
+                              className="bg-black text-white p-2 rounded"
+                              onClick={() => {
+                                if (verifyTime(matchup.date_time)) {
+                                  actions.cancelMatch(matchup.id);
+                                } else {
+                                  actions.forfeitMatch(matchup.id);
+                                }
+                              }}
+                            >
+                              {verifyTime(matchup.date_time)
+                                ? "CANCEL"
+                                : "FORFEIT"}
+                            </button>
+                          ) : (
+                            <>
+                              <button
+                                className="bg-black text-white p-2 rounded"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target={`#collapseTicket-${matchup.id}`}
+                                aria-expanded="false"
+                                aria-controls={`collapseTicket-${matchup.id}`}
+                              >
+                                BUY TICKETS
+                              </button>
+                            </>
                           )}
                         </div>
                       </div>
                     </div>
-                    <div className="vs p-1" style={{ fontSize: '34px' }}>VS</div>
-
-                    <div className="user">
-                      <img src={matchup.user2Image} alt={matchup.user2name} />
-                      <span>{matchup.user2name}</span>
-                      {/* <p className="d-inline-flex p-10"> */}
-                      <button
-                        className="btn-primary"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target={`#collapseUser2-${matchup.id}`}
-                        aria-expanded="false"
-                        aria-controls={`collapseUser2-${matchup.id}`}
-                      >
-                        Live
-                      </button>
-                      {/* </p> */}
-                      <div
-                        className="collapse"
-                        id={`collapseUser2-${matchup.id}`}
-                      >
-                        <div className="profile-container">
-                          {SocialMediaButtons(matchup.foeId, matchup.user2Id)}
+                    <div
+                      className="collapse"
+                      id={`collapseTicket-${matchup.id}`}
+                    >
+                      <div className="profile-container">
+                        <div className="ticket-row">
+                          <div className="ticket-info">
+                            <p>General Admission</p>
+                            {/* Dynamic price */}
+                            <p>${femaleTicketPrice * femaleTickets}</p>
+                          </div>
+                          <div className="ticket-controls">
+                            <button onClick={() => handleDecrement("female")}>
+                              -
+                            </button>
+                            <span>{femaleTickets}</span>
+                            <button onClick={() => handleIncrement("female")}>
+                              +
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div className="details">
-                      <span>{convertTo12Hr(matchup.date_time)}</span>
-                      <span>{matchup.fitnessStyle}</span>
-                      <span>{matchup.location}</span>
-
-                      <div className="btn-group">
-                        {userId === matchup.user1Id ||
-                        userId === matchup.user2Id ? (
-                          <button
-                            className="bg-black text-white p-2 rounded"
-                            onClick={() => {
-                              if (verifyTime(matchup.date_time)) {
-                                actions.cancelMatch(matchup.id);
-                              } else {
-                                actions.forfeitMatch(matchup.id);
-                              }
+                        <PayPalScriptProvider options={initialOptions}>
+                          <PayPalButtons
+                            createOrder={(data, actions) => {
+                              return actions.order.create({
+                                purchase_units: [
+                                  {
+                                    amount: {
+                                      value: "1", // make sure this get the right amount from backend
+                                    },
+                                  },
+                                ],
+                              });
                             }}
-                          >
-                            {verifyTime(matchup.date_time)
-                              ? "CANCEL"
-                              : "FORFEIT"}
-                          </button>
-                        ) : (
-                          <button className="bg-black text-white p-2 rounded" data-bs-target="#exampleModalToggle4"
-                          data-bs-toggle="modal">
-                            BUY TICKETS
-                          </button>
-                        )}
+                            onApprove={handleApprove}
+                          />
+                        </PayPalScriptProvider>
+                        <p>All Ticket Sales are Final.</p>
                       </div>
                     </div>
-                  </div>
+                  </>
                 ))}
               </div>
             </div>

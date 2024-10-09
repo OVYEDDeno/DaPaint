@@ -82,3 +82,51 @@
   background-size: 100%;
   font-size: 10px;
 }
+
+/* Add your CSS styles for the ticket here */
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+.ticket-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-info p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.ticket-controls {
+  display: flex;
+  align-items: center;
+}
+
+.ticket-controls button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.ticket-controls button:disabled {
+  background-color: #ccc;
+}
+
+.ticket-controls span {
+  padding: 0 10px;
+  font-size: 18px;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin: 10px 0;
+}

@@ -46,16 +46,16 @@ body {
   font-size: 3.5em;
   margin-bottom: 20px;
   line-height: 1.2;
-  color: #f5c116;
+  color: goldenrod;
   text-transform: uppercase;
 }
 
 p {
   font-size: 1.2em;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   line-height: 1.6;
   font-weight: lighter;
-  color: #e3e3e3;
+  color: #000000;
 }
 
 .warning {
