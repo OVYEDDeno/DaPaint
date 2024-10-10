@@ -4,7 +4,6 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import {ForgotPassword} from "./component/forgotpassword";
 
-
 import { Home } from "./pages/home";
 import { About } from "./pages/about";
 import injectContext from "./store/appContext";
@@ -12,6 +11,9 @@ import injectContext from "./store/appContext";
 import { Auth } from "./pages/auth";
 import { Code } from "./pages/code";
 import { Landing } from "./pages/landing";
+import { Terms } from "./pages/terms";
+import { Privacy } from "./pages/privacy";
+
 
 //create your first component
 const Layout = () => {
@@ -27,6 +29,8 @@ const Layout = () => {
                 <ScrollToTop>
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<Terms />} path="/terms" />
+                        <Route element={<Privacy />} path="/privacy" />
                         <Route element={<About />} path="/about" />
                         <Route element={<Auth />} path="/auth" />
                         <Route element={<Code />} path="/code" />

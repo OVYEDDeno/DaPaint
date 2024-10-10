@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { useNavigate } from "react-router-dom";
 
-export const Home = () => {
+export const Terms = () => {
   const [isAgreed, setIsAgreed] = useState(false);
   const navigate = useNavigate(); // Initialize navigate function
 

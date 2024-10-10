@@ -45,14 +45,14 @@ export const Landing = () => {
   );
   console.log("max Win Streak", maxWinStreak);
 
-  useEffect (() => {
+  useEffect(() => {
     // Check if the user is already authenticated
     const isAuthenticated = localStorage.getItem("token");
     if (!isAuthenticated) {
       // If authenticated, navigate to the /home page
       navigate("/auth");
     }
-  },[]);
+  }, []);
 
   return (
     <div className="home-container text-center">
@@ -100,7 +100,13 @@ export const Landing = () => {
         <p></p>
         <p></p>
 
-        <h1 className="streak-announcement">
+        <h1
+          className="streak-announcement"
+          style={{
+            fontSize: "1em",
+            marginTop: "10px",
+          }}
+        >
           {currentWinStreak >= GoalWinStreak
             ? "CONGRATULATIONS!!"
             : maxWinStreak >= GoalWinStreak
@@ -116,7 +122,10 @@ export const Landing = () => {
         <p></p>
 
         <div className="find-foe-section">
-          {(!(store.userData.dapaintId?.winnerId && store.userData.dapaintId?.loserId)  && <DaPaintManager />) ||<Start /> }
+          {(!(
+            store.userData.dapaintId?.winnerId &&
+            store.userData.dapaintId?.loserId
+          ) && <DaPaintManager />) || <Start />}
           <p className="tap-button-text">TAP THE BUTTON</p>
         </div>
       </main>
