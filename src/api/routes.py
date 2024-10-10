@@ -508,7 +508,7 @@ def get_all_dapaint():
         # Main query to exclude users who have matches with a foe
         dapaint = db.session.query(DaPaint).join(User, DaPaint.hostFoeId == User.id)\
             .filter(DaPaint.foeId.is_(None), User.winstreak == winstreak)\
-            .filter(~DaPaint.hostFoeId.in_(subquery)).all()
+            .filter(~DaPaint.hostFoeId.in_(subquery.select())).all()
     return jsonify([paint.serialize() for paint in dapaint]), 200
 
 @api.route('/dapaint/delete/<int:id>', methods=['DELETE'])

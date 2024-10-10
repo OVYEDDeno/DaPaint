@@ -267,8 +267,8 @@ export const DaPaintManager = () => {
                   onApprove={handleApprove}
                 />
               </PayPalScriptProvider>
-              {/* <h1 style={{ color: "black" }}>TO UNLOCK</h1> */}
-              {/* <p style={{ color: "black" }}>To ensure your a real person</p> */}
+              {/* <h1 style={{ color: "black" }}>for 30 days or until you lose</h1> */}
+              <p style={{ color: "black" }}>for 30 days or until you lose</p>
             </div>
             {/* <div class="modal-footer">
               <button
