@@ -88,9 +88,9 @@ export const Invite = ({ onClose }) => {
 
   const CopyCodeButton = ({ code }) => {
     const [copied, setCopied] = useState(false);
-  
+
     const copyToClipboard = () => {
-      const fullMessage = `Use my code ${code} to join DaPaint if you think you can beat me?`;
+      const fullMessage = `Use my code ${code} to join DaPaint.org if you think you can beat me?`;
       navigator.clipboard.writeText(fullMessage).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -101,12 +101,11 @@ export const Invite = ({ onClose }) => {
       <button
         onClick={copyToClipboard}
         style={{
-          backgroundColor: "yellow",
+          backgroundColor: "#ffd700",
           padding: "10px 15px",
           borderRadius: "4px",
           border: "none",
           cursor: "pointer",
-          fontWeight: "bold",
           transition: "background-color 0.3s ease",
         }}
       >
@@ -157,28 +156,30 @@ export const Invite = ({ onClose }) => {
             </div>
             <div className="invite-container text-center">
               <div>
-                <p className="m-3">
-                  Invite the most people by the end of this winstreak and win
-                  500K!
+                <p
+                  className="m-3"
+                  style={{
+                    color: "black",
+                    fontSize: "1.2em",
+                  }}
+                >
+                  Invite the most people by the end of this winstreak and WIN
+                  $500K!
                 </p>
                 <p>
                   {maxInviteeUser} has invited {maxInviteeCount} Indulgers
                 </p>
                 <p>
                   You have invited{" "}
-                  {
-                    store.userData?.user?.invite_code?.completed_dapaints
-                      .length
-                  }{" "}
+                  {store.userData?.user?.invite_code?.completed_dapaints.length}{" "}
                   Indulgers
                 </p>
-                <h5 className="font-bold mb-2">
+                <h5 className="mb-2">
                   Your Invite Code
                   {loadingCodes ? (
                     <p
                       style={{
-                        color: "blue",
-                        fontWeight: "bold",
+                        color: "black",
                         fontSize: "1.2em",
                       }}
                     >
@@ -199,9 +200,8 @@ export const Invite = ({ onClose }) => {
                       <div key={index}>
                         <p
                           style={{
-                            backgroundColor: "yellow",
+                            backgroundColor: "#ffd700",
                             padding: "5px",
-                            borderRadius: "4px",
                           }}
                         >
                           {code.code}
@@ -210,7 +210,7 @@ export const Invite = ({ onClose }) => {
                       </div>
                     ))
                   ) : (
-                    <p style={{ color: "gray", fontStyle: "italic" }}>
+                    <p style={{ color: "gray" }}>
                       No invite codes
                     </p>
                   )}
@@ -225,7 +225,8 @@ export const Invite = ({ onClose }) => {
                   <p>Error: {errorNotifs}</p>
                 ) : notifs.length > 0 ? (
                   notifs.map((notif, index) => (
-                    <p key={index}>{notif.message}</p>
+                    <p style={{ color: "gray",
+                      fontSize: "1em", }} key={index}>{notif.message}</p>
                   ))
                 ) : (
                   <p>No notifications</p>
