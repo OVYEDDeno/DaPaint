@@ -9,6 +9,7 @@ export const Lineup = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [targetZipcode, setTargetZipcode] = useState(null);
   const [ticketTracker, setTicketTracker] = useState({});
+  const [selectedFitnessStyle, setSelectedFitnessStyle] = useState("");
 
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
@@ -131,11 +132,14 @@ export const Lineup = () => {
   const isCloseZipcode = (userZipcode, targetZipcode, range = 100) => {
     return Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range;
   };
+
   const matchups = events
-    .filter(
-      (event) =>
-        event.hostFoeId &&
-        isCloseZipcode(event.hostFoeId.zipcode, targetZipcode)
+    .filter(event => 
+      event && 
+      event.hostFoeId && 
+      event.hostFoeId.zipcode && 
+      targetZipcode && 
+      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode)
     )
     .map((event) => ({
       id: event.id,
@@ -154,11 +158,24 @@ export const Lineup = () => {
     }));
 
   const filteredMatchups = matchups.filter(
-    (matchup) =>
-      matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase())
+    (matchup) => {
+      if (!matchup || !matchup.user1name || !matchup.user2name) {
+        return false;
+      }
+      
+      const matchesSearch = 
+        matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+      const matchesFitnessStyle = 
+        selectedFitnessStyle === "" || matchup.fitnessStyle === selectedFitnessStyle;
+    
+      return matchesSearch && matchesFitnessStyle;
+    }
   );
-
+const handleFitnessStyleChange = (e) => {
+    setSelectedFitnessStyle(e.target.value);
+  };
   const userId = store.userData.user?.id;
 
   // Verify the match time
@@ -263,6 +280,7 @@ export const Lineup = () => {
       }, 300);
     });
   };
+  
 
   return (
     <>
@@ -295,6 +313,7 @@ export const Lineup = () => {
               />
             </div>
             <div className="profile-container">
+            <div className="m-2">
               <input
                 type="text"
                 value={searchTerm}
@@ -302,6 +321,24 @@ export const Lineup = () => {
                 placeholder="Search for a user..."
                 className="form-control mb-3"
               />
+              <select
+                  value={selectedFitnessStyle}
+                  onChange={handleFitnessStyleChange}
+                  className="form-control mb-3"
+                >
+                  <option value="">Any Fitness Style</option>
+                  <option value="basketball">Basketball</option>
+                  <option value="boxing">Boxing</option>
+                  <option value="racquetball">Racquetball/Squash</option>
+                  <option value="tennis">Tennis</option>
+                  <option value="pickleball">Pickleball</option>
+                  <option value="golf">Golf</option>
+                  <option value="volleyball">Volleyball</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="tableTennis">Table Tennis</option>
+                  <option value="breakDancing">Break Dancing</option>
+                </select>
+                </div>
 
               <div className="lineup">
                 {getMatchList().map((matchup) => (
