@@ -12,6 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
+    access_to_dapaint = db.Column(db.Boolean, default=False, nullable=True) #Update to False before launch
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
     zipcode = db.Column(db.String(10), nullable=False)
@@ -59,7 +60,6 @@ class User(db.Model):
     # Invite Code relationships
     invite_code = db.relationship('InviteCode', back_populates='inviter', uselist=False, cascade='all, delete-orphan')
     invited_by = db.relationship('InviteCode', back_populates='invitees', secondary='invitee_association', uselist=False)
-
 
 
     def __repr__(self):
@@ -202,21 +202,23 @@ class DaPaint(db.Model):
             "loserId": self.loserId,
             "reports": [report.serialize() for report in self.reports],
             "lastmodify": self.lastmodify,
-            "user_pay": [user_pay.serialize() for user_pay in self.user_pay]
         }
 
-class UserPay(db.Model):
+class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    dapaint_id = db.Column(db.Integer, db.ForeignKey("dapaint.id"), nullable=True)
-    user = db.relationship("User", back_populates="user_pay")
-    dapaint = db.relationship("DaPaint", back_populates="user_pay")
+    user = db.relationship("User", back_populates="orders")
+    paypal_id = db.Column(db.String(500))
+    tickets = db.relationship('Ticket', backref='order', lazy=True)
+    type_of_order = db.Column(db.String(20))
+    fufilled = db.Column(db.Boolean, default=False)
+
 
     def serialize(self):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "dapaint_id": self.dapaint_id
+            "paypal_id": self.paypal_id
         }
 
 class UserImg(db.Model):
@@ -346,16 +348,17 @@ class Insight(db.Model):
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
-    status = db.Column(db.String(50), nullable=False, default='active')
     already_scanned = db.Column(db.Boolean, default=False)
+
 
     qr_code_path = db.Column(db.String(255), nullable=True)  # Path to the QR code image
     ticket_code = db.Column(db.String(10), unique=True, nullable=True)  # Unique code for the ticket
-    is_purchased = db.Column(db.Boolean, default=False)  # Indicates if the ticket has been purchased
 
 
     user = db.relationship('User', backref='tickets', lazy=True)
+    order = db.relationship('Order', backref='tickets', lazy=True)
     dapaint = db.relationship('DaPaint', back_populates='tickets')
 
     def serialize(self):
@@ -363,11 +366,9 @@ class Ticket(db.Model):
             'id': self.id,
             'dapaint_id': self.dapaint_id,
             'user_id': self.user_id,
-            'status': self.status,
             'already_scanned': self.already_scanned,
             'qr_code_path': self.qr_code_path,  # Include QR code path in the serialized output
             'ticket_code': self.ticket_code,  # Include ticket code
-            'is_purchased': self.is_purchased  # Include purchase status
         }
 
     def generate_ticket_code(self):

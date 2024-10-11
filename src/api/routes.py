@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback, Ticket
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback, Ticket, Orders
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_, func
@@ -862,32 +862,82 @@ def handle_feedback_submission():
     # Save feedback to the database
     db.session.add(new_feedback)
     db.session.commit()
-
-@api.route('/purchase_ticket', methods=['POST'])
-def purchase_ticket_route():
-    data = request.json
-    user_id = data.get('user_id')
-    dapaint_id = data.get('dapaint_id')
-
-    if not user_id or not dapaint_id:
-        return jsonify({'error': 'User ID and DaPaint ID are required!'}), 400
-
-    try:
-        ticket = purchase_ticket(user_id, dapaint_id)
-        return jsonify(ticket.serialize()), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-def purchase_ticket(user_id, dapaint_id):
-    ticket = Ticket(user_id=user_id, dapaint_id=dapaint_id)
-    ticket.generate_ticket_code()  
-    ticket.is_purchased = True  
-    ticket.generate_qr_code()  
-
-    db.session.add(ticket)
-    db.session.commit()
-
-    return ticket  
-
-
     return jsonify({"msg": "Feedback submitted successfully!"}), 201
+
+# @api.route('/purchase_ticket', methods=['POST'])
+# def purchase_ticket_route():
+#     data = request.json
+#     user_id = data.get('user_id')
+#     dapaint_id = data.get('dapaint_id')
+
+#     if not user_id or not dapaint_id:
+#         return jsonify({'error': 'User ID and DaPaint ID are required!'}), 400
+
+#     try:
+#         ticket = purchase_ticket(user_id, dapaint_id)
+#         return jsonify(ticket.serialize()), 201
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# def purchase_ticket(user_id, dapaint_id):
+#     ticket = Ticket(user_id=user_id, dapaint_id=dapaint_id)
+#     ticket.generate_ticket_code()  
+#     ticket.is_purchased = True  
+#     ticket.generate_qr_code()  
+
+#     db.session.add(ticket)
+#     db.session.commit()
+
+#     return ticket  
+
+    
+
+# @api.route('/access_to_dapaint', methods=['PUT'])
+# @jwt_required()
+# def grant_access_to_dapaint():
+#     user= User.query.filter_by(id=get_jwt_identity())
+
+@api.route('/capture-paypal-order', methods=['POST'])
+@jwt_required()
+def capture_order():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    paypal_id = data.get('paypal_id')
+    type_of_order = data.get('type_of_order')
+    if None in[paypal_id, user_id]:
+        return jsonify({'error': 'User ID and PayPal ID are required!'}), 400
+    user= User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found!'}), 404
+    order_exists=Orders.query.filter_by(paypal_id=paypal_id).first()
+    if order_exists:
+        return jsonify({'error': 'Order already exists!'}), 400
+    order=Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
+    db.session.add(order)
+    db.session.commit()
+    if order.type_of_order=="ticket_puchase":
+        dapaint_id = data.get('dapaint_id')
+        qr_codes = data.get('qr_codes')
+        if None in [dapaint_id, qr_codes]:
+            return jsonify({'error': 'Dapaint ID, and QR Codes are required for ticket purchase!'}), 400
+        # for qr_code in qr_codes:
+        #     if not validate_qr_code(qr_code):
+        #         return jsonify({'error': 'Invalid QR Code!'}), 400
+
+        dapaint = DaPaint.query.filter_by(id=dapaint_id).first()
+        if not dapaint:
+            return jsonify({'error': 'Dapaint not found!'}), 404
+
+        for i in qr_codes:
+            new_ticket = Ticket(
+                user_id=user_id,
+                dapaint_id=dapaint.id,
+                order_id=order.id,
+
+                ticket_code=qr_codes[i.ticket_code],
+                qr_code_path=qr_codes[i.qr_code_path],
+
+            )
+            db.session.add(new_ticket)
+
+    return jsonify({'msg': 'Order captured successfully!'}), 201

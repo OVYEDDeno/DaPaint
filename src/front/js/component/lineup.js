@@ -134,12 +134,13 @@ export const Lineup = () => {
   };
 
   const matchups = events
-    .filter(event => 
-      event && 
-      event.hostFoeId && 
-      event.hostFoeId.zipcode && 
-      targetZipcode && 
-      isCloseZipcode(event.hostFoeId.zipcode, targetZipcode)
+    .filter(
+      (event) =>
+        event &&
+        event.hostFoeId &&
+        event.hostFoeId.zipcode &&
+        targetZipcode &&
+        isCloseZipcode(event.hostFoeId.zipcode, targetZipcode)
     )
     .map((event) => ({
       id: event.id,
@@ -157,23 +158,22 @@ export const Lineup = () => {
       price: event.price,
     }));
 
-  const filteredMatchups = matchups.filter(
-    (matchup) => {
-      if (!matchup || !matchup.user1name || !matchup.user2name) {
-        return false;
-      }
-      
-      const matchesSearch = 
-        matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase());
-    
-      const matchesFitnessStyle = 
-        selectedFitnessStyle === "" || matchup.fitnessStyle === selectedFitnessStyle;
-    
-      return matchesSearch && matchesFitnessStyle;
+  const filteredMatchups = matchups.filter((matchup) => {
+    if (!matchup || !matchup.user1name || !matchup.user2name) {
+      return false;
     }
-  );
-const handleFitnessStyleChange = (e) => {
+
+    const matchesSearch =
+      matchup.user1name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      matchup.user2name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesFitnessStyle =
+      selectedFitnessStyle === "" ||
+      matchup.fitnessStyle === selectedFitnessStyle;
+
+    return matchesSearch && matchesFitnessStyle;
+  });
+  const handleFitnessStyleChange = (e) => {
     setSelectedFitnessStyle(e.target.value);
   };
   const userId = store.userData.user?.id;
@@ -259,28 +259,34 @@ const handleFitnessStyleChange = (e) => {
     currency: "USD",
     intent: "capture",
   };
-  const handleApprove = (data, actions) => {
-    return actions.order.capture().then(function (details) {
-      console.log("Transaction completed by " + details.payer.name.given_name);
-      console.log("PAYPAL");
+  const handleApprove = (data) => {
+    return fetch(process.env.BACKEND_URL+"/api/capture-paypal-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        paypalID: data.paypalID,
+      }),
+    })
+      .then((response) => response.json())
+      .then((orderData) => {
+        // Get references to both modals
+        const lineUpModal = document.getElementById("lineUp");
+        const TicketModal = document.getElementById("Ticket");
 
-      // Get references to both modals
-      const lineUpModal = document.getElementById("lineUp");
-      const TicketModal = document.getElementById("Ticket");
+        // Hide the lineUp modal
+        const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
+        bsModallineUp.hide();
 
-      // Hide the lineUp modal
-      const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
-      bsModallineUp.hide();
-
-      // Use a small delay to ensure the first modal is fully hidden
-      setTimeout(() => {
-        // Show the Ticket modal
-        const bsModalTicket = new bootstrap.Modal(TicketModal);
-        bsModalTicket.show();
-      }, 300);
-    });
+        // Use a small delay to ensure the first modal is fully hidden
+        setTimeout(() => {
+          // Show the Ticket modal
+          const bsModalTicket = new bootstrap.Modal(TicketModal);
+          bsModalTicket.show();
+        }, 300);
+      });
   };
-  
 
   return (
     <>
@@ -313,15 +319,15 @@ const handleFitnessStyleChange = (e) => {
               />
             </div>
             <div className="profile-container">
-            <div className="m-2">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search for a user..."
-                className="form-control mb-3"
-              />
-              <select
+              <div className="m-2">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search for a user..."
+                  className="form-control mb-3"
+                />
+                <select
                   value={selectedFitnessStyle}
                   onChange={handleFitnessStyleChange}
                   className="form-control mb-3"
@@ -338,7 +344,7 @@ const handleFitnessStyleChange = (e) => {
                   <option value="tableTennis">Table Tennis</option>
                   <option value="breakDancing">Break Dancing</option>
                 </select>
-                </div>
+              </div>
 
               <div className="lineup">
                 {getMatchList().map((matchup) => (
@@ -472,10 +478,12 @@ const handleFitnessStyleChange = (e) => {
                         <PayPalScriptProvider options={initialOptions}>
                           <PayPalButtons
                             createOrder={(data, actions) => {
+                              // Get the current ticket count and price from ticketTracker
                               const ticketCount =
                                 ticketTracker[matchup.id]?.Tickets || 1;
                               const ticketPrice =
-                                ticketTracker[matchup.id]?.Price || 7;
+                                ticketTracker[matchup.id]?.Price ||
+                                matchup.price;
                               const totalAmount = ticketCount * ticketPrice;
 
                               return actions.order.create({
