@@ -28,28 +28,10 @@ export const Landing = () => {
       setMaxWinStreakUser
     );
   }, []);
-  console.log("MAXWINUSER: " + maxWinStreakUser);
-  const calculatedMaxWinStreak = Math.round(
-    (currentWinStreak < GoalWinStreak ? currentWinStreak : GoalWinStreak) *
-      GoalWinStreak *
-      100
-  );
-
-  console.log(
-    "GoalWinStreak",
-    GoalWinStreak,
-    "CURRENTWinStreak",
-    currentWinStreak,
-    "calc",
-    calculatedMaxWinStreak
-  );
-  console.log("max Win Streak", maxWinStreak);
 
   useEffect(() => {
-    // Check if the user is already authenticated
     const isAuthenticated = localStorage.getItem("token");
     if (!isAuthenticated) {
-      // If authenticated, navigate to the /home page
       navigate("/auth");
     }
   }, []);
@@ -97,16 +79,8 @@ export const Landing = () => {
             </div>
           </div>
         </div>
-        <p></p>
-        <p></p>
 
-        <h1
-          className="streak-announcement"
-          style={{
-            fontSize: "1em",
-            marginTop: "10px",
-          }}
-        >
+        <h1 className="streak-announcement">
           {currentWinStreak >= GoalWinStreak
             ? "CONGRATULATIONS!!"
             : maxWinStreak >= GoalWinStreak
@@ -116,17 +90,15 @@ export const Landing = () => {
         <h3 className="current-streak">
           {maxWinStreakUser} has achieved {maxWinStreak} win streaks
         </h3>
-        <p></p>
+
         <Lineup />
-        <p></p>
-        <p></p>
 
         <div className="find-foe-section">
           {(!(
             store.userData.dapaintId?.winnerId &&
             store.userData.dapaintId?.loserId
           ) && <DaPaintManager />) || <Start />}
-          <p className="tap-button-text">TAP THE BUTTON</p>
+          {/* <p className="tap-button-text">TAP THE BUTTON</p> */}
         </div>
       </main>
     </div>

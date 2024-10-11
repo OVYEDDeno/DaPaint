@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from flask import current_app
 import random, string
+import qrcode
+import os
 
 db = SQLAlchemy()
 
@@ -175,6 +177,7 @@ class DaPaint(db.Model):
     # Relationship with tickets (single relationship definition)
     # user_tickets = db.relationship('Ticket', back_populates='dapaint', cascade='all, delete-orphan')
     user_pay = db.relationship("UserPay", back_populates="dapaint", cascade='all, delete-orphan')
+    tickets = db.relationship('Ticket', backref='paint', lazy=True)
 
 
     def serialize(self):
@@ -347,8 +350,13 @@ class Ticket(db.Model):
     status = db.Column(db.String(50), nullable=False, default='active')
     already_scanned = db.Column(db.Boolean, default=False)
 
-    # user = db.relationship('User', backref='tickets', lazy=True)
-    # dapaint = db.relationship('DaPaint', back_populates='tickets')
+    qr_code_path = db.Column(db.String(255), nullable=True)  # Path to the QR code image
+    ticket_code = db.Column(db.String(10), unique=True, nullable=True)  # Unique code for the ticket
+    is_purchased = db.Column(db.Boolean, default=False)  # Indicates if the ticket has been purchased
+
+
+    user = db.relationship('User', backref='tickets', lazy=True)
+    dapaint = db.relationship('DaPaint', back_populates='tickets')
 
     def serialize(self):
         return {
@@ -356,8 +364,34 @@ class Ticket(db.Model):
             'dapaint_id': self.dapaint_id,
             'user_id': self.user_id,
             'status': self.status,
-            'already_scanned': self.already_scanned
+            'already_scanned': self.already_scanned,
+            'qr_code_path': self.qr_code_path,  # Include QR code path in the serialized output
+            'ticket_code': self.ticket_code,  # Include ticket code
+            'is_purchased': self.is_purchased  # Include purchase status
         }
+
+    def generate_ticket_code(self):
+        # Generate a unique ticket code (implement your logic here)
+        self.ticket_code = str(uuid.uuid4())[:10]  # Simple UUID example
+
+    def generate_qr_code(self):
+        if self.ticket_code:
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(self.ticket_code)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill='black', back_color='white')
+            qr_code_directory = 'path/to/qrcodes'  # Specify your path
+            if not os.path.exists(qr_code_directory):
+                os.makedirs(qr_code_directory)
+            qr_code_filename = os.path.join(qr_code_directory, f'{self.ticket_code}.png')
+            img.save(qr_code_filename)
+            self.qr_code_path = qr_code_filename
 
 # User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
 

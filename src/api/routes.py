@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback, Ticket
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_, func
@@ -862,5 +862,32 @@ def handle_feedback_submission():
     # Save feedback to the database
     db.session.add(new_feedback)
     db.session.commit()
+
+@api.route('/purchase_ticket', methods=['POST'])
+def purchase_ticket_route():
+    data = request.json
+    user_id = data.get('user_id')
+    dapaint_id = data.get('dapaint_id')
+
+    if not user_id or not dapaint_id:
+        return jsonify({'error': 'User ID and DaPaint ID are required!'}), 400
+
+    try:
+        ticket = purchase_ticket(user_id, dapaint_id)
+        return jsonify(ticket.serialize()), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def purchase_ticket(user_id, dapaint_id):
+    ticket = Ticket(user_id=user_id, dapaint_id=dapaint_id)
+    ticket.generate_ticket_code()  
+    ticket.is_purchased = True  
+    ticket.generate_qr_code()  
+
+    db.session.add(ticket)
+    db.session.commit()
+
+    return ticket  
+
 
     return jsonify({"msg": "Feedback submitted successfully!"}), 201
