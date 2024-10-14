@@ -915,9 +915,11 @@ def capture_order():
     order=Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
     db.session.add(order)
     db.session.commit()
+    print (order.type_of_order)
     if order.type_of_order=="ticket_puchase":
         dapaint_id = data.get('dapaint_id')
         qr_codes = data.get('qr_codes')
+        print (qr_codes)
         if None in [dapaint_id, qr_codes]:
             return jsonify({'error': 'Dapaint ID, and QR Codes are required for ticket purchase!'}), 400
         # for qr_code in qr_codes:

@@ -43,7 +43,8 @@ class User(db.Model):
     # user_pay = db.relationship("UserPay", back_populates="user", cascade='all, delete-orphan')
 
     orders = db.relationship("Orders", back_populates="user")
-    tickets = db.relationship('Ticket', backref='user', lazy=True)
+    tickets = db.relationship('Ticket', back_populates='user', lazy='dynamic')
+
 
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
@@ -424,7 +425,7 @@ class Ticket(db.Model):
     qr_code_path = db.Column(db.String(255), nullable=True)
     ticket_code = db.Column(db.String(10), unique=True, nullable=False)
 
-    user = db.relationship('User', backref='tickets')
+    user = db.relationship('User', back_populates='tickets')
     dapaint = db.relationship('DaPaint', back_populates='tickets')
 
     def serialize(self):

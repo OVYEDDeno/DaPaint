@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import QRCode from "qrcode";
+import QRCode from 'qrcode';
 
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
@@ -260,7 +260,6 @@ export const Lineup = () => {
     currency: "USD",
     intent: "capture",
   };
-
   const handleApprove = async (data, dapaintId) => {
     let qr_codes = [];
     const generateInviteCode = () => {
@@ -272,7 +271,7 @@ export const Lineup = () => {
         const qrCodeDataUrl = await QRCode.toDataURL(inviteCode);
         return qrCodeDataUrl;
       } catch (error) {
-        console.error("Error generating QR code:", error);
+        console.error('Error generating QR code:', error);
         return null;
       }
     };
@@ -292,29 +291,40 @@ export const Lineup = () => {
     }
   
     try {
-      const response = await fetch(
-        process.env.BACKEND_URL + "/api/capture-paypal-order",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            paypal_id: data.orderID,
-            type_of_order: "ticket_purchase",
-            dapaint_id: dapaintId,
-            qr_codes: qr_codes,
-            total_amount: (ticketTracker[dapaintId]?.Price || 0) * ticketCount,
-          }),
-        }
-      );
+      const response = await fetch(process.env.BACKEND_URL + "/api/capture-paypal-order", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paypal_id: data.orderID,
+          type_of_order: "ticket_purchase",
+          dapaint_id: dapaintId,
+          qr_codes: qr_codes,
+        }),
+      });
   
       const orderData = await response.json();
   
-      // ... rest of the function remains the same
+      // Get references to both modals
+      const lineUpModal = document.getElementById("lineUp");
+      const TicketModal = document.getElementById("Ticket");
+  
+      // Hide the lineUp modal
+      const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
+      bsModallineUp.hide();
+  
+      // Use a small delay to ensure the first modal is fully hidden
+      setTimeout(() => {
+        // Show the Ticket modal
+        const bsModalTicket = new bootstrap.Modal(TicketModal);
+        bsModalTicket.show();
+      }, 300);
+  
+      return orderData;
     } catch (error) {
-      console.error("Error processing order:", error);
+      console.error('Error processing order:', error);
       // Handle the error appropriately (e.g., show an error message to the user)
     }
   };
@@ -485,11 +495,9 @@ export const Lineup = () => {
                             <p>General Admission</p>
                             <p>
                               $
-                              {(
-                                (ticketTracker[matchup.id]?.Price ||
-                                  matchup.price) *
-                                (ticketTracker[matchup.id]?.Tickets || 1)
-                              ).toFixed(2)}
+                              {(ticketTracker[matchup.id]?.Price ||
+                                matchup.price) *
+                                (ticketTracker[matchup.id]?.Tickets || 1)}
                             </p>
                           </div>
                           <div className="ticket-controls">
@@ -511,20 +519,26 @@ export const Lineup = () => {
                         <PayPalScriptProvider options={initialOptions}>
                           <PayPalButtons
                             createOrder={(data, actions) => {
-                              const ticketCount = ticketTracker[matchup.id]?.Tickets || 1;
-                              const ticketPrice = ticketTracker[matchup.id]?.Price || matchup.price;
-                              const totalAmount = (ticketCount * ticketPrice).toFixed(2);
-                            
+                              // Get the current ticket count and price from ticketTracker
+                              const ticketCount =
+                                ticketTracker[matchup.id]?.Tickets || 1;
+                              const ticketPrice =
+                                ticketTracker[matchup.id]?.Price ||
+                                matchup.price;
+                              const totalAmount = ticketCount * ticketPrice;
+
                               return actions.order.create({
                                 purchase_units: [
                                   {
                                     amount: {
-                                      value: totalAmount,
+                                      value: totalAmount.toFixed(2),
                                     },
                                   },
                                 ],
                               });
                             }}
+                            // onApprove={(e)=>handleApprove(e,matchup.id)}
+                            onApprove={(data, actions) => handleApprove(data, matchup.id)}
                           />
                         </PayPalScriptProvider>
                         <p>All Ticket Sales are Final.</p>
