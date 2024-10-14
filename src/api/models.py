@@ -2,9 +2,7 @@ from datetime import datetime, timedelta, timezone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from flask import current_app
-import random, string
-import qrcode
-import os
+import random, string, qrcode, uuid, os
 
 db = SQLAlchemy()
 
@@ -12,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
-    access_to_dapaint = db.Column(db.Boolean, default=False, nullable=True) #Update to False before launch
+    dapaint_unlocked = db.Column(db.Boolean, default=False, nullable=True) #Update to False before launch
     name = db.Column(db.String(200), unique=True, nullable=False)
     city = db.Column(db.String(80), nullable=False)
     zipcode = db.Column(db.String(10), nullable=False)
@@ -42,7 +40,10 @@ class User(db.Model):
 
     # Profile pic relationship
     profile_pic = db.relationship("UserImg", back_populates="user", uselist=False, cascade='all, delete-orphan')
-    user_pay = db.relationship("UserPay", back_populates="user", cascade='all, delete-orphan')
+    # user_pay = db.relationship("UserPay", back_populates="user", cascade='all, delete-orphan')
+
+    orders = db.relationship("Orders", back_populates="user")
+    tickets = db.relationship('Ticket', backref='user', lazy=True)
 
     # Notifications relationship
     notifications = db.relationship('Notifications', back_populates='user', cascade='all, delete-orphan')
@@ -80,7 +81,7 @@ class User(db.Model):
             "disqualifications": self.disqualifications,
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
             "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
-            "user_pay": self.user_pay.serialize() if self.user_pay else None,            
+            # "user_pay": self.user_pay.serialize() if self.user_pay else None,            
             "notifications": [n.serialize() for n in self.notifications],
             "instagram_url": self.instagram_url,
             "tiktok_url": self.tiktok_url,
@@ -176,8 +177,8 @@ class DaPaint(db.Model):
 
     # Relationship with tickets (single relationship definition)
     # user_tickets = db.relationship('Ticket', back_populates='dapaint', cascade='all, delete-orphan')
-    user_pay = db.relationship("UserPay", back_populates="dapaint", cascade='all, delete-orphan')
-    tickets = db.relationship('Ticket', backref='paint', lazy=True)
+    # user_pay = db.relationship("UserPay", back_populates="dapaint", cascade='all, delete-orphan')
+    tickets = db.relationship('Ticket', back_populates='dapaint')
 
 
     def serialize(self):
@@ -204,22 +205,22 @@ class DaPaint(db.Model):
             "lastmodify": self.lastmodify,
         }
 
-class Orders(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    user = db.relationship("User", back_populates="orders")
-    paypal_id = db.Column(db.String(500))
-    tickets = db.relationship('Ticket', backref='order', lazy=True)
-    type_of_order = db.Column(db.String(20))
-    fufilled = db.Column(db.Boolean, default=False)
+# class Orders(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+#     user = db.relationship("User", back_populates="orders")
+#     paypal_id = db.Column(db.String(500))
+#     tickets = db.relationship('Ticket', backref='order', lazy=True)
+#     type_of_order = db.Column(db.String(20))
+#     fufilled = db.Column(db.Boolean, default=False)
 
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "paypal_id": self.paypal_id
-        }
+#     def serialize(self):
+#         return {
+#             "id": self.id,
+#             "user_id": self.user_id,
+#             "paypal_id": self.paypal_id
+#         }
 
 class UserImg(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -345,20 +346,85 @@ class Insight(db.Model):
         }
 
 
+# class Ticket(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+#     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
+#     already_scanned = db.Column(db.Boolean, default=False)
+
+
+#     qr_code_path = db.Column(db.String(255), nullable=True)  # Path to the QR code image
+#     ticket_code = db.Column(db.String(10), unique=True, nullable=True)  # Unique code for the ticket
+
+
+#     user = db.relationship('User', backref='tickets', lazy=True)
+#     order = db.relationship('Order', backref='tickets', lazy=True)
+#     dapaint = db.relationship('DaPaint', back_populates='tickets')
+
+#     def serialize(self):
+#         return {
+#             'id': self.id,
+#             'dapaint_id': self.dapaint_id,
+#             'user_id': self.user_id,
+#             'already_scanned': self.already_scanned,
+#             'qr_code_path': self.qr_code_path,  # Include QR code path in the serialized output
+#             'ticket_code': self.ticket_code,  # Include ticket code
+#         }
+
+#     def generate_ticket_code(self):
+#         # Generate a unique ticket code (implement your logic here)
+#         self.ticket_code = str(uuid.uuid4())[:10]  # Simple UUID example
+
+#     def generate_qr_code(self):
+#         if self.ticket_code:
+#             qr = qrcode.QRCode(
+#                 version=1,
+#                 error_correction=qrcode.constants.ERROR_CORRECT_L,
+#                 box_size=10,
+#                 border=4,
+#             )
+#             qr.add_data(self.ticket_code)
+#             qr.make(fit=True)
+
+#             img = qr.make_image(fill='black', back_color='white')
+#             qr_code_directory = 'path/to/qrcodes'  # Specify your path
+#             if not os.path.exists(qr_code_directory):
+#                 os.makedirs(qr_code_directory)
+#             qr_code_filename = os.path.join(qr_code_directory, f'{self.ticket_code}.png')
+#             img.save(qr_code_filename)
+#             self.qr_code_path = qr_code_filename
+
+# # User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
+
+class Orders(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user = db.relationship("User", back_populates="orders")
+    paypal_id = db.Column(db.String(500), unique=True)
+    tickets = db.relationship('Ticket', backref='order', lazy=True)
+    type_of_order = db.Column(db.String(20))
+    fulfilled = db.Column(db.Boolean, default=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "paypal_id": self.paypal_id,
+            "type_of_order": self.type_of_order,
+            "fulfilled": self.fulfilled
+        }
+
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
     already_scanned = db.Column(db.Boolean, default=False)
+    qr_code_path = db.Column(db.String(255), nullable=True)
+    ticket_code = db.Column(db.String(10), unique=True, nullable=False)
 
-
-    qr_code_path = db.Column(db.String(255), nullable=True)  # Path to the QR code image
-    ticket_code = db.Column(db.String(10), unique=True, nullable=True)  # Unique code for the ticket
-
-
-    user = db.relationship('User', backref='tickets', lazy=True)
-    order = db.relationship('Order', backref='tickets', lazy=True)
+    user = db.relationship('User', backref='tickets')
     dapaint = db.relationship('DaPaint', back_populates='tickets')
 
     def serialize(self):
@@ -367,34 +433,27 @@ class Ticket(db.Model):
             'dapaint_id': self.dapaint_id,
             'user_id': self.user_id,
             'already_scanned': self.already_scanned,
-            'qr_code_path': self.qr_code_path,  # Include QR code path in the serialized output
-            'ticket_code': self.ticket_code,  # Include ticket code
+            'qr_code_path': self.qr_code_path,
+            'ticket_code': self.ticket_code,
         }
 
     def generate_ticket_code(self):
-        # Generate a unique ticket code (implement your logic here)
-        self.ticket_code = str(uuid.uuid4())[:10]  # Simple UUID example
+        self.ticket_code = str(uuid.uuid4())[:10]
 
     def generate_qr_code(self):
         if self.ticket_code:
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
+            qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
             qr.add_data(self.ticket_code)
             qr.make(fit=True)
 
             img = qr.make_image(fill='black', back_color='white')
-            qr_code_directory = 'path/to/qrcodes'  # Specify your path
+            qr_code_directory = 'static/qrcodes'
             if not os.path.exists(qr_code_directory):
                 os.makedirs(qr_code_directory)
             qr_code_filename = os.path.join(qr_code_directory, f'{self.ticket_code}.png')
             img.save(qr_code_filename)
-            self.qr_code_path = qr_code_filename
+            self.qr_code_path = f'/static/qrcodes/{self.ticket_code}.png'
 
-# User.tickets = db.relationship('Ticket', order_by=Ticket.id, back_populates='user')
 
 class Advertiser(db.Model):
     id = db.Column(db.Integer, primary_key=True)

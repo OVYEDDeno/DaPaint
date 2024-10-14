@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/lineup.css";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import QRCode from 'qrcode';
 
 export const Lineup = () => {
   const { store, actions } = useContext(Context);
@@ -259,14 +260,40 @@ export const Lineup = () => {
     currency: "USD",
     intent: "capture",
   };
-  const handleApprove = (data) => {
-    return fetch(process.env.BACKEND_URL+"/api/capture-paypal-order", {
+  const handleApprove = (data, dapaintId) => {
+    let qr_codes = [];
+    const generateInviteCode = () => {
+      return Math.random().toString(36).substring(2, 10).toUpperCase();
+    };
+  
+    const generateQRCode = async (inviteCode) => {
+      try {
+        const qrCodeDataUrl = await QRCode.toDataURL(inviteCode);
+        return qrCodeDataUrl;
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+        return null;
+      }
+    };
+    for (let i = 0; i < ticketTracker.Tickets; i++) {
+      const inviteCode = generateInviteCode();
+      const qrCodeDataUrl = generateQRCode(inviteCode);
+      qr_codes.push({
+        qr_code_path: qrCodeDataUrl,
+        ticket_code: inviteCode,
+      });
+    }
+    return fetch(process.env.BACKEND_URL + "/api/capture-paypal-order", {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        paypalID: data.paypalID,
+        paypal_id: data.orderID,
+        type_of_order: "ticket_puchase",
+        dapaint_id: dapaintId,
+        qr_codes: qr_codes,
       }),
     })
       .then((response) => response.json())
@@ -496,7 +523,7 @@ export const Lineup = () => {
                                 ],
                               });
                             }}
-                            onApprove={handleApprove}
+                            onApprove={(e)=>handleApprove(e,matchup.id)}
                           />
                         </PayPalScriptProvider>
                         <p>All Ticket Sales are Final.</p>

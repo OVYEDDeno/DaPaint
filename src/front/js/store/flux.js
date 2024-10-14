@@ -531,6 +531,34 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         setStore({ inviteCode: newCode });
       },
+      // captureOrder: async (paypal_id, type_of_order, dapaintId, qr_codes) => {
+      //   const response = await fetch(
+      //     `${process.env.BACKEND_URL}/api/capture-paypal-order`,
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+
+      //       },
+      //       body:{
+      //         paypal_id: paypal_id,
+      //         type_of_order: type_of_order,
+      //         dapaint_id: dapaintId,
+      //         qr_codes: qr_codes,
+      //       }
+      //     }
+      //   );
+      //   if (!response.ok) {
+      //     const errorText = await response.text();
+      //     console.error(`Server responded with ${response.status}: ${errorText}`);
+      //     return false;
+      //   }
+      //   else {
+      //     let data = await response.json();
+      //     console.log(data);
+      //     return true;
+      //   }
+      // },
     },
   };
 };
