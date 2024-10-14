@@ -525,6 +525,7 @@ export const Lineup = () => {
                                 ],
                               });
                             }}
+                            onApprove={(data, actions) => handleApprove(data, matchup.id)}
                           />
                         </PayPalScriptProvider>
                         <p>All Ticket Sales are Final.</p>
