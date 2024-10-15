@@ -40,7 +40,7 @@ export const Home = () => {
           />
           <div className="text-container">
             <h1 className="tagline">
-              WELCOME TO DaPaint! <h5>Where Legends Are Made.</h5>
+              CLOCK IN DaPaint! <h5>Where Legends Are Made.</h5>
             </h1>
             <p style={{ color: "gold" }}>
               The ultimate 1-on-1 sports challenges. Sweat, grit, and glory

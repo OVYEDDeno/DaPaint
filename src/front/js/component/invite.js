@@ -90,7 +90,7 @@ export const Invite = ({ onClose }) => {
     const [copied, setCopied] = useState(false);
 
     const copyToClipboard = () => {
-      const fullMessage = `Use my code ${code} to join DaPaint.org if you think you can beat me?`;
+      const fullMessage = `Think you’ve got what it takes to beat me? Prove it! Use my code ${code} to join DaPaint.org and take your shot!`;
       navigator.clipboard.writeText(fullMessage).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -157,24 +157,24 @@ export const Invite = ({ onClose }) => {
             <div className="invite-container text-center">
               <div>
                 <p
-                  className="m-3"
                   style={{
                     color: "black",
                     fontSize: "1.2em",
                   }}
                 >
-                  Invite the most people by the end of this winstreak and WIN
-                  $500K!
+                  Invite the most people by the end of this winstreak and{" "}
+                  <p
+                    style={{
+                      color: "red",
+                      fontSize: "1.2em",
+                      margin: "0",
+                    }}
+                  >
+                    WIN $500K!{" "}
+                  </p>
+                  OUR WHOLE MARKETING BUDGET!
                 </p>
-                <p>
-                  {maxInviteeUser} has invited {maxInviteeCount} Indulgers
-                </p>
-                <p>
-                  You have invited{" "}
-                  {store.userData?.user?.invite_code?.completed_dapaints.length}{" "}
-                  Indulgers
-                </p>
-                <h5 className="mb-2">
+                <h5>
                   Your Invite Code
                   {loadingCodes ? (
                     <p
@@ -210,11 +210,17 @@ export const Invite = ({ onClose }) => {
                       </div>
                     ))
                   ) : (
-                    <p style={{ color: "gray" }}>
-                      No invite codes
-                    </p>
+                    <p style={{ color: "gray" }}>No invite codes</p>
                   )}
                 </h5>
+                <p>
+                  {maxInviteeUser} has invited {maxInviteeCount} Indulgers
+                </p>
+                <p>
+                  You have invited{" "}
+                  {store.userData?.user?.invite_code?.completed_dapaints.length}{" "}
+                  Indulgers
+                </p>
               </div>
 
               <div>
@@ -225,8 +231,9 @@ export const Invite = ({ onClose }) => {
                   <p>Error: {errorNotifs}</p>
                 ) : notifs.length > 0 ? (
                   notifs.map((notif, index) => (
-                    <p style={{ color: "gray",
-                      fontSize: "1em", }} key={index}>{notif.message}</p>
+                    <p style={{ color: "gray", fontSize: "1em" }} key={index}>
+                      {notif.message}
+                    </p>
                   ))
                 ) : (
                   <p>No notifications</p>
