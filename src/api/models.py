@@ -423,8 +423,8 @@ class Ticket(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     dapaint_id = db.Column(db.Integer, db.ForeignKey('dapaint.id'), nullable=False)
     already_scanned = db.Column(db.Boolean, default=False)
-    qr_code_path = db.Column(db.String(255), nullable=True)
-    ticket_code = db.Column(db.String(10), unique=True, nullable=False)
+    ticket_code = db.Column(db.String(255), unique=True, nullable=False)
+    qr_code_path = db.Column(db.String(2048), nullable=True)
 
     user = db.relationship('User', back_populates='tickets')
     dapaint = db.relationship('DaPaint', back_populates='tickets')
@@ -435,8 +435,8 @@ class Ticket(db.Model):
             'dapaint_id': self.dapaint_id,
             'user_id': self.user_id,
             'already_scanned': self.already_scanned,
-            'qr_code_path': self.qr_code_path,
             'ticket_code': self.ticket_code,
+            'qr_code_path': self.qr_code_path,
         }
 
     def generate_ticket_code(self):
