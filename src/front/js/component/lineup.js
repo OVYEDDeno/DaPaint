@@ -272,7 +272,7 @@ export const Lineup = () => {
         const qrCodeDataUrl = await QRCode.toDataURL(inviteCode);
         return qrCodeDataUrl;
       } catch (error) {
-        console.error("Error generating QR code:", error);
+        console.error('Error generating QR code:', error);
         return null;
       }
     };
@@ -292,29 +292,43 @@ export const Lineup = () => {
     }
   
     try {
-      const response = await fetch(
-        process.env.BACKEND_URL + "/api/capture-paypal-order",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            paypal_id: data.orderID,
-            type_of_order: "ticket_purchase",
-            dapaint_id: dapaintId,
-            qr_codes: qr_codes,
-            total_amount: (ticketTracker[dapaintId]?.Price || 0) * ticketCount,
-          }),
-        }
-      );
+      const response = await fetch(process.env.BACKEND_URL + "/api/capture-paypal-order", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paypal_id: data.orderID,
+          type_of_order: "ticket_purchase",
+          dapaint_id: dapaintId,
+          qr_codes: qr_codes,
+        }),
+      });
   
       const orderData = await response.json();
   
-      // ... rest of the function remains the same
+      // Update the shared state with the new QR codes
+      setGeneratedQRCodes(qr_codes);
+  
+      // Get references to both modals
+      const lineUpModal = document.getElementById("lineUp");
+      const TicketModal = document.getElementById("Ticket");
+  
+      // Hide the lineUp modal
+      const bsModallineUp = bootstrap.Modal.getInstance(lineUpModal);
+      bsModallineUp.hide();
+  
+      // Use a small delay to ensure the first modal is fully hidden
+      setTimeout(() => {
+        // Show the Ticket modal
+        const bsModalTicket = new bootstrap.Modal(TicketModal);
+        bsModalTicket.show();
+      }, 300);
+  
+      return orderData;
     } catch (error) {
-      console.error("Error processing order:", error);
+      console.error('Error processing order:', error);
       // Handle the error appropriately (e.g., show an error message to the user)
     }
   };

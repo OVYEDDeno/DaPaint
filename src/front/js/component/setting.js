@@ -124,13 +124,13 @@ export const Setting = ({ onClose }) => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="invite-header">
-              <img
+              {/* <img
                 data-bs-target="#exampleModalToggle"
                 data-bs-toggle="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
                 alt="Back"
                 className="invite-close"
-              />
+              /> */}
               <h1 className="invite-title">
                 SETTING
                 <img
