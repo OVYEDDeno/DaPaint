@@ -71,6 +71,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "dapaint_unlocked": self.dapaint_unlocked,
             "name": self.name,
             "city": self.city,
             "zipcode": self.zipcode,
@@ -81,8 +82,7 @@ class User(db.Model):
             "losses": self.losses,
             "disqualifications": self.disqualifications,
             "disqualifications": [dq.serialize() for dq in self.disqualifications],
-            "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,
-            # "user_pay": self.user_pay.serialize() if self.user_pay else None,            
+            "profile_pic": self.profile_pic.serialize() if self.profile_pic else None,           
             "notifications": [n.serialize() for n in self.notifications],
             "instagram_url": self.instagram_url,
             "tiktok_url": self.tiktok_url,
@@ -96,6 +96,7 @@ class User(db.Model):
             # "user_type": self.user_type,
             "admin_profile": self.admin_profile.serialize() if self.admin_profile else None,
             "advertiser_profile": self.advertiser_profile.serialize() if self.advertiser_profile else None,
+
         }
         
 

@@ -481,7 +481,7 @@ export const Lineup = () => {
                     >
                       <div className="profile-container">
                         <div className="ticket-row">
-                          <div className="ticket-info">
+                          <div className="ticket-info mx-auto">
                             <p>General Admission</p>
                             <p>
                               $
@@ -492,7 +492,7 @@ export const Lineup = () => {
                               ).toFixed(2)}
                             </p>
                           </div>
-                          <div className="ticket-controls">
+                          {/* <div className="ticket-controls">
                             <button
                               onClick={() => handleTicketDecrement(matchup.id)}
                             >
@@ -506,7 +506,7 @@ export const Lineup = () => {
                             >
                               +
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                         <PayPalScriptProvider options={initialOptions}>
                           <PayPalButtons

@@ -864,38 +864,6 @@ def handle_feedback_submission():
     db.session.commit()
     return jsonify({"msg": "Feedback submitted successfully!"}), 201
 
-# @api.route('/purchase_ticket', methods=['POST'])
-# def purchase_ticket_route():
-#     data = request.json
-#     user_id = data.get('user_id')
-#     dapaint_id = data.get('dapaint_id')
-
-#     if not user_id or not dapaint_id:
-#         return jsonify({'error': 'User ID and DaPaint ID are required!'}), 400
-
-#     try:
-#         ticket = purchase_ticket(user_id, dapaint_id)
-#         return jsonify(ticket.serialize()), 201
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
-# def purchase_ticket(user_id, dapaint_id):
-#     ticket = Ticket(user_id=user_id, dapaint_id=dapaint_id)
-#     ticket.generate_ticket_code()  
-#     ticket.is_purchased = True  
-#     ticket.generate_qr_code()  
-
-#     db.session.add(ticket)
-#     db.session.commit()
-
-#     return ticket  
-
-    
-
-# @api.route('/access_to_dapaint', methods=['PUT'])
-# @jwt_required()
-# def grant_access_to_dapaint():
-#     user= User.query.filter_by(id=get_jwt_identity())
 
 # @api.route('/capture-paypal-order', methods=['POST'])
 # @jwt_required()
@@ -916,7 +884,14 @@ def handle_feedback_submission():
 #     db.session.add(order)
 #     db.session.commit()
 #     print (order.type_of_order)
-#     if order.type_of_order=="ticket_puchase":
+
+#     if order.type_of_order=="dapaint_unlocked":
+#         user.dapaint_unlocked=True
+#         db.session.commit()
+#         return jsonify({'message': 'DaPaint Unlocked!'}), 200
+    
+    
+#     if order.type_of_order=="ticket_purchase":
 #         dapaint_id = data.get('dapaint_id')
 #         qr_codes = data.get('qr_codes')
 #         print (qr_codes)
@@ -941,8 +916,8 @@ def handle_feedback_submission():
 #             db.session.add(new_ticket)
 #             db.session.commit()
 
-#     return jsonify({'msg': 'Order captured successfully!'}), 201
 
+#     return jsonify({'msg': 'Order captured successfully!'}), 201
 
 @api.route('/capture-paypal-order', methods=['POST'])
 @jwt_required()
@@ -952,48 +927,94 @@ def capture_order():
     paypal_id = data.get('paypal_id')
     type_of_order = data.get('type_of_order')
     
+    # Validate the incoming data
     if None in [paypal_id, user_id]:
         return jsonify({'error': 'User ID and PayPal ID are required!'}), 400
     
     user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({'error': 'User not found!'}), 404
-    
+
+    # Check if the order already exists
     order_exists = Orders.query.filter_by(paypal_id=paypal_id).first()
     if order_exists:
         return jsonify({'error': 'Order already exists!'}), 400
     
+    # Create a new order record
     order = Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
     db.session.add(order)
     db.session.commit()
     
-    print(f"Order type: {order.type_of_order}")
-    
+    print(order.type_of_order)
+
+    # Handle the DaPaint unlocked order
+    if order.type_of_order == "dapaint_unlocked":
+        user.dapaint_unlocked = True
+        db.session.commit()
+        return jsonify({'message': 'DaPaint Unlocked!'}), 200
+
+    # Handle ticket purchase order type
     if order.type_of_order == "ticket_purchase":
         dapaint_id = data.get('dapaint_id')
         qr_codes = data.get('qr_codes')
         
-        print(f"Received QR codes: {qr_codes}")
-        
+        # Validate the required data for ticket purchase
         if None in [dapaint_id, qr_codes]:
             return jsonify({'error': 'Dapaint ID and QR Codes are required for ticket purchase!'}), 400
-
+        
         dapaint = DaPaint.query.filter_by(id=dapaint_id).first()
         if not dapaint:
             return jsonify({'error': 'Dapaint not found!'}), 404
 
+        # Add tickets to the database
         for qr_code in qr_codes:
             new_ticket = Ticket(
                 user_id=user_id,
                 dapaint_id=dapaint.id,
                 order_id=order.id,
-                ticket_code=qr_code['ticket_code'],
-                qr_code_path=qr_code['qr_code_path']
+                ticket_code=qr_code["ticket_code"],
+                qr_code_path=qr_code["qr_code_path"],
             )
             db.session.add(new_ticket)
-            print(f"Created new ticket: {new_ticket.serialize()}")
         
+        # Commit all new tickets at once
         db.session.commit()
-        print(f"Committed {len(qr_codes)} new tickets to the database")
+        return jsonify({'message': 'Tickets purchased successfully!'}), 201
 
-    return jsonify({'msg': 'Order captured successfully!', 'order_id': order.id}), 201
+    # If the type_of_order is not recognized
+    return jsonify({'error': 'Invalid order type!'}), 400
+
+@api.route('/fufill-order', methods=['POST'])
+@jwt_required()
+def fufill_order():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    order_id = data.get('order_id')
+
+    
+    # Validate the incoming data
+    if None in [order_id, user_id]:
+        return jsonify({'error': 'User ID and Order ID are required!'}), 400
+    
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found!'}), 404
+        
+    order = Orders.query.filter_by(id=order_id, user_id=user_id).first()
+    if not order:
+        return jsonify({'error': 'Order not found!'}), 404
+    if order.type_of_order == "dapaint_unlocked":
+        order.fulfilled = True
+        user.dapaint_unlocked = False
+        db.session.commit()
+        return jsonify({'message': 'DaPaint Unlocked!'}), 200
+    elif order.type_of_order == "ticket_purchase":
+        ticket_id=data.get('ticket_id')
+        ticket_code=data.get('ticket_code')
+        ticket = Ticket.query.filter_by(id=ticket_id, ticket_code=ticket_code).first()
+        if not ticket:
+            return jsonify({'error': 'Ticket not found or not scanned!'}), 404
+        order.fulfilled = True
+        ticket.already_scanned = True
+        db.session.commit()
+        return jsonify({'message': 'Tickets Fulfilled!'}), 200

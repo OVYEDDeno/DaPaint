@@ -185,7 +185,29 @@ export const DaPaintManager = () => {
     currency: "USD",
     intent: "capture",
   };
-  const handleApprove = () => {
+  // THIS IS ORIGINAL const handleApprove = () => {
+  //   console.log("PAYPAL");
+
+  //   // Get references to both modals
+  //   const daPaintModal = document.getElementById("DaPaint");
+  //   const daPaint3Modal = document.getElementById("DaPaint3");
+
+  //   // Hide the DaPaint modal
+  //   const bsModalDaPaint = bootstrap.Modal.getInstance(daPaintModal);
+  //   bsModalDaPaint.hide();
+
+  //   // Use a small delay to ensure the first modal is fully hidden
+  //   setTimeout(() => {
+  //     // Show the DaPaint3 modal
+  //     const bsModalDaPaint3 = new bootstrap.Modal(daPaint3Modal);
+  //     bsModalDaPaint3.show();
+  //   }, 300);
+  // };
+
+  const handleFitnessStyleChange = (e) => {
+    setSelectedFitnessStyle(e.target.value);
+  };
+  const handleDaPaintUnlock = async (data) => {
     console.log("PAYPAL");
 
     // Get references to both modals
@@ -194,7 +216,9 @@ export const DaPaintManager = () => {
 
     // Hide the DaPaint modal
     const bsModalDaPaint = bootstrap.Modal.getInstance(daPaintModal);
-    bsModalDaPaint.hide();
+    if (bsModalDaPaint) {
+      bsModalDaPaint.hide();
+    }
 
     // Use a small delay to ensure the first modal is fully hidden
     setTimeout(() => {
@@ -202,10 +226,45 @@ export const DaPaintManager = () => {
       const bsModalDaPaint3 = new bootstrap.Modal(daPaint3Modal);
       bsModalDaPaint3.show();
     }, 300);
-  };
 
-  const handleFitnessStyleChange = (e) => {
-    setSelectedFitnessStyle(e.target.value);
+    try {
+      const response = await fetch(
+        `${process.env.BACKEND_URL}/api/capture-paypal-order`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            paypal_id: data.orderID,
+            type_of_order: "dapaint_unlocked",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.message === "DaPaint Unlocked!") {
+        console.log("DaPaint has been successfully unlocked.");
+
+        // Additional logic after successful unlock
+        // e.g., updating the UI to reflect the unlocked status
+        // actions.updateUserDaPaintStatus(true);
+      } else {
+        throw new Error(responseData.error || "Unexpected response message.");
+      }
+
+      return responseData;
+    } catch (error) {
+      console.error("Error unlocking DaPaint:", error);
+      // Handle the error appropriately (e.g., show an error message to the user)
+      // Display error notification or alert
+    }
   };
 
   return (
@@ -243,13 +302,17 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div className="profile-container">
-              <button
-                className="btn-danger"
-                data-bs-target="#DaPaint2"
-                data-bs-toggle="modal"
-              >
-                FIRST ONE ON US
-              </button>
+              {store.userData?.user?.wins < 1 &&
+              store.userData?.user?.losses < 1 ? (
+                <button
+                  className="btn-danger"
+                  data-bs-target="#DaPaint2"
+                  data-bs-toggle="modal"
+                >
+                  FIRST ONE ON US
+                </button>
+              ) : null}
+
               <h1 style={{ color: "black" }}>PAY $1 TO UNLOCK</h1>
               <PayPalScriptProvider options={initialOptions}>
                 <PayPalButtons
@@ -264,7 +327,7 @@ export const DaPaintManager = () => {
                       ],
                     });
                   }}
-                  onApprove={handleApprove}
+                  onApprove={(data, actions) => handleDaPaintUnlock(data)}
                 />
               </PayPalScriptProvider>
               {/* <h1 style={{ color: "black" }}>for 30 days or until you lose</h1> */}
@@ -780,7 +843,9 @@ export const DaPaintManager = () => {
       </div>
       <button
         className="btn-danger btn-lg"
-        data-bs-target="#DaPaint"
+        data-bs-target={
+          !store.userData?.user?.dapaint_unlocked ? "#DaPaint" : "#DaPaint3"
+        }
         data-bs-toggle="modal"
       >
         <h1>⚔️FIND FOE⚔️</h1>
