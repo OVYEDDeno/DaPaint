@@ -245,10 +245,10 @@ export const DaPaintManager = () => {
             <div className="profile-container">
               <button
                 className="btn-danger"
-                data-bs-target="#DaPaint3"
+                data-bs-target="#DaPaint2"
                 data-bs-toggle="modal"
               >
-                WATCH AN AD
+                FIRST ONE ON US
               </button>
               <h1 style={{ color: "black" }}>PAY $1 TO UNLOCK</h1>
               <PayPalScriptProvider options={initialOptions}>
@@ -268,7 +268,10 @@ export const DaPaintManager = () => {
                 />
               </PayPalScriptProvider>
               {/* <h1 style={{ color: "black" }}>for 30 days or until you lose</h1> */}
-              <p style={{ color: "black" }}>for 30 days or until you lose</p>
+              <p style={{ color: "black", fontSize: "15px" }}>
+                So people don't say they're <del>single</del>; I mean, loser by
+                choice.
+              </p>
             </div>
             {/* <div class="modal-footer">
               <button
@@ -294,7 +297,7 @@ export const DaPaintManager = () => {
           <div class="modal-content">
             <div className="invite-header">
               <h1 className="invite-title">
-                Long Long Man
+                No Weenies Allowed
                 {/* <img
                   data-bs-dismiss="modal"
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
@@ -315,8 +318,8 @@ export const DaPaintManager = () => {
               ></button>
             </div> */}
             <div class="profile-container">
-              Long Long Man
-              <iframe
+              {/* No Weenies Allowed! */}
+              {/* <iframe
                 width="auto"
                 height="249"
                 src="https://www.youtube.com/embed/6-1Ue0FFrHY?si=5-DCnlmIGzQW6KKp&amp;controls=0"
@@ -325,21 +328,32 @@ export const DaPaintManager = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
+              ></iframe> */}
+              <iframe
+                width="auto"
+                height="249"
+                src="https://www.youtube-nocookie.com/embed/HeAmzqrUjcA?si=2D5aozszYgBUFBWU&amp;controls=0&amp;start=58"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
               ></iframe>
               <button
                 className="btn-danger"
-                // data-bs-target="#DaPaint"
-                // data-bs-toggle="modal"
+                data-bs-target="#DaPaint3"
+                data-bs-toggle="modal"
               >
-                <h3>Buy Now</h3>
+                {/* <h3>Buy Now</h3> */}
+                <h3>Clock In</h3>
               </button>
-              <button
+              {/* <button
                 class="btn-primary"
                 data-bs-target="#DaPaint3"
                 data-bs-toggle="modal"
               >
                 Clock In
-              </button>
+              </button> */}
             </div>
             {/* <div class="modal-footer">
               
@@ -401,16 +415,16 @@ export const DaPaintManager = () => {
                   className="form-control mb-3"
                 >
                   <option value="">Any Fitness Style</option>
-                  <option value="basketball">Basketball</option>
-                  <option value="boxing">Boxing</option>
-                  <option value="racquetball">Racquetball/Squash</option>
-                  <option value="tennis">Tennis</option>
-                  <option value="pickleball">Pickleball</option>
-                  <option value="golf">Golf</option>
-                  <option value="volleyball">Volleyball</option>
-                  <option value="badminton">Badminton</option>
-                  <option value="tableTennis">Table Tennis</option>
-                  <option value="breakDancing">Break Dancing</option>
+                  <option value="Basketball">Basketball</option>
+                  <option value="Boxing">Boxing</option>
+                  <option value="Racquetball">Racquetball/Squash</option>
+                  <option value="Tennis">Tennis</option>
+                  <option value="Pickleball">Pickleball</option>
+                  <option value="Golf">Golf</option>
+                  <option value="Volleyball">Volleyball</option>
+                  <option value="Badminton">Badminton</option>
+                  <option value="Table Tennis">Table Tennis</option>
+                  <option value="Break Dancing">Break Dancing</option>
                 </select>
               </div>
 
@@ -423,8 +437,12 @@ export const DaPaintManager = () => {
               </button>
 
               <div className="event-list">
+                <p style={{ fontSize: "20px", textTransform: "uppercase" }}>
+                  Winners don’t wait! Pick any Fitness Style!
+                </p>
+
                 {filteredEvents.length === 0 ? (
-                  <p>THERE’S NO NEW DAPAINT. PRESS +ADD TO CREATE ONE</p>
+                  <p>THERE’S NO DAPAINT. PRESS +ADD TO CREATE ONE</p>
                 ) : (
                   filteredEvents.map((event) => (
                     <div key={event.id} className="event-item">
@@ -675,16 +693,16 @@ export const DaPaintManager = () => {
                     className="form-input"
                   >
                     <option value="">Select Fitness Style</option>
-                    <option value="basketball">Basketball</option>
-                    <option value="boxing">Boxing</option>
-                    <option value="racquetball">Racquetball/Squash</option>
-                    <option value="tennis">Tennis</option>
-                    <option value="pickleball">Pickleball</option>
-                    <option value="golf">Golf</option>
-                    <option value="volleyball">Volleyball</option>
-                    <option value="badminton">Badminton</option>
-                    <option value="tableTennis">Table Tennis</option>
-                    <option value="breakDancing">Break Dancing</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Boxing">Boxing</option>
+                    <option value="Racquetball">Racquetball/Squash</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Pickleball">Pickleball</option>
+                    <option value="Golf">Golf</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Table Tennis">Table Tennis</option>
+                    <option value="Break Dancing">Break Dancing</option>
                   </select>
                 </div>
                 <div>

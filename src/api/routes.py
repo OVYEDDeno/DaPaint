@@ -897,52 +897,6 @@ def handle_feedback_submission():
 # def grant_access_to_dapaint():
 #     user= User.query.filter_by(id=get_jwt_identity())
 
-@api.route('/capture-paypal-order', methods=['POST'])
-@jwt_required()
-def capture_order():
-    data = request.get_json()
-    user_id = get_jwt_identity()
-    paypal_id = data.get('paypal_id')
-    type_of_order = data.get('type_of_order')
-    if None in[paypal_id, user_id]:
-        return jsonify({'error': 'User ID and PayPal ID are required!'}), 400
-    user= User.query.filter_by(id=user_id).first()
-    if not user:
-        return jsonify({'error': 'User not found!'}), 404
-    order_exists=Orders.query.filter_by(paypal_id=paypal_id).first()
-    if order_exists:
-        return jsonify({'error': 'Order already exists!'}), 400
-    order=Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
-    db.session.add(order)
-    db.session.commit()
-    print (order.type_of_order)
-    if order.type_of_order=="ticket_puchase":
-        dapaint_id = data.get('dapaint_id')
-        qr_codes = data.get('qr_codes')
-        print (qr_codes)
-        if None in [dapaint_id, qr_codes]:
-            return jsonify({'error': 'Dapaint ID, and QR Codes are required for ticket purchase!'}), 400
-        # for qr_code in qr_codes:
-        #     if not validate_qr_code(qr_code):
-        #         return jsonify({'error': 'Invalid QR Code!'}), 400
-
-        dapaint = DaPaint.query.filter_by(id=dapaint_id).first()
-        if not dapaint:
-            return jsonify({'error': 'Dapaint not found!'}), 404
-
-        for i in qr_codes:
-            new_ticket = Ticket(
-                user_id=user_id,
-                dapaint_id=dapaint.id,
-                order_id=order.id,
-                ticket_code=qr_codes[i.ticket_code],
-                qr_code_path=qr_codes[i.qr_code_path],
-            )
-            db.session.add(new_ticket)
-            db.session.commit()
-
-    return jsonify({'msg': 'Order captured successfully!'}), 201
-
 # @api.route('/capture-paypal-order', methods=['POST'])
 # @jwt_required()
 # def capture_order():
@@ -950,40 +904,96 @@ def capture_order():
 #     user_id = get_jwt_identity()
 #     paypal_id = data.get('paypal_id')
 #     type_of_order = data.get('type_of_order')
-    
-#     if not all([paypal_id, user_id, type_of_order]):
-#         return jsonify({'error': 'User ID, PayPal ID, and order type are required!'}), 400
-    
-#     user = User.query.get(user_id)
+#     if None in[paypal_id, user_id]:
+#         return jsonify({'error': 'User ID and PayPal ID are required!'}), 400
+#     user= User.query.filter_by(id=user_id).first()
 #     if not user:
 #         return jsonify({'error': 'User not found!'}), 404
-    
-#     if Orders.query.filter_by(paypal_id=paypal_id).first():
+#     order_exists=Orders.query.filter_by(paypal_id=paypal_id).first()
+#     if order_exists:
 #         return jsonify({'error': 'Order already exists!'}), 400
-    
-#     order = Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
+#     order=Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
 #     db.session.add(order)
-    
-#     if type_of_order == "ticket_purchase":
-#         dapaint_id = data.get('dapaint_id')
-#         num_tickets = data.get('num_tickets', 1)
-        
-#         if not dapaint_id:
-#             return jsonify({'error': 'DaPaint ID is required for ticket purchase!'}), 400
-        
-#         dapaint = DaPaint.query.get(dapaint_id)
-#         if not dapaint:
-#             return jsonify({'error': 'DaPaint not found!'}), 404
-        
-#         for _ in range(num_tickets):
-#             new_ticket = Ticket(user_id=user_id, dapaint_id=dapaint.id, order_id=order.id)
-#             new_ticket.generate_ticket_code()
-#             new_ticket.generate_qr_code()
-#             db.session.add(new_ticket)
-    
-#     elif type_of_order == "dapaint_unlock":
-#         # Logic to unlock DaPaint for the user
-#         user.dapaint_unlocked = True
-    
 #     db.session.commit()
-#     return jsonify({'msg': 'Order captured successfully!', 'order_id': order.id}), 201
+#     print (order.type_of_order)
+#     if order.type_of_order=="ticket_puchase":
+#         dapaint_id = data.get('dapaint_id')
+#         qr_codes = data.get('qr_codes')
+#         print (qr_codes)
+#         if None in [dapaint_id, qr_codes]:
+#             return jsonify({'error': 'Dapaint ID, and QR Codes are required for ticket purchase!'}), 400
+#         # for qr_code in qr_codes:
+#         #     if not validate_qr_code(qr_code):
+#         #         return jsonify({'error': 'Invalid QR Code!'}), 400
+
+#         dapaint = DaPaint.query.filter_by(id=dapaint_id).first()
+#         if not dapaint:
+#             return jsonify({'error': 'Dapaint not found!'}), 404
+
+#         for i in qr_codes:
+#             new_ticket = Ticket(
+#                 user_id=user_id,
+#                 dapaint_id=dapaint.id,
+#                 order_id=order.id,
+#                 ticket_code=qr_codes[i.ticket_code],
+#                 qr_code_path=qr_codes[i.qr_code_path],
+#             )
+#             db.session.add(new_ticket)
+#             db.session.commit()
+
+#     return jsonify({'msg': 'Order captured successfully!'}), 201
+
+
+@api.route('/capture-paypal-order', methods=['POST'])
+@jwt_required()
+def capture_order():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    paypal_id = data.get('paypal_id')
+    type_of_order = data.get('type_of_order')
+    
+    if None in [paypal_id, user_id]:
+        return jsonify({'error': 'User ID and PayPal ID are required!'}), 400
+    
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found!'}), 404
+    
+    order_exists = Orders.query.filter_by(paypal_id=paypal_id).first()
+    if order_exists:
+        return jsonify({'error': 'Order already exists!'}), 400
+    
+    order = Orders(user_id=user_id, paypal_id=paypal_id, type_of_order=type_of_order)
+    db.session.add(order)
+    db.session.commit()
+    
+    print(f"Order type: {order.type_of_order}")
+    
+    if order.type_of_order == "ticket_purchase":
+        dapaint_id = data.get('dapaint_id')
+        qr_codes = data.get('qr_codes')
+        
+        print(f"Received QR codes: {qr_codes}")
+        
+        if None in [dapaint_id, qr_codes]:
+            return jsonify({'error': 'Dapaint ID and QR Codes are required for ticket purchase!'}), 400
+
+        dapaint = DaPaint.query.filter_by(id=dapaint_id).first()
+        if not dapaint:
+            return jsonify({'error': 'Dapaint not found!'}), 404
+
+        for qr_code in qr_codes:
+            new_ticket = Ticket(
+                user_id=user_id,
+                dapaint_id=dapaint.id,
+                order_id=order.id,
+                ticket_code=qr_code['ticket_code'],
+                qr_code_path=qr_code['qr_code_path']
+            )
+            db.session.add(new_ticket)
+            print(f"Created new ticket: {new_ticket.serialize()}")
+        
+        db.session.commit()
+        print(f"Committed {len(qr_codes)} new tickets to the database")
+
+    return jsonify({'msg': 'Order captured successfully!', 'order_id': order.id}), 201

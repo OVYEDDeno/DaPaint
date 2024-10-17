@@ -94,7 +94,7 @@ export const Home = () => {
                 onClick={handleJoinClick}
               >
                 <span className="golden-text">
-                  Join Now!
+                  CLOCK IN
                   <img
                     src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Oncoming-Fist-3d-Medium-Dark-icon.png"
                     alt="DaPaintLogo"
@@ -126,6 +126,11 @@ export const Home = () => {
                 Terms of service
               </a>
             </li>
+            <li>
+              <a href="/team/clockindapaint" target="_blank">
+              Team
+              </a>
+            </li>
           </ul>
         </div>
         <div className="footer-column social-media-logos">
@@ -135,22 +140,28 @@ export const Home = () => {
               alt="Discord"
             />
           </a>
-          <a href="https://tiktok.com" target="_blank">
+          <a href="https://tiktok.com/@clockindapaint" target="_blank">
             <img
               src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/tiktok-white-icon.png"
               alt="TikTok"
             />
           </a>
-          <a href="https://x.com" target="_blank">
+          <a href="https://x.com/clockindapaint" target="_blank">
             <img
               src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/x-social-media-white-icon.png"
               alt="Twitter"
             />
           </a>
-          <a href="https://instagram.com" target="_blank">
+          <a href="https://instagram.com/clockindapaint" target="_blank">
             <img
               src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/instagram-white-icon.png"
               alt="Instagram"
+            />
+          </a>
+          <a href="https://snapchat.com/add/clockindapaint" target="_blank">
+            <img
+              src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/snapchat-line-icon.png"
+              alt="snapchat"
             />
           </a>
           <div className="footer-column">
