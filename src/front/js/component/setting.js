@@ -121,6 +121,7 @@ export const Setting = ({ onClose }) => {
         console.log("Updated tickets info:", store.tickets);
       }
     };
+    getTicketsinfo();
   }, []);
 
   return (

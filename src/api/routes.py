@@ -938,37 +938,76 @@ def capture_order():
     # If the type_of_order is not recognized
     return jsonify({'error': 'Invalid order type!'}), 400
 
+# @api.route('/fufill-order', methods=['POST'])
+# @jwt_required()
+# def fufill_order():
+#     data = request.get_json()
+#     user_id = get_jwt_identity()
+#     order_id = data.get('order_id')
+        
+#     # Validate the incoming data
+#     if None in [order_id, user_id]:
+#         return jsonify({'error': 'User ID and Order ID are required!'}), 400
+    
+#     user = User.query.filter_by(id=user_id).first()
+#     if not user:
+#         return jsonify({'error': 'User not found!'}), 404
+        
+#     order = Orders.query.filter_by(id=order_id, user_id=user_id).first()
+#     if not order:
+#         return jsonify({'error': 'Order not found!'}), 404
+#     if order.type_of_order == "dapaint_unlocked":
+#         order.fulfilled = True
+#         user.dapaint_unlocked = False
+#         db.session.commit()
+#         return jsonify({'message': 'DaPaint Unlocked!'}), 200
+#     elif order.type_of_order == "ticket_purchase":
+#         ticket_id=data.get('ticket_id')
+#         ticket_code=data.get('ticket_code')
+#         ticket = Ticket.query.filter_by(id=ticket_id, ticket_code=ticket_code).first()
+#         if not ticket:
+#             return jsonify({'error': 'Ticket not found or not scanned!'}), 404
+#         order.fulfilled = True
+#         ticket.already_scanned = True
+#         db.session.commit()
+#         return jsonify({'message': 'Tickets Fulfilled!'}), 200
+
 @api.route('/fufill-order', methods=['POST'])
 @jwt_required()
 def fufill_order():
     data = request.get_json()
     user_id = get_jwt_identity()
-    order_id = data.get('order_id')
-
+    ticket_code = data.get('ticket_code')
     
     # Validate the incoming data
-    if None in [order_id, user_id]:
-        return jsonify({'error': 'User ID and Order ID are required!'}), 400
-    
-    user = User.query.filter_by(id=user_id).first()
-    if not user:
-        return jsonify({'error': 'User not found!'}), 404
-        
-    order = Orders.query.filter_by(id=order_id, user_id=user_id).first()
+    if not ticket_code:
+        return jsonify({'error': 'Ticket code is required!'}), 400
+
+    # Retrieve the ticket based on the ticket code
+    ticket = Ticket.query.filter_by(ticket_code=ticket_code).first()
+    if not ticket:
+        return jsonify({'error': 'Ticket not found!'}), 404
+
+    # Get the order and user information
+    order = Orders.query.filter_by(id=ticket.order_id, user_id=ticket.user_id).first()
     if not order:
         return jsonify({'error': 'Order not found!'}), 404
+
+    # # Ensure the user matches the ticket's user
+    # if ticket.user_id != user_id:
+    #     return jsonify({'error': 'Unauthorized user!'}), 403
+
+    # Process the order based on its type
     if order.type_of_order == "dapaint_unlocked":
         order.fulfilled = True
-        user.dapaint_unlocked = False
         db.session.commit()
         return jsonify({'message': 'DaPaint Unlocked!'}), 200
     elif order.type_of_order == "ticket_purchase":
-        ticket_id=data.get('ticket_id')
-        ticket_code=data.get('ticket_code')
-        ticket = Ticket.query.filter_by(id=ticket_id, ticket_code=ticket_code).first()
-        if not ticket:
-            return jsonify({'error': 'Ticket not found or not scanned!'}), 404
+        if ticket.already_scanned:
+            return jsonify({'error': 'Ticket already scanned!'}), 400
         order.fulfilled = True
         ticket.already_scanned = True
         db.session.commit()
-        return jsonify({'message': 'Tickets Fulfilled!'}), 200
+        return jsonify({'message': 'Ticket Fulfilled!'}), 200
+    else:
+        return jsonify({'error': 'Unknown order type!'}), 400

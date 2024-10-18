@@ -150,7 +150,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("FLUX:ACTIONS.FETCHMAXINVITEE.DATA", data);
 
           // Update the state/store with the response data
-          setMaxInviteeCount(data.maxInviteeUser.invite_code.completed_dapaints.length);
+          setMaxInviteeCount(
+            data.maxInviteeUser.invite_code.completed_dapaints.length
+          );
           setMaxInviteeUser(data.maxInviteeUser.name); // Set the inviter's name with the most invitees
         } catch (error) {
           console.error("Error fetching max invitee:", error);
@@ -226,7 +228,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           if (!response.ok) {
-            getActions().getDaPaintList()
+            getActions().getDaPaintList();
             const errorData = await response.json();
             throw new Error(errorData.error || "Failed to clock in");
           }
@@ -355,22 +357,22 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error:", error);
         }
       },
-      convertTo12Hr:(timeStr)=> {
+      convertTo12Hr: (timeStr) => {
         // Create a Date object from the input string
         const date = new Date(timeStr);
-    
+
         // Extract hours, minutes, and seconds
         let hours = date.getHours();
         const minutes = date.getMinutes().toString().padStart(2, "0");
         const seconds = date.getSeconds().toString().padStart(2, "0");
-    
+
         // Determine AM or PM
         const ampm = hours >= 12 ? "PM" : "AM";
-    
+
         // Convert hours to 12-hour format
         hours = hours % 12;
         hours = hours ? hours : 12; // Handle midnight (0 should be 12)
-    
+
         // Format the date part (MM/DD/YYYY)
         const formattedDate =
           (date.getMonth() + 1).toString().padStart(2, "0") +
@@ -378,10 +380,67 @@ const getState = ({ getStore, getActions, setStore }) => {
           date.getDate().toString().padStart(2, "0") +
           "/" +
           date.getFullYear();
-    
+
         // Return formatted time in 12-hour format
         return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
       },
+      scanTicket: async (orderId) => {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/fufill-order${orderId}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Ticket scan successfully", data);
+            return true;
+          } else {
+            const error = await response.json();
+            console.error("Failed to scan ticket:", error);
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+
+      redeemTicket: async (ticketCode) => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`${process.env.BACKEND_URL}/api/fufill-order`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ ticket_code: ticketCode }),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Ticket redeemed successfully", data);
+                return true;
+            } else {
+                const error = await response.json();
+                console.error("Failed to redeem ticket:", error);
+                return false;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            return false;
+        }
+    },  
+   
+    
       deleteEvent: async (eventId) => {
         const token = localStorage.getItem("token");
         try {
@@ -432,7 +491,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify({ winner: winner_id, loser: loser_id, img_url: img_url}),
+              body: JSON.stringify({
+                winner: winner_id,
+                loser: loser_id,
+                img_url: img_url,
+              }),
             }
           );
 
@@ -460,8 +523,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               },
             }
           );
-          if (response.status!=200){
-           console.log("ERROR", response.statusText, response.status)
+          if (response.status != 200) {
+            console.log("ERROR", response.statusText, response.status);
             return false;
           }
           const data = await response.json();
