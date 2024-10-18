@@ -869,7 +869,7 @@ def handle_feedback_submission():
 def get_all_tickets():    
     user = User.query.filter_by(id=get_jwt_identity()).first()
     tickets = []
-    for ticket in user.tickets:
+    for ticket in user.tickets:        
         tickets.append(ticket.serialize())
     return jsonify({"tickets":tickets}), 200
 

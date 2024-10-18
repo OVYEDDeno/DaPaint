@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/setting.css";
 import { Context } from "../store/appContext";
-import QRCode from 'qrcode';
+import QRCode from "qrcode";
 
 export const Setting = ({ onClose }) => {
   const { store, actions } = useContext(Context);
@@ -90,27 +90,38 @@ export const Setting = ({ onClose }) => {
       const qrCodeDataUrl = await QRCode.toDataURL(inviteCode);
       return qrCodeDataUrl;
     } catch (error) {
-      console.error('Error generating QR code:', error);
+      console.error("Error generating QR code:", error);
       return null;
     }
   };
 
-  const toggleQRCode = async (index) => {
-    if (expandedIndex === index) {
-      setExpandedIndex(null);
-    } else {
-      setExpandedIndex(index);
-      if (!qrCodes[index]) {
-        const inviteCode = generateInviteCode();
-        const qrCodeDataUrl = await generateQRCode(inviteCode);
-        setQrCodes(prevCodes => {
-          const newCodes = [...prevCodes];
-          newCodes[index] = qrCodeDataUrl;
-          return newCodes;
-        });
-      }
-    }
+  // const toggleQRCode = async (index) => {
+  //   if (expandedIndex === index) {
+  //     setExpandedIndex(null);
+  //   } else {
+  //     setExpandedIndex(index);
+  //     if (!qrCodes[index]) {
+  //       const inviteCode = generateInviteCode();
+  //       const qrCodeDataUrl = await generateQRCode(inviteCode);
+  //       setQrCodes((prevCodes) => {
+  //         const newCodes = [...prevCodes];
+  //         newCodes[index] = qrCodeDataUrl;
+  //         return newCodes;
+  //       });
+  //     }
+  //   }
+  // };
+  const toggleQRCode = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
   };
+  useEffect(() => {
+    const getTicketsinfo = async () => {
+      let success = await actions.getTickets();
+      if (success) {
+        console.log("Updated tickets info:", store.tickets);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -322,7 +333,7 @@ export const Setting = ({ onClose }) => {
 
             <div className="tickets-container mx-auto">
               <table className="ticket-table">
-                <tbody>
+                {/* <tbody>
                   {Array.from({ length: 3 }).map((_, rowIndex) => (
                     <tr key={rowIndex}>
                       {Array.from({ length: 3 }).map((_, colIndex) => {
@@ -370,6 +381,93 @@ export const Setting = ({ onClose }) => {
                                     className="qr-code expanded"
                                   />
                                   <div className="details-label">Details</div>
+                                  <button
+                                    className="btn hide-btn"
+                                    onClick={() => toggleQRCode(ticketIndex)}
+                                  >
+                                    HIDE
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody> */}
+                <tbody>
+                  {Array.from({
+                    length: Math.ceil(
+                      store.userData?.user?.tickets?.length / 3
+                    ),
+                  }).map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {Array.from({ length: 3 }).map((_, colIndex) => {
+                        const ticketIndex = rowIndex * 3 + colIndex;
+                        const isExpanded = expandedIndex === ticketIndex;
+                        const ticket =
+                          store.userData?.user?.tickets?.[ticketIndex];
+
+                        if (!ticket) {
+                          return (
+                            <td
+                              key={colIndex}
+                              className="ticket-cell empty"
+                            ></td>
+                          );
+                        }
+
+                        return (
+                          <td
+                            className={`ticket-cell ${
+                              expandedIndex !== null && !isExpanded
+                                ? "hidden"
+                                : ""
+                            }`}
+                            key={colIndex}
+                          >
+                            <div
+                              className={`ticket ${
+                                isExpanded ? "expanded" : ""
+                              }`}
+                            >
+                              {!isExpanded && (
+                                <>
+                                  <img
+                                    src={
+                                      ticket.qr_code_path ||
+                                      "/path/to/placeholder.png"
+                                    }
+                                    alt="QR Code"
+                                    className="qr-code"
+                                  />
+                                  
+                                  {actions.convertTo12Hr(ticket.dapaint.date_time)}
+                                  <button
+                                    className="btn show-btn"
+                                    onClick={() => toggleQRCode(ticketIndex)}
+                                  >
+                                    SHOW
+                                  </button>
+                                </>
+                              )}
+
+                              {isExpanded && (
+                                <>
+                                  <img
+                                    src={
+                                      ticket.qr_code_path ||
+                                      "/path/to/placeholder.png"
+                                    }
+                                    alt="QR Code"
+                                    className="qr-code expanded"
+                                  />
+                                  <div className="details-label">Details</div>
+                                  {ticket.dapaint.id}
+                                  <button className="btn refund-btn">
+                                    REFUND
+                                  </button>
                                   <button
                                     className="btn hide-btn"
                                     onClick={() => toggleQRCode(ticketIndex)}

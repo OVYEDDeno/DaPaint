@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../styles/start.css";
 import { Context } from "../store/appContext";
+import { QrReader } from "react-qr-reader";
 
 export const Start = () => {
   const [hostUser, setHostUser] = useState(null);
@@ -9,8 +10,33 @@ export const Start = () => {
   const [foeVote, setFoeVote] = useState(null);
   const { store, actions } = useContext(Context);
   const [previewURL, setPreviewURL] = useState("");
-  const placeholderImage =
-    "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
+  const [scanResult, setScanResult] = useState("");
+  const [manualInput, setManualInput] = useState("");
+  const [isTorchOn, setIsTorchOn] = useState(true);
+  const placeholderImage = "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
+
+  const handleScan = (result) => {
+    if (result) {
+      setScanResult(result.text);
+      fetchDataWithCode(result.text);
+    }
+  };
+
+  const fetchDataWithCode = async (code) => {
+    try {
+      const response = await fetch(`/api/fetch-data?code=${code}`);
+      const data = await response.json();
+      console.log(data);
+      // Handle the fetched data here
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleManualSubmit = async (e) => {
+    e.preventDefault();
+    await fetchDataWithCode(manualInput);
+  };
 
   const handleFileUpload = (e, setUser) => {
     setUser(URL.createObjectURL(e.target.files[0]));
@@ -18,12 +44,12 @@ export const Start = () => {
 
   const handleHostVote = (vote) => {
     setHostVote(vote);
-    setFoeVote(vote === "winner" ? "loser" : foeVote); // Update foeVote only if host claims a win
+    setFoeVote(vote === "winner" ? "loser" : foeVote);
   };
 
   const handleFoeVote = (vote) => {
     setFoeVote(vote);
-    setHostVote(vote === "winner" ? "loser" : hostVote); // Update hostVote only if foe claims a win
+    setHostVote(vote === "winner" ? "loser" : hostVote);
   };
 
   const handleSubmit = async (e) => {
@@ -37,21 +63,16 @@ export const Start = () => {
     let loser_id = null;
     let img_url = e.target.img.value;
 
-    // Determine the winner/loser for host
     if (hostVote === "winner") {
       winner_id = store.userData.indulgers.host.id;
       loser_id = store.userData.indulgers.foe.id;
     }
 
-    // Determine the winner/loser for foe
     if (foeVote === "winner") {
       winner_id = store.userData.indulgers.foe.id;
       loser_id = store.userData.indulgers.host.id;
     }
 
-    // Check for conflict: both claiming winner
-
-    // Update win streaks and other fields when no conflict
     let result = await actions.updateWinstreak(
       store.userData.dapaintId.id,
       winner_id,
@@ -66,46 +87,32 @@ export const Start = () => {
       alert("Failed to update win streak");
     }
   };
+
   const getDisplayImageFoe = () => {
     const foeProfilePic = store.userData.indulgers?.foe.profile_pic;
-    if (foeProfilePic && foeProfilePic.image_url) {
-      return foeProfilePic.image_url;
-    } else if (placeholderImage) {
-      return placeholderImage;
-    }
+    return foeProfilePic?.image_url || placeholderImage;
   };
 
   const getDisplayImageHost = () => {
     const hostProfilePic = store.userData.indulgers?.host.profile_pic;
-    if (hostProfilePic && hostProfilePic.image_url) {
-      return hostProfilePic.image_url;
-    } else if (placeholderImage) {
-      return placeholderImage;
-    }
+    return hostProfilePic?.image_url || placeholderImage;
   };
 
   return (
     <>
       <button
         role="button"
-        class="golden-button"
+        className="golden-button"
         data-bs-toggle="modal"
         data-bs-target="#startModal"
       >
-        <span class="golden-text">👊🏾START👊🏾</span>
+        <span className="golden-text">👊🏾START👊🏾</span>
       </button>
-      {/* <button
-        type="button"
-        className="btn-start"
-        
-      >
-        
-      </button> */}
 
+      {/* First Modal */}
       <div
         className="modal fade"
         id="startModal"
-        // data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
         aria-labelledby="startModalLabel"
@@ -116,23 +123,29 @@ export const Start = () => {
             <div className="profile-header">
               <img
                 data-bs-dismiss="modal"
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Prohibited-3d-icon.png"
                 alt="Close"
                 className="invite-close"
                 onClick={() => {
                   actions.forfeitMatch(store.userData.dapaintId.id);
                 }}
               />
-              <p>--Forfeit</p>
-              <h1 className="invite-title">
-                WHO WON?
-                <img
-                  data-bs-dismiss="modal"
-                  src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
-                  alt="Close"
-                  className="invite-close"
-                />
-              </h1>
+              <p style={{ color: "white", fontSize: "15px" }}>--Forfeit</p>
+              <h1 className="invite-title">WHO WON?</h1>
+              <p style={{ color: "white", fontSize: "15px" }}>Scan Tickets--</p>
+              <img
+                data-bs-dismiss="modal"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
+                alt="Scan Tickets"
+                className="invite-close"
+                onClick={() => {
+                  // Open the second modal
+                  const scanTicketModal = new window.bootstrap.Modal(
+                    document.getElementById("scanTicketModal")
+                  );
+                  scanTicketModal.show();
+                }}
+              />
             </div>
 
             <div className="modal-body">
@@ -194,11 +207,10 @@ export const Start = () => {
                       <div className="user-name">
                         <img
                           src={getDisplayImageFoe()}
-                          alt="Host User"
+                          alt="Foe User"
                           className="rounded-circle img-fluid pe-1"
                           style={{ width: "68px", height: "68px" }}
                         />
-
                         {store.userData.indulgers?.foe.name}
                       </div>
                       <div className="vote-buttons">
@@ -208,7 +220,6 @@ export const Start = () => {
                           style={{
                             backgroundColor:
                               foeVote === "winner" ? "green" : "black",
-                            color: foeVote === "winner" ? "white" : "white",
                           }}
                           onClick={() => handleFoeVote("winner")}
                         >
@@ -231,6 +242,77 @@ export const Start = () => {
                   <button type="submit">Submit</button>
                 </form>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Modal (Scan Tickets) */}
+      <div
+        className="modal fade"
+        id="scanTicketModal"
+        tabIndex="-1"
+        aria-labelledby="scanTicketModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="scanTicketModalLabel">
+                Scan Tickets
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <div className="qr-reader-container">
+                  <QrReader
+                    onResult={handleScan}
+                    constraints={{
+                      facingMode: "environment",
+                      advanced: [{ torch: isTorchOn }]
+                    }}
+                    videoId="qr-video"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+                <button
+                  className="btn btn-secondary mt-2"
+                  onClick={() => setIsTorchOn(!isTorchOn)}
+                >
+                  {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
+                </button>
+              </div>
+
+              <div className="mb-3">
+                <h6>Or enter code manually:</h6>
+                <form onSubmit={handleManualSubmit}>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={manualInput}
+                      onChange={(e) => setManualInput(e.target.value)}
+                      placeholder="Enter code manually"
+                    />
+                    <button type="submit" className="btn btn-secondary">
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {scanResult && (
+                <div className="alert alert-success" role="alert">
+                  <h6 className="alert-heading">Scan Result:</h6>
+                  <p className="mb-0">{scanResult}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

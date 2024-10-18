@@ -438,6 +438,7 @@ class Ticket(db.Model):
             'already_scanned': self.already_scanned,
             'ticket_code': self.ticket_code,
             'qr_code_path': self.qr_code_path,
+            'dapaint': self.dapaint.serialize(),
         }
 
     def generate_ticket_code(self):
