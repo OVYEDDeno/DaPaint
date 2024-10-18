@@ -5,6 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       currentUser: null,
       dapaints: [],
       daPaintList: [],
+      tickets: [],
       notifs: [],
       userId: undefined,
       userData: {},
@@ -329,6 +330,31 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error:", error);
         }
       },
+      getTickets: async () => {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/tickets`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            setStore({ tickets: data.tickets });
+          } else {
+            const error = await response.json();
+            console.error("Failed to retrieve list of tickets:", error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
       deleteEvent: async (eventId) => {
         const token = localStorage.getItem("token");
         try {
@@ -531,34 +557,6 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         setStore({ inviteCode: newCode });
       },
-      // captureOrder: async (paypal_id, type_of_order, dapaintId, qr_codes) => {
-      //   const response = await fetch(
-      //     `${process.env.BACKEND_URL}/api/capture-paypal-order`,
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-
-      //       },
-      //       body:{
-      //         paypal_id: paypal_id,
-      //         type_of_order: type_of_order,
-      //         dapaint_id: dapaintId,
-      //         qr_codes: qr_codes,
-      //       }
-      //     }
-      //   );
-      //   if (!response.ok) {
-      //     const errorText = await response.text();
-      //     console.error(`Server responded with ${response.status}: ${errorText}`);
-      //     return false;
-      //   }
-      //   else {
-      //     let data = await response.json();
-      //     console.log(data);
-      //     return true;
-      //   }
-      // },
     },
   };
 };

@@ -45,7 +45,7 @@ export const Landing = () => {
           </h1>
           <div className="actions-section">
             <Invite />
-            <Setting />
+            <Setting/>
           </div>
         </header>
         <div className="custom-win-streak">
@@ -91,13 +91,14 @@ export const Landing = () => {
           {maxWinStreakUser} has achieved {maxWinStreak} win streaks
         </h3>
 
-        <Lineup />
+        <Lineup/>
 
         <div className="find-foe-section">
-          {(!store.userData.dapaintId ||
-            store.userData.dapaintId?.winnerId &&
-            store.userData.dapaintId?.loserId
-          ) && <DaPaintManager /> || <Start />}
+          {((!store.userData.dapaintId ||
+            (store.userData.dapaintId?.winnerId &&
+              store.userData.dapaintId?.loserId)) && <DaPaintManager />) || (
+            <Start />
+          )}
           {/* <p className="tap-button-text">TAP THE BUTTON</p> */}
         </div>
       </main>

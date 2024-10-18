@@ -96,6 +96,7 @@ class User(db.Model):
             # "user_type": self.user_type,
             "admin_profile": self.admin_profile.serialize() if self.admin_profile else None,
             "advertiser_profile": self.advertiser_profile.serialize() if self.advertiser_profile else None,
+            "tickets": [ticket.serialize() for ticket in self.tickets]
 
         }
         

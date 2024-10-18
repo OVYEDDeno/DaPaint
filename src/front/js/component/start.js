@@ -116,7 +116,7 @@ export const Start = () => {
             <div className="profile-header">
               <img
                 data-bs-dismiss="modal"
-                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Prohibited-3d-icon.png"
+                src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
                 alt="Close"
                 className="invite-close"
                 onClick={() => {
