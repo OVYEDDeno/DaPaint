@@ -14,6 +14,8 @@ export const Setting = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [qrCodes, setQrCodes] = useState(Array(9).fill(null));
+  const placeholderImage =
+    "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
   const handleRatingChange = (value) => {
     setRating(value);
@@ -414,11 +416,12 @@ export const Setting = ({ onClose }) => {
                           return (
                             <td
                               key={colIndex}
-                              className="ticket-cell empty"
-                            ></td>
+                              className="ticket-cell empty d-none"
+                            >
+                              <p>You haven't bought any tickets</p>
+                            </td>
                           );
                         }
-                        // <p>You haven't bought any tickets</p>    
 
                         return (
                           <td
@@ -437,15 +440,14 @@ export const Setting = ({ onClose }) => {
                               {!isExpanded && (
                                 <>
                                   <img
-                                    src={
-                                      ticket.qr_code_path ||
-                                      "/path/to/placeholder.png"
-                                    }
+                                    src={ticket.qr_code_path}
                                     alt="QR Code"
                                     className="qr-code"
                                   />
-                                  
-                                  {actions.convertTo12Hr(ticket.dapaint.date_time)}
+
+                                  {actions.convertTo12Hr(
+                                    ticket.dapaint.date_time
+                                  )}
                                   <button
                                     className="btn show-btn"
                                     onClick={() => toggleQRCode(ticketIndex)}
@@ -457,29 +459,75 @@ export const Setting = ({ onClose }) => {
 
                               {isExpanded && (
                                 <>
-                                  <img
-                                    src={
-                                      ticket.qr_code_path ||
-                                      "/path/to/placeholder.png"
-                                    }
-                                    alt="QR Code"
-                                    className="qr-code expanded"
-                                  />
-                                  <div className="details-label">Details
-                                  {ticket.dapaint.hostFoeId.name} vs {ticket.dapaint.foeId.name}
-                                  {ticket.dapaint.location}
-                                  {ticket.dapaint.hostFoeId.profile_pic}                                  
-                                  {ticket.dapaint.fitnessStyle}
-                                  <button className="btn refund-btn">
-                                    REFUND
-                                  </button>
+                                  <div className="ticket-info">
+                                    <div className="ticket-code mx-auto">
+                                      <p>Ticket Code</p>
+                                      <h1>
+                                        {ticket.ticket_code}
+                                        
+                                        <img
+                                          src={ticket.qr_code_path}
+                                          alt="QR Code"
+                                          className="qr-code expanded"
+                                        />
+                                      </h1>
+                                    </div>
+                                    <div className="details">
+                                      <div className="details-label">
+                                      Location: {ticket.dapaint.location}
+                                      </div>
+                                      <div className="details-content">
+                                        <div className="host-info">
+                                          <img
+                                            src={
+                                              ticket.dapaint.hostFoeId
+                                                .profile_pic?.image_url ||
+                                              placeholderImage
+                                            }
+                                            alt="Host Profile"
+                                            className="profile-pic"
+                                            style={{
+                                              width: "100px",
+                                              height: "100px",
+                                            }}
+                                          />
+                                          <div className="host-name">
+                                            {ticket.dapaint.hostFoeId.name}
+                                          </div>
+                                        </div>
+                                        <div className="foe-info">
+                                          <img
+                                            src={
+                                              ticket.dapaint.foeId.profile_pic
+                                                ?.image_url || placeholderImage
+                                            }
+                                            alt="Foe Profile"
+                                            className="profile-pic"
+                                            style={{
+                                              width: "100px",
+                                              height: "100px",
+                                            }}
+                                          />
+                                          <div className="foe-name">
+                                            {ticket.dapaint.foeId.name}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="buttons">
+                                      <button className="btn refund-btn">
+                                        REFUND
+                                      </button>
+                                      <button
+                                        className="btn hide-btn"
+                                        onClick={() =>
+                                          toggleQRCode(ticketIndex)
+                                        }
+                                      >
+                                        HIDE
+                                      </button>
+                                    </div>
                                   </div>
-                                  <button
-                                    className="btn hide-btn"
-                                    onClick={() => toggleQRCode(ticketIndex)}
-                                  >
-                                    HIDE
-                                  </button>
                                 </>
                               )}
                             </div>

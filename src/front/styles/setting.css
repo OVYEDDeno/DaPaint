@@ -11,13 +11,13 @@
 }
 
 .setting-header h1 {
-  position: absolute;
-  left: 1px;
-  right: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
+  position: relative; /* Change to relative for better alignment */
 }
+
 
 .setting-header img {
   display: flex;
@@ -150,7 +150,7 @@ label:hover ~ label svg {
 .tickets-container {
   text-align: center;
   display: flex;
-  flex-direction: wrap;
+  flex-wrap: wrap; /* Corrected from flex-direction: wrap */
   background-color: #ffffff;
   color: #131313;
   width: 100%;
@@ -159,6 +159,7 @@ label:hover ~ label svg {
   border-radius: 21px;
   padding: 10px;
 }
+
 
 .btn {
   text-align: center;
@@ -208,3 +209,48 @@ label:hover ~ label svg {
 .ticket.expanded .show-btn {
   display: none;
 }
+
+.ticket-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.details {
+  margin-top: 10px;
+}
+
+.details-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.host-info, .foe-info {
+  width: 45%;
+  text-align: center;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.location {
+  margin-top: 15px;
+  /* font-weight: bold; */
+}
+
+.buttons {
+  margin-top: 20px;
+}
+.ticket-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+}
+
