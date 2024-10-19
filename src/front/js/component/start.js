@@ -226,11 +226,11 @@ export const Start = () => {
                   actions.forfeitMatch(store.userData.dapaintId.id);
                 }}
               />
-              <p style={{ color: "white", fontSize: "15px" }}>--Forfeit</p>
+              <p style={{ color: "white", fontSize: "10px" }}>--Forfeit</p>
               <h1 className="invite-title">WHO WON?</h1>
-              <p style={{ color: "white", fontSize: "15px" }}>Scan Tickets--</p>
+              <p style={{ color: "white", fontSize: "10px" }}>Scan Tickets--</p>
               <img
-                data-bs-dismiss="modal"              
+                data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
                 alt="Scan Tickets"
                 className="invite-close"
@@ -242,7 +242,7 @@ export const Start = () => {
               <div className="start-container">
                 <form onSubmit={handleSubmit}>
                   <div className="user-section">
-                    <p>
+                    <p style={{ color: "black", fontSize: "10px" }}>
                       Keep a personal record of your winstreak we will request
                       each one upon your 30th winstreaks
                     </p>
@@ -405,8 +405,9 @@ export const Start = () => {
                       onChange={(e) => setQrCodeInput(e.target.value)}
                       placeholder="Enter code manually"
                     />
-                    <button className="btn btn-secondary mt-2">Submit</button>
                   </div>
+                  <button className="btn btn-secondary mx-auto">Submit</button>
+
                   {errorMessage && (
                     <p style={{ color: "red", fontSize: "15px" }}>
                       {errorMessage}
