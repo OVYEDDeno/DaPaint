@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "../../styles/start.css";
 import { Context } from "../store/appContext";
 import { QrReader } from "react-qr-reader";
@@ -11,90 +11,103 @@ export const Start = () => {
   const { store, actions } = useContext(Context);
   const [previewURL, setPreviewURL] = useState("");
   const [qrCodeInput, setQrCodeInput] = useState("");
-  const [isTorchOn, setIsTorchOn] = useState(true);
+  const [isTorchOn, setIsTorchOn] = useState(false);
   const [success, setSuccess] = useState(null);
   const [torchSupported, setTorchSupported] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isScannerActive, setIsScannerActive] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
+  const videoRef = useRef(null);
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
-    const handleManualSubmit = async (e) => {
-      e.preventDefault();
-      try {
-          let success = await actions.redeemTicket(qrCodeInput);
-          if (success) {
-              setSuccess(true);
-              setQrCodeInput(''); // Clear the input after successful submission
-          } else {
-              setSuccess(false);
-          }
-          setTimeout(() => {
-              setSuccess(null);
-          }, 2000);
-      } catch (error) {
-          console.error("An error occurred during manual submission:", error);
-          setSuccess(false);
-          setTimeout(() => {
-              setSuccess(null);
-          }, 2000);
+  const handleManualSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setErrorMessage(null);
+      let success = await actions.redeemTicket(qrCodeInput);
+      if (success) {
+        setSuccess(true);
+        setQrCodeInput("");
+      } else {
+        setSuccess(false);
+        setErrorMessage("The ticket has already been redeemed or is invalid.");
       }
+      setTimeout(() => {
+        setSuccess(null);
+        setErrorMessage(null);
+      }, 2000);
+    } catch (error) {
+      console.error("An error occurred during manual submission:", error);
+      setSuccess(false);
+      setErrorMessage("An unexpected error occurred. Please try again.");
+      setTimeout(() => {
+        setSuccess(null);
+        setErrorMessage(null);
+      }, 2000);
+    }
   };
-  
-  
 
-  // const handleScan = async (result) => {
-  //   try {
-  //     let success = await actions.scanTicket(result.text);
-  //     if (success) {
-  //       setSuccess(true);
-  //       setTimeout(() => {
-  //         setSuccess(null);
-  //       }, 2000);
-  //     } else {
-  //       setSuccess(false);
-  //       setTimeout(() => {
-  //         setSuccess(null);
-  //       }, 2000);
-  //     }
-  //   } catch (error) {
-  //     console.error("An error occurred during scanning:", error);
-  //     // alert("Error: " + error.message);
-  //   }
-  // };
-  const toggleTorch = () => {
-    setIsTorchOn((prevState) => !prevState);
+  const handleScan = async (result) => {
+    if (result && result.text) {
+      try {
+        setErrorMessage(null);
+        let success = await actions.scanTicket(result.text);
+        if (success) {
+          setSuccess(true);
+          setIsScannerActive(false); // Stop scanning after successful scan
+        } else {
+          setSuccess(false);
+          setErrorMessage("The ticket has already been redeemed or is invalid.");
+        }
+        setTimeout(() => {
+          setSuccess(null);
+          setErrorMessage(null);
+        }, 2000);
+      } catch (error) {
+        console.error("An error occurred during scanning:", error);
+        setSuccess(false);
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        setTimeout(() => {
+          setSuccess(null);
+          setErrorMessage(null);
+        }, 2000);
+      }
+    }
   };
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true })
-  //     .then(() => {
-  //       // Camera permission granted
-  //     })
-  //     .catch((error) => {
-  //       console.error("Camera permission denied:", error);
-  //     });
-  // }, []);
 
-  // useEffect(() => {
-  //   navigator.mediaDevices.getSupportedConstraints().then((constraints) => {
-  //     setTorchSupported("torch" in constraints);
-  //   });
-  // }, []);
+  const toggleTorch = async () => {
+    if (videoRef.current) {
+      const track = videoRef.current.srcObject.getVideoTracks()[0];
+      try {
+        await track.applyConstraints({
+          advanced: [{ torch: !isTorchOn }],
+        });
+        setIsTorchOn(!isTorchOn);
+      } catch (err) {
+        console.error("Torch not supported:", err);
+      }
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      setHasPermission(true);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Camera permission denied:", error);
+      setHasPermission(false);
+    }
+  };
 
   useEffect(() => {
     const checkTorchSupport = async () => {
       try {
-        const supported =
-          "torch" in navigator.mediaDevices.getSupportedConstraints();
+        const supported = "torch" in await navigator.mediaDevices.getSupportedConstraints();
         setTorchSupported(supported);
-
-        if (supported) {
-          // Additional check: try to access the camera with torch
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment", advanced: [{ torch: true }] },
-          });
-          // If we get here, torch is likely supported
-          stream.getTracks().forEach((track) => track.stop()); // Clean up
-        }
       } catch (error) {
         console.error("Error checking torch support:", error);
         setTorchSupported(false);
@@ -103,20 +116,6 @@ export const Start = () => {
 
     checkTorchSupport();
   }, []);
-
-  // In your JSX:
-  // {torchSupported && (
-  //   <button
-  //     className="btn btn-secondary mt-2"
-  //     onClick={toggleTorch}
-  //   >
-  //     {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
-  //   </button>
-  // )}
-
-  const handleFileUpload = (e, setUser) => {
-    setUser(URL.createObjectURL(e.target.files[0]));
-  };
 
   const handleHostVote = (vote) => {
     setHostVote(vote);
@@ -216,7 +215,6 @@ export const Start = () => {
                 alt="Scan Tickets"
                 className="invite-close"
                 onClick={() => {
-                  // Open the second modal
                   const scanTicketModal = new window.bootstrap.Modal(
                     document.getElementById("scanTicketModal")
                   );
@@ -355,50 +353,68 @@ export const Start = () => {
             <div className="modal-body">
               <div className="start-container">
                 <div className="mx-auto">
-                  {/* <div className="qr-reader-container">
-                    <QrReader
-                      onResult={handleScan}
-                      constraints={{
-                        facingMode: "environment",
-                        advanced: [{ torch: isTorchOn }],
-                      }}
-                      videoId="qr-video"
-                      style={{
-                        width: "20px",
-                        height: "auto",
-                        backgroundColor:
-                          success === true
-                            ? "green"
-                            : success === false
-                            ? "red"
-                            : "transparent",
-                        border: "2px solid white",
-                      }}
-                    />
-                  </div> */}
-                  {torchSupported && (
-                    <button
-                      className="btn btn-secondary mt-2"
-                      onClick={toggleTorch}
-                    >
-                      {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
+                  {!hasPermission ? (
+                    <button onClick={requestCameraPermission} className="btn btn-primary">
+                      Allow Camera Access
                     </button>
-                  )}</div>
+                  ) : (
+                    <>
+                      {torchSupported && (
+                        <button
+                          className="btn btn-secondary mt-2"
+                          onClick={toggleTorch}
+                        >
+                          {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
+                        </button>
+                      )}
+                      <div className="qr-reader-container">
+                        {isScannerActive && (
+                          <QrReader
+                            onResult={handleScan}
+                            constraints={{
+                              facingMode: "environment",
+                            }}
+                            videoRef={videoRef}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={() => setIsScannerActive(!isScannerActive)}
+                      >
+                        {isScannerActive ? "Stop Scanning" : "Start Scanning"}
+                      </button>
+                    </>
+                  )}
+                </div>
 
-                  <form onSubmit={handleManualSubmit}>
-                    <h6>Or enter code manually:</h6>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={qrCodeInput}
-                        onChange={(e) => setQrCodeInput(e.target.value)}
-                        placeholder="Enter code manually"
-                      />
-                      <button type="submit">Submit</button>
-                    </div>
-                  </form>
-                
+                <form onSubmit={handleManualSubmit}>
+                  <h6>Or enter code manually:</h6>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={qrCodeInput}
+                      onChange={(e) => setQrCodeInput(e.target.value)}
+                      placeholder="Enter code manually"
+                    />
+                    <button className="btn btn-secondary mt-2">Submit</button>
+                  </div>
+                  {errorMessage && (
+                    <p style={{ color: "red", fontSize: "15px" }}>
+                      {errorMessage}
+                    </p>
+                  )}
+                  {success && (
+                    <p style={{ color: "green" }}>
+                      Ticket redeemed successfully!
+                    </p>
+                  )}
+                </form>
               </div>
             </div>
           </div>

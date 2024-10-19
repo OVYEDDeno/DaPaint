@@ -384,34 +384,34 @@ const getState = ({ getStore, getActions, setStore }) => {
         // Return formatted time in 12-hour format
         return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
       },
-      scanTicket: async (orderId) => {
+      
+      scanTicket: async (ticketCode) => { // Use ticketCode as parameter
         const token = localStorage.getItem("token");
         try {
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/api/fufill-order${orderId}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
+          const response = await fetch(`${process.env.BACKEND_URL}/api/fufill-order`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ ticket_code: ticketCode }), // Send ticket_code as expected by the backend
+          });
+      
           if (response.ok) {
             const data = await response.json();
-            console.log("Ticket scan successfully", data);
-            return true;
+            console.log("Ticket scanned successfully", data);
+            return true; // Return true if scanning is successful
           } else {
             const error = await response.json();
             console.error("Failed to scan ticket:", error);
-            return false;
+            return false; // Return false if scanning fails
           }
         } catch (error) {
-          console.error("Error:", error);
-          return false;
+          console.error("Error during ticket scan:", error);
+          return false; // Return false on catch
         }
       },
+      
 
       redeemTicket: async (ticketCode) => {
         const token = localStorage.getItem("token");
