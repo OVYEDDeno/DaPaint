@@ -418,6 +418,7 @@ export const Setting = ({ onClose }) => {
                             ></td>
                           );
                         }
+                        // <p>You haven't bought any tickets</p>    
 
                         return (
                           <td
@@ -464,11 +465,15 @@ export const Setting = ({ onClose }) => {
                                     alt="QR Code"
                                     className="qr-code expanded"
                                   />
-                                  <div className="details-label">Details</div>
-                                  {ticket.dapaint.id}
+                                  <div className="details-label">Details
+                                  {ticket.dapaint.hostFoeId.name} vs {ticket.dapaint.foeId.name}
+                                  {ticket.dapaint.location}
+                                  {ticket.dapaint.hostFoeId.profile_pic}                                  
+                                  {ticket.dapaint.fitnessStyle}
                                   <button className="btn refund-btn">
                                     REFUND
                                   </button>
+                                  </div>
                                   <button
                                     className="btn hide-btn"
                                     onClick={() => toggleQRCode(ticketIndex)}
