@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../styles/start.css";
 import { Context } from "../store/appContext";
 import { QrReader } from "react-qr-reader";
@@ -16,8 +16,6 @@ export const Start = () => {
   const [torchSupported, setTorchSupported] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isScannerActive, setIsScannerActive] = useState(false);
-  const [hasPermission, setHasPermission] = useState(false);
-  const videoRef = useRef(null);
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
 
@@ -55,10 +53,11 @@ export const Start = () => {
         let success = await actions.scanTicket(result.text);
         if (success) {
           setSuccess(true);
-          setIsScannerActive(false); // Stop scanning after successful scan
         } else {
           setSuccess(false);
-          setErrorMessage("The ticket has already been redeemed or is invalid.");
+          setErrorMessage(
+            "The ticket has already been redeemed or is invalid."
+          );
         }
         setTimeout(() => {
           setSuccess(null);
@@ -77,45 +76,44 @@ export const Start = () => {
   };
 
   const toggleTorch = async () => {
-    if (videoRef.current) {
-      const track = videoRef.current.srcObject.getVideoTracks()[0];
-      try {
-        await track.applyConstraints({
-          advanced: [{ torch: !isTorchOn }],
-        });
-        setIsTorchOn(!isTorchOn);
-      } catch (err) {
-        console.error("Torch not supported:", err);
-      }
-    }
-  };
-
-  const requestCameraPermission = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      setHasPermission(true);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", advanced: [{ torch: !isTorchOn }] },
+      });
+      const track = stream.getVideoTracks()[0];
+      await track.applyConstraints({ advanced: [{ torch: !isTorchOn }] });
+      setIsTorchOn(!isTorchOn);
     } catch (error) {
-      console.error("Camera permission denied:", error);
-      setHasPermission(false);
+      console.error("Error toggling torch:", error);
+      setErrorMessage(
+        "Failed to toggle torch. It may not be supported on this device."
+      );
     }
   };
 
   useEffect(() => {
     const checkTorchSupport = async () => {
       try {
-        const supported = "torch" in await navigator.mediaDevices.getSupportedConstraints();
+        const supported =
+          "torch" in navigator.mediaDevices.getSupportedConstraints();
         setTorchSupported(supported);
+        if (supported) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment", advanced: [{ torch: true }] },
+          });
+          stream.getTracks().forEach((track) => track.stop());
+        }
       } catch (error) {
         console.error("Error checking torch support:", error);
         setTorchSupported(false);
       }
     };
-
     checkTorchSupport();
   }, []);
+
+  const handleFileUpload = (e, setUser) => {
+    setUser(URL.createObjectURL(e.target.files[0]));
+  };
 
   const handleHostVote = (vote) => {
     setHostVote(vote);
@@ -133,21 +131,17 @@ export const Start = () => {
       alert("No valid event found for this user");
       return;
     }
-
     let winner_id = null;
     let loser_id = null;
     let img_url = e.target.img.value;
-
     if (hostVote === "winner") {
       winner_id = store.userData.indulgers.host.id;
       loser_id = store.userData.indulgers.foe.id;
     }
-
     if (foeVote === "winner") {
       winner_id = store.userData.indulgers.foe.id;
       loser_id = store.userData.indulgers.host.id;
     }
-
     let result = await actions.updateWinstreak(
       store.userData.dapaintId.id,
       winner_id,
@@ -171,6 +165,32 @@ export const Start = () => {
   const getDisplayImageHost = () => {
     const hostProfilePic = store.userData.indulgers?.host.profile_pic;
     return hostProfilePic?.image_url || placeholderImage;
+  };
+
+  const openScanTicketModal = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
+      setIsScannerActive(true);
+      const scanTicketModal = new window.bootstrap.Modal(
+        document.getElementById("scanTicketModal")
+      );
+      scanTicketModal.show();
+    } catch (error) {
+      console.error("Camera permission denied:", error);
+      setErrorMessage("Camera permission is required to scan tickets.");
+    }
+  };
+
+  const closeScanTicketModal = () => {
+    setIsScannerActive(false);
+    const scanTicketModal = window.bootstrap.Modal.getInstance(
+      document.getElementById("scanTicketModal")
+    );
+    if (scanTicketModal) {
+      scanTicketModal.hide();
+    }
   };
 
   return (
@@ -210,16 +230,10 @@ export const Start = () => {
               <h1 className="invite-title">WHO WON?</h1>
               <p style={{ color: "white", fontSize: "15px" }}>Scan Tickets--</p>
               <img
-                data-bs-dismiss="modal"
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
                 alt="Scan Tickets"
                 className="invite-close"
-                onClick={() => {
-                  const scanTicketModal = new window.bootstrap.Modal(
-                    document.getElementById("scanTicketModal")
-                  );
-                  scanTicketModal.show();
-                }}
+                onClick={openScanTicketModal}
               />
             </div>
 
@@ -339,6 +353,7 @@ export const Start = () => {
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Back-Arrow-3d-icon.png"
                 alt="Back"
                 className="invite-close"
+                onClick={closeScanTicketModal}
               />
               <h1 className="invite-title">
                 SCAN TICKETS
@@ -347,49 +362,36 @@ export const Start = () => {
                   src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/512/Cross-Mark-Flat-icon.png"
                   alt="Close"
                   className="invite-close"
+                  onClick={closeScanTicketModal}
                 />
               </h1>
             </div>
             <div className="modal-body">
               <div className="start-container">
                 <div className="mx-auto">
-                  {!hasPermission ? (
-                    <button onClick={requestCameraPermission} className="btn btn-primary">
-                      Allow Camera Access
+                  {torchSupported && (
+                    <button
+                      className="btn btn-secondary mt-2"
+                      onClick={toggleTorch}
+                    >
+                      {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
                     </button>
-                  ) : (
-                    <>
-                      {torchSupported && (
-                        <button
-                          className="btn btn-secondary mt-2"
-                          onClick={toggleTorch}
-                        >
-                          {isTorchOn ? "Turn Off Torch" : "Turn On Torch"}
-                        </button>
-                      )}
-                      <div className="qr-reader-container">
-                        {isScannerActive && (
-                          <QrReader
-                            onResult={handleScan}
-                            constraints={{
-                              facingMode: "environment",
-                            }}
-                            videoRef={videoRef}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                            }}
-                          />
-                        )}
-                      </div>
-                      <button
-                        className="btn btn-primary mt-2"
-                        onClick={() => setIsScannerActive(!isScannerActive)}
-                      >
-                        {isScannerActive ? "Stop Scanning" : "Start Scanning"}
-                      </button>
-                    </>
                   )}
+                  <div className="qr-reader-container">
+                    {isScannerActive && (
+                      <QrReader
+                        onResult={handleScan}
+                        constraints={{
+                          facingMode: "environment",
+                          advanced: [{ torch: isTorchOn }],
+                        }}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 <form onSubmit={handleManualSubmit}>
