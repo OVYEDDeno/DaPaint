@@ -230,6 +230,7 @@ export const Start = () => {
               <h1 className="invite-title">WHO WON?</h1>
               <p style={{ color: "white", fontSize: "15px" }}>Scan Tickets--</p>
               <img
+                data-bs-dismiss="modal"              
                 src="https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Admission-Tickets-3d-icon.png"
                 alt="Scan Tickets"
                 className="invite-close"
