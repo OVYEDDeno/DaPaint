@@ -332,7 +332,7 @@ export const DaPaintManager = () => {
               </PayPalScriptProvider>
               {/* <h1 style={{ color: "black" }}>for 30 days or until you lose</h1> */}
               <p style={{ color: "black", fontSize: "15px" }}>
-                So people don't say they're <del>single</del>; I mean, loser by
+                So people don't say they're <del>single by choice</del>; I mean, loser by
                 choice.
               </p>
             </div>
