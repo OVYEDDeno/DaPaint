@@ -384,19 +384,23 @@ const getState = ({ getStore, getActions, setStore }) => {
         // Return formatted time in 12-hour format
         return `${formattedDate} ${hours}:${minutes}:${seconds} ${ampm}`;
       },
-      
-      scanTicket: async (ticketCode) => { // Use ticketCode as parameter
+
+      scanTicket: async (ticketCode) => {
+        // Use ticketCode as parameter
         const token = localStorage.getItem("token");
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/fufill-order`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ ticket_code: ticketCode }), // Send ticket_code as expected by the backend
-          });
-      
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/fufill-order`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ ticket_code: ticketCode }), // Send ticket_code as expected by the backend
+            }
+          );
+
           if (response.ok) {
             const data = await response.json();
             console.log("Ticket scanned successfully", data);
@@ -411,36 +415,37 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false; // Return false on catch
         }
       },
-      
 
       redeemTicket: async (ticketCode) => {
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`${process.env.BACKEND_URL}/api/fufill-order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ ticket_code: ticketCode }),
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Ticket redeemed successfully", data);
-                return true;
-            } else {
-                const error = await response.json();
-                console.error("Failed to redeem ticket:", error);
-                return false;
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/fufill-order`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ ticket_code: ticketCode }),
             }
-        } catch (error) {
-            console.error("Error:", error);
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Ticket redeemed successfully", data);
+            return true;
+          } else {
+            const error = await response.json();
+            console.error("Failed to redeem ticket:", error);
             return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
         }
-    },  
-   
-    
+      },
+
       deleteEvent: async (eventId) => {
         const token = localStorage.getItem("token");
         try {
@@ -468,7 +473,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
-      updateWinstreak: async (daPaint_id, winner_id, loser_id, img_url) => {
+      updateWinstreak: async (daPaint_id, winner_id, loser_id, img_url, dapaint_unlocked) => {
         const token = localStorage.getItem("token");
 
         // Validate daPaint_id
@@ -495,6 +500,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 winner: winner_id,
                 loser: loser_id,
                 img_url: img_url,
+                dapaint_unlocked: dapaint_unlocked,
               }),
             }
           );
@@ -512,6 +518,52 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error updating win streak:", error);
         }
       },
+      // updateWinstreak: async (
+      //   daPaint_id,
+      //   winner_id,
+      //   loser_id,
+      //   img_url,
+      //   dapaint_unlocked
+      // ) => {
+      //   const token = localStorage.getItem("token");
+
+      //   if (!token) {
+      //     console.error("No token found");
+      //     return false;
+      //   }
+
+      //   try {
+      //     const response = await fetch(
+      //       `${process.env.BACKEND_URL}/api/update-win-streak/${daPaint_id}`,
+      //       {
+      //         method: "PUT",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${token}`,
+      //         },
+      //         body: JSON.stringify({
+      //           winner: winner_id,
+      //           loser: loser_id,
+      //           img_url: img_url,
+      //           dapaint_unlocked: dapaint_unlocked,
+      //         }),
+      //       }
+      //     );
+
+      //     if (response.status !== 200) {
+      //       const errorData = await response.json();
+      //       console.error("Failed to update win streak:", errorData);
+      //       return false;
+      //     }
+
+      //     const data = await response.json();
+      //     console.log("Win streak updated:", data);
+      //     return true;
+      //   } catch (error) {
+      //     console.error("Error updating win streak:", error);
+      //     return false;
+      //   }
+      // },
 
       fetchCurrentUser: async () => {
         try {

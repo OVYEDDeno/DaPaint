@@ -125,6 +125,37 @@ export const Start = () => {
     setHostVote(vote === "winner" ? "loser" : hostVote);
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!store.userData.dapaintId.id) {
+  //     alert("No valid event found for this user");
+  //     return;
+  //   }
+  //   let winner_id = null;
+  //   let loser_id = null;
+  //   let img_url = e.target.img.value;
+  //   if (hostVote === "winner") {
+  //     winner_id = store.userData.indulgers.host.id;
+  //     loser_id = store.userData.indulgers.foe.id;
+  //   }
+  //   if (foeVote === "winner") {
+  //     winner_id = store.userData.indulgers.foe.id;
+  //     loser_id = store.userData.indulgers.host.id;
+  //   }
+  //   let result = await actions.updateWinstreak(
+  //     store.userData.dapaintId.id,
+  //     winner_id,
+  //     loser_id,
+  //     img_url
+  //   );
+  //   if (result) {
+  //     alert("Winstreak has been updated");
+  //     actions.fetchCurrentUser();
+  //     window.location.reload();
+  //   } else {
+  //     alert("Failed to update win streak");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!store.userData.dapaintId.id) {
@@ -146,7 +177,8 @@ export const Start = () => {
       store.userData.dapaintId.id,
       winner_id,
       loser_id,
-      img_url
+      img_url,
+      false  // Set dapaint_unlocked to false
     );
     if (result) {
       alert("Winstreak has been updated");
