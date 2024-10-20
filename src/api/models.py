@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from flask import current_app
-import random, string, qrcode, uuid, os
+import random, string, uuid, os
 
 db = SQLAlchemy()
 

@@ -1,17 +1,14 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from api import send_email
-from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Insight, UserDisqualification, Reports, invitee_association, Feedback, Ticket, Orders
+from api.models import db, InviteCode, User, DaPaint, UserImg, Notifications, Reports, invitee_association, Feedback, Ticket, Orders
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 from sqlalchemy import or_, and_, func
-import re, os, qrcode, uuid
+import re, os
 from sqlalchemy.orm import aliased
 import cloudinary.uploader as uploader
-from cloudinary.uploader import destroy
-from cloudinary.api import delete_resources_by_tag
-import cloudinary
 import random
 import string
 # from sendgrid.helpers.mail import Mail
