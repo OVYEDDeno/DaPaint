@@ -298,7 +298,7 @@ def get_max_invitee():
     else:
         return jsonify({"message": "No inviter found with invitees"}), 404
 
-# RESET WINSTREAK
+
 @api.route('/reset-win-streak', methods=['PUT'])
 @jwt_required()
 def reset_win_streak():
@@ -694,13 +694,20 @@ def update_win_streak(dapaint_id):
         
         daPaint.winnerId = winner.id
         daPaint.loserId = loser.id
-
-        try:
-            db.session.commit()
-            print("Winner and loser stats updated.")
-        except Exception as e:
-            print(f"Stats update failed: {e}")
-            return jsonify({"msg": "Stats update failed"}), 500
+    
+    if winner.winstreak==WINSTREAK_GOAL:
+        new_feedback = Feedback(
+        user_id=winner.id,
+        feedback_text=f"USER HAS WON! Call {winner.name}{winner.phone}",
+        rating=5,
+        created_at=datetime.utcnow()
+    )
+    try:
+        db.session.commit()
+        print("Winner and loser stats updated.")
+    except Exception as e:
+        print(f"Stats update failed: {e}")
+        return jsonify({"msg": "Stats update failed"}), 500
 
     return jsonify(daPaint.serialize()), 200
 

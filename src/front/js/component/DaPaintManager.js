@@ -129,6 +129,22 @@ export const DaPaintManager = () => {
     } catch (error) {
       console.error("Error clocking in:", error);
     }
+    // data-bs-target="#lineUp"
+    // data-bs-toggle="modal"
+    // Get references to both modals
+    const DaPaint3Modal = document.getElementById("DaPaint3");
+    const lineUpModal = document.getElementById("lineUp");
+
+    // Hide the DaPaint3 modal
+    const bsModalDaPaint3 = bootstrap.Modal.getInstance(DaPaint3Modal);
+    bsModalDaPaint3.hide();
+
+    // Use a small delay to ensure the first modal is fully hidden
+    setTimeout(() => {
+      // Show the lineUp modal
+      const bsModallineUp = new bootstrap.Modal(lineUpModal);
+      bsModallineUp.show();
+    }, 300);
   };
   const isCloseZipcode = (userZipcode, targetZipcode, range = 100) => {
     return Math.abs(parseInt(userZipcode) - parseInt(targetZipcode)) <= range;
@@ -527,8 +543,8 @@ export const DaPaintManager = () => {
                           <button
                             onClick={() => handleClockIn(event)}
                             className="btn-danger"
-                            data-bs-target="#lineUp"
-                            data-bs-toggle="modal"
+                            // data-bs-target="#lineUp"
+                            // data-bs-toggle="modal"
                           >
                             CLOCK IN
                           </button>
@@ -847,6 +863,7 @@ export const DaPaintManager = () => {
           !store.userData?.user?.dapaint_unlocked ? "#DaPaint" : "#DaPaint3"
         }
         data-bs-toggle="modal"
+        // onClick={}
       >
         <h1>⚔️FIND FOE⚔️</h1>
       </button>
