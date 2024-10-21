@@ -695,13 +695,13 @@ def update_win_streak(dapaint_id):
         daPaint.winnerId = winner.id
         daPaint.loserId = loser.id
     
-    if winner.winstreak==WINSTREAK_GOAL:
-        new_feedback = Feedback(
-        user_id=winner.id,
-        feedback_text=f"USER HAS WON! Call {winner.name}{winner.phone}",
-        rating=5,
-        created_at=datetime.utcnow()
-    )
+    # if winner.winstreak==WINSTREAK_GOAL:
+    #     new_feedback = Feedback(
+    #     user_id=winner.id,
+    #     feedback_text=f"USER HAS WON! Call {winner.name}{winner.phone}",
+    #     rating=5,
+    #     created_at=datetime.utcnow()
+    # )
     try:
         db.session.commit()
         print("Winner and loser stats updated.")
