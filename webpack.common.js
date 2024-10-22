@@ -9,7 +9,7 @@ module.exports = {
   ],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath: '/'
   },
   module: {
@@ -22,8 +22,8 @@ module.exports = {
       {
         test: /\.(css|scss)$/, 
         use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader" // translates CSS into CommonJS
+          "style-loader",
+          "css-loader"
         ]
       },
       {
@@ -44,7 +44,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'template.html'
+      template: 'template.html',
+      filename: 'index.html',
+      publicPath: '/'
     }),
     new Dotenv({ safe: true, systemvars: true })
   ]
