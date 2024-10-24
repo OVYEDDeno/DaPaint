@@ -14,7 +14,6 @@ export const Setting = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [qrCodes, setQrCodes] = useState(Array(9).fill(null));
-  const [expandedIndex, setExpandedIndex] = useState(null);
   const [showOldTickets, setShowOldTickets] = useState(false);
   const placeholderImage =
     "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/512/Man-3d-Medium-Dark-icon.png";
