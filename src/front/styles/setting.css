@@ -4,6 +4,7 @@
   box-shadow: 0px 0px 68px #333333;
   border-radius: 34px;
 }
+
 .setting-header {
   margin-bottom: 60px;
   align-items: center;
@@ -15,9 +16,8 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  position: relative; /* Change to relative for better alignment */
+  position: relative;
 }
-
 
 .setting-header img {
   display: flex;
@@ -116,6 +116,7 @@ button[type="submit"] {
   width: 100%;
   border-radius: 5px;
 }
+
 .closeIcon {
   color: #fff;
 }
@@ -147,19 +148,20 @@ label:hover ~ label svg {
   fill: #ffd700;
 }
 
+/* Updated tickets-related styles */
 .tickets-container {
   text-align: center;
-  display: flex;
-  flex-wrap: wrap; /* Corrected from flex-direction: wrap */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   background-color: #ffffff;
   color: #131313;
   width: 100%;
   max-width: 500px;
   margin: auto;
   border-radius: 21px;
-  padding: 10px;
+  padding: 20px;
 }
-
 
 .btn {
   text-align: center;
@@ -224,7 +226,8 @@ label:hover ~ label svg {
   justify-content: space-between;
 }
 
-.host-info, .foe-info {
+.host-info, 
+.foe-info {
   width: 45%;
   text-align: center;
 }
@@ -238,12 +241,12 @@ label:hover ~ label svg {
 
 .location {
   margin-top: 15px;
-  /* font-weight: bold; */
 }
 
 .buttons {
   margin-top: 20px;
 }
+
 .ticket-code-container {
   display: flex;
   flex-direction: column;
@@ -254,3 +257,52 @@ label:hover ~ label svg {
   width: 100%;
 }
 
+/* New styles for old tickets */
+.old-tickets-section {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.old-tickets-button {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+}
+
+.old-tickets-button:hover {
+  box-shadow: 0px 0px 68px #333333;
+}
+
+.hidden-tickets {
+  display: none;
+}
+
+.show-old-tickets {
+  display: grid;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .tickets-container {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+
+  .ticket-cell {
+    width: 50%;
+  }
+
+  .ticket-cell.empty {
+    width: 100%;
+  }
+
+  .qr-code.expanded {
+    width: 200px;
+    height: 200px;
+  }
+}

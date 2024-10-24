@@ -270,6 +270,15 @@ def get_max_win_streak():
     else:
         return jsonify({"message": "No user found"}), 404
 
+@api.route('/reset-win-streak', methods=['PUT'])
+@jwt_required()
+def reset_win_streak():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    user.winstreak = 0
+    db.session.commit()
+    return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200
+
 
 @api.route('/max-invitee', methods=['GET'])
 @jwt_required()
@@ -298,15 +307,6 @@ def get_max_invitee():
     else:
         return jsonify({"message": "No inviter found with invitees"}), 404
 
-
-@api.route('/reset-win-streak', methods=['PUT'])
-@jwt_required()
-def reset_win_streak():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    user.winstreak = 0
-    db.session.commit()
-    return jsonify({"message": "Goal reached Wins Streak Reset!"}), 200
 
 @api.route('/user-img', methods=['POST'])
 @jwt_required()
