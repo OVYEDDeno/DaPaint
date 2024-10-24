@@ -112,7 +112,7 @@ export const Setting = ({ onClose }) => {
     getTicketsinfo();
   }, []);
   const currentDate = new Date();
-  
+
   // Function to determine if a ticket is old (more than 24 hours old)
   const isOldTicket = (ticketDate) => {
     const ticketDateTime = new Date(ticketDate);
@@ -124,7 +124,7 @@ export const Setting = ({ onClose }) => {
   const sortTickets = () => {
     const current = [];
     const old = [];
-    
+
     store.userData?.user?.tickets?.forEach((ticket) => {
       if (isOldTicket(ticket.dapaint.date_time)) {
         old.push(ticket);
@@ -132,7 +132,7 @@ export const Setting = ({ onClose }) => {
         current.push(ticket);
       }
     });
-    
+
     return { current, old };
   };
 
@@ -346,200 +346,342 @@ export const Setting = ({ onClose }) => {
               </h1>
             </div>
             <div className="tickets-section">
-  {/* Current Tickets */}
-  <div className="tickets-container mx-auto">
-    <table className="ticket-table">
-      <tbody>
-        {store.userData?.user?.tickets?.length === 0 ? (
-          <tr>
-            <td colSpan={3} className="ticket-cell empty">
-              <p>You haven't bought any tickets.</p>
-            </td>
-          </tr>
-        ) : (
-          <>
-            {/* Current Tickets */}
-            {Array.from({
-              length: Math.ceil(
-                store.userData?.user?.tickets?.filter(ticket => 
-                  !isOldTicket(ticket.dapaint.date_time)
-                ).length / 3
-              ),
-            }).map((_, rowIndex) => (
-              <tr key={`current-${rowIndex}`}>
-                {Array.from({ length: 3 }).map((_, colIndex) => {
-                  const currentTickets = store.userData?.user?.tickets?.filter(
-                    ticket => !isOldTicket(ticket.dapaint.date_time)
-                  );
-                  const ticketIndex = rowIndex * 3 + colIndex;
-                  const isExpanded = expandedIndex === ticketIndex;
-                  const ticket = currentTickets?.[ticketIndex];
+              {/* Current Tickets */}
+              <div className="tickets-container mx-auto">
+                <table className="ticket-table">
+                  <tbody>
+                    {store.userData?.user?.tickets?.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="ticket-cell empty">
+                          <p>You haven't bought any tickets.</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {/* Current Tickets */}
+                        {Array.from({
+                          length: Math.ceil(
+                            store.userData?.user?.tickets?.filter(
+                              (ticket) => !isOldTicket(ticket.dapaint.date_time)
+                            ).length / 3
+                          ),
+                        }).map((_, rowIndex) => (
+                          <tr key={`current-${rowIndex}`}>
+                            {Array.from({ length: 3 }).map((_, colIndex) => {
+                              const currentTickets =
+                                store.userData?.user?.tickets?.filter(
+                                  (ticket) =>
+                                    !isOldTicket(ticket.dapaint.date_time)
+                                );
+                              const ticketIndex = rowIndex * 3 + colIndex;
+                              const isExpanded = expandedIndex === ticketIndex;
+                              const ticket = currentTickets?.[ticketIndex];
 
-                  return (
-                    <td
-                      className={`ticket-cell ${
-                        expandedIndex !== null && !isExpanded ? "hidden" : ""
-                      }`}
-                      key={colIndex}
-                    >
-                      {ticket ? (
-                        <div className={`ticket ${isExpanded ? "expanded" : ""}`}>
-                          {!isExpanded && (
-                            <>
-                              <img
-                                src={ticket.qr_code_path}
-                                alt="QR Code"
-                                className="qr-code"
-                              />
-                              {actions.convertTo12Hr(ticket.dapaint.date_time)}
+                              return (
+                                <td
+                                  className={`ticket-cell ${
+                                    expandedIndex !== null && !isExpanded
+                                      ? "hidden"
+                                      : ""
+                                  }`}
+                                  key={colIndex}
+                                >
+                                  {ticket ? (
+                                    <div
+                                      className={`ticket ${
+                                        isExpanded ? "expanded" : ""
+                                      }`}
+                                    >
+                                      {!isExpanded && (
+                                        <>
+                                          <img
+                                            src={ticket.qr_code_path}
+                                            alt="QR Code"
+                                            className="qr-code"
+                                          />
+                                          {actions.convertTo12Hr(
+                                            ticket.dapaint.date_time
+                                          )}
+                                          <button
+                                            className="btn show-btn"
+                                            onClick={() =>
+                                              toggleQRCode(ticketIndex)
+                                            }
+                                          >
+                                            SHOW
+                                          </button>
+                                        </>
+                                      )}
+
+                                      {isExpanded && (
+                                        <>
+                                          <div className="ticket-info">
+                                            <div className="ticket-code mx-auto">
+                                              <p>Ticket Code</p>
+                                              <h1>
+                                                {ticket.ticket_code}
+                                                <img
+                                                  src={ticket.qr_code_path}
+                                                  alt="QR Code"
+                                                  className="qr-code expanded"
+                                                />
+                                              </h1>
+                                            </div>
+                                            <div className="details">
+                                              <div className="details-label">
+                                                Location:{" "}
+                                                {ticket.dapaint.location}
+                                              </div>
+                                              <div className="details-content">
+                                                <div className="host-info">
+                                                  <img
+                                                    src={
+                                                      ticket.dapaint.hostFoeId
+                                                        .profile_pic
+                                                        ?.image_url ||
+                                                      placeholderImage
+                                                    }
+                                                    alt="Host Profile"
+                                                    className="profile-pic"
+                                                    style={{
+                                                      width: "100px",
+                                                      height: "100px",
+                                                    }}
+                                                  />
+                                                  <div className="host-name">
+                                                    {
+                                                      ticket.dapaint.hostFoeId
+                                                        .name
+                                                    }
+                                                  </div>
+                                                </div>
+                                                <div className="foe-info">
+                                                  <img
+                                                    src={
+                                                      ticket.dapaint.foeId
+                                                        .profile_pic
+                                                        ?.image_url ||
+                                                      placeholderImage
+                                                    }
+                                                    alt="Foe Profile"
+                                                    className="profile-pic"
+                                                    style={{
+                                                      width: "100px",
+                                                      height: "100px",
+                                                    }}
+                                                  />
+                                                  <div className="foe-name">
+                                                    {ticket.dapaint.foeId.name}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="buttons">
+                                              <button className="btn refund-btn">
+                                                REFUND
+                                              </button>
+                                              <button
+                                                className="btn hide-btn"
+                                                onClick={() =>
+                                                  toggleQRCode(ticketIndex)
+                                                }
+                                              >
+                                                HIDE
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <div className="ticket empty">
+                                      No Ticket Available
+                                    </div>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+
+                        {/* Old Tickets Button and Section */}
+                        {store.userData?.user?.tickets?.some((ticket) =>
+                          isOldTicket(ticket.dapaint.date_time)
+                        ) && (
+                          <tr>
+                            <td colSpan={3}>
                               <button
-                                className="btn show-btn"
-                                onClick={() => toggleQRCode(ticketIndex)}
+                                className="old-tickets-button"
+                                onClick={() =>
+                                  setShowOldTickets(!showOldTickets)
+                                }
                               >
-                                SHOW
+                                {showOldTickets
+                                  ? "Hide Old Tickets"
+                                  : "Show Old Tickets"}
                               </button>
-                            </>
-                          )}
+                            </td>
+                          </tr>
+                        )}
 
-                          {isExpanded && (
-                            <>
-                              <div className="ticket-info">
-                                <div className="ticket-code mx-auto">
-                                  <p>Ticket Code</p>
-                                  <h1>
-                                    {ticket.ticket_code}
-                                    <img
-                                      src={ticket.qr_code_path}
-                                      alt="QR Code"
-                                      className="qr-code expanded"
-                                    />
-                                  </h1>
-                                </div>
-                                <div className="details">
-                                  <div className="details-label">
-                                    Location: {ticket.dapaint.location}
-                                  </div>
-                                  <div className="details-content">
-                                    <div className="host-info">
-                                      <img
-                                        src={
-                                          ticket.dapaint.hostFoeId.profile_pic?.image_url ||
-                                          placeholderImage
-                                        }
-                                        alt="Host Profile"
-                                        className="profile-pic"
-                                        style={{
-                                          width: "100px",
-                                          height: "100px",
-                                        }}
-                                      />
-                                      <div className="host-name">
-                                        {ticket.dapaint.hostFoeId.name}
-                                      </div>
-                                    </div>
-                                    <div className="foe-info">
-                                      <img
-                                        src={
-                                          ticket.dapaint.foeId.profile_pic?.image_url ||
-                                          placeholderImage
-                                        }
-                                        alt="Foe Profile"
-                                        className="profile-pic"
-                                        style={{
-                                          width: "100px",
-                                          height: "100px",
-                                        }}
-                                      />
-                                      <div className="foe-name">
-                                        {ticket.dapaint.foeId.name}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="buttons">
-                                  <button className="btn refund-btn">
-                                    REFUND
-                                  </button>
-                                  <button
-                                    className="btn hide-btn"
-                                    onClick={() => toggleQRCode(ticketIndex)}
+                        {/* Old Tickets Content */}
+                        {showOldTickets &&
+                          Array.from({
+                            length: Math.ceil(
+                              store.userData?.user?.tickets?.filter((ticket) =>
+                                isOldTicket(ticket.dapaint.date_time)
+                              ).length / 3
+                            ),
+                          }).map((_, rowIndex) => (
+                            <tr
+                              key={`old-${rowIndex}`}
+                              className={
+                                showOldTickets
+                                  ? "show-old-tickets"
+                                  : "hidden-tickets"
+                              }
+                            >
+                              {Array.from({ length: 3 }).map((_, colIndex) => {
+                                const oldTickets =
+                                  store.userData?.user?.tickets?.filter(
+                                    (ticket) =>
+                                      isOldTicket(ticket.dapaint.date_time)
+                                  );
+                                const ticketIndex = `old-${
+                                  rowIndex * 3 + colIndex
+                                }`;
+                                const isExpanded =
+                                  expandedIndex === ticketIndex;
+                                const ticket =
+                                  oldTickets?.[rowIndex * 3 + colIndex];
+
+                                return ticket ? (
+                                  <td
+                                    className={`ticket-cell ${
+                                      expandedIndex !== null && !isExpanded
+                                        ? "hidden"
+                                        : ""
+                                    }`}
+                                    key={colIndex}
                                   >
-                                    HIDE
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="ticket empty">
-                          No Ticket Available
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+                                    {/* Same ticket content structure as above */}
+                                    <div
+                                      className={`ticket ${
+                                        isExpanded ? "expanded" : ""
+                                      }`}
+                                    >
+                                      {!isExpanded && (
+                                        <>
+                                          <img
+                                            src={ticket.qr_code_path}
+                                            alt="QR Code"
+                                            className="qr-code"
+                                          />
+                                          {actions.convertTo12Hr(
+                                            ticket.dapaint.date_time
+                                          )}
+                                          <button
+                                            className="btn show-btn"
+                                            onClick={() =>
+                                              toggleQRCode(ticketIndex)
+                                            }
+                                          >
+                                            SHOW
+                                          </button>
+                                        </>
+                                      )}
 
-            {/* Old Tickets Button and Section */}
-            {store.userData?.user?.tickets?.some(ticket => 
-              isOldTicket(ticket.dapaint.date_time)
-            ) && (
-              <tr>
-                <td colSpan={3}>
-                  <button 
-                    className="old-tickets-button"
-                    onClick={() => setShowOldTickets(!showOldTickets)}
-                  >
-                    {showOldTickets ? 'Hide Old Tickets' : 'Show Old Tickets'}
-                  </button>
-                </td>
-              </tr>
-            )}
-
-            {/* Old Tickets Content */}
-            {showOldTickets && Array.from({
-              length: Math.ceil(
-                store.userData?.user?.tickets?.filter(ticket => 
-                  isOldTicket(ticket.dapaint.date_time)
-                ).length / 3
-              ),
-            }).map((_, rowIndex) => (
-              <tr key={`old-${rowIndex}`} className={showOldTickets ? 'show-old-tickets' : 'hidden-tickets'}>
-                {Array.from({ length: 3 }).map((_, colIndex) => {
-                  const oldTickets = store.userData?.user?.tickets?.filter(
-                    ticket => isOldTicket(ticket.dapaint.date_time)
-                  );
-                  const ticketIndex = `old-${rowIndex * 3 + colIndex}`;
-                  const isExpanded = expandedIndex === ticketIndex;
-                  const ticket = oldTickets?.[rowIndex * 3 + colIndex];
-
-                  return ticket ? (
-                    <td
-                      className={`ticket-cell ${
-                        expandedIndex !== null && !isExpanded ? "hidden" : ""
-                      }`}
-                      key={colIndex}
-                    >
-                      {/* Same ticket content structure as above */}
-                      <div className={`ticket ${isExpanded ? "expanded" : ""}`}>
-                        {/* Reuse the same ticket content structure */}
-                        {/* Copy the entire ticket content structure from above */}
-                        {/* Just changing the toggleQRCode to use the new ticketIndex */}
-                        {/* ... rest of the ticket content ... */}
-                      </div>
-                    </td>
-                  ) : null;
-                })}
-              </tr>
-            ))}
-          </>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
+                                      {isExpanded && (
+                                        <>
+                                          <div className="ticket-info">
+                                            <div className="ticket-code mx-auto">
+                                              <p>Ticket Code</p>
+                                              <h1>
+                                                {ticket.ticket_code}
+                                                <img
+                                                  src={ticket.qr_code_path}
+                                                  alt="QR Code"
+                                                  className="qr-code expanded"
+                                                />
+                                              </h1>
+                                            </div>
+                                            <div className="details">
+                                              <div className="details-label">
+                                                Location:{" "}
+                                                {ticket.dapaint.location}
+                                              </div>
+                                              <div className="details-content">
+                                                <div className="host-info">
+                                                  <img
+                                                    src={
+                                                      ticket.dapaint.hostFoeId
+                                                        .profile_pic
+                                                        ?.image_url ||
+                                                      placeholderImage
+                                                    }
+                                                    alt="Host Profile"
+                                                    className="profile-pic"
+                                                    style={{
+                                                      width: "100px",
+                                                      height: "100px",
+                                                    }}
+                                                  />
+                                                  <div className="host-name">
+                                                    {
+                                                      ticket.dapaint.hostFoeId
+                                                        .name
+                                                    }
+                                                  </div>
+                                                </div>
+                                                <div className="foe-info">
+                                                  <img
+                                                    src={
+                                                      ticket.dapaint.foeId
+                                                        .profile_pic
+                                                        ?.image_url ||
+                                                      placeholderImage
+                                                    }
+                                                    alt="Foe Profile"
+                                                    className="profile-pic"
+                                                    style={{
+                                                      width: "100px",
+                                                      height: "100px",
+                                                    }}
+                                                  />
+                                                  <div className="foe-name">
+                                                    {ticket.dapaint.foeId.name}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="buttons">
+                                              <button className="btn refund-btn">
+                                                REFUND
+                                              </button>
+                                              <button
+                                                className="btn hide-btn"
+                                                onClick={() =>
+                                                  toggleQRCode(ticketIndex)
+                                                }
+                                              >
+                                                HIDE
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  </td>
+                                ) : null;
+                              })}
+                            </tr>
+                          ))}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             {/* <div className="tickets-container mx-auto">
               <table className="ticket-table">
@@ -689,7 +831,6 @@ export const Setting = ({ onClose }) => {
                 </tbody>
               </table>
             </div> */}
-            
           </div>
         </div>
       </div>
